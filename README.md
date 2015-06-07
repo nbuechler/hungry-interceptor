@@ -4,8 +4,11 @@ Intercepts data, does something with it, stores it
 
 #Steps
 .. first, install virtualenv if not done so already -- https://virtualenv.pypa.io/en/latest/installation.html
+
 .. then, run this command:  $ virtualenv venv
+
 .. next, activate virtualenv with this command (make sure you get the'.'):  $ . venv/bin/activate
+
 .. we are using 'Flask-PyMongo' - so next, run this command: $ pip install Flask-PyMongo
 
 .. read about it here: 
