@@ -1,0 +1,16 @@
+<!doctype html>
+<title>Logs</title>
+{% if database %}
+  <h1>Database = {{ database }}!</h1>
+{% else %}
+  <h1>Using Default</h1>
+{% endif %}
+
+{% for log in all_logs %}
+<h2>{{ log.name}}</h2>
+<p>{{ log.etherContent }}</p>
+<p>{{ log.communeContent }}</p>
+<p>{{ log.academicContent }}</p>
+<p>{{ log.emotionContent }}</p>
+<p>{{ log.physicContent }}</p>
+{% endfor %}
