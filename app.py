@@ -36,19 +36,24 @@ def secret_page():
 @app.route('/users')
 @app.route('/users/<database>')
 def users(database=None):
-    all_users = mongo2.db.users.find({})
+    if database == 'remote':
+        print('Receiving remote data')
+        all_users = remoteDB1.users.find({})
+    else:
+        database = 'default'
+        all_users = mongo2.db.users.find({})
     return render_template('users.html',
         all_users=all_users, database=database)
 
 @app.route('/logs')
 @app.route('/logs/<database>')
 def logs(database=None):
-    all_logs = mongo2.db.logs.find({})
     if database == 'remote':
         print('Receiving remote data')
         all_logs = remoteDB1.logs.find({})
     else:
         database = 'default'
+        all_logs = mongo2.db.logs.find({})
     return render_template('logs.html',
         all_logs=all_logs, database=database)
 
