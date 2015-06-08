@@ -1,0 +1,12 @@
+<!doctype html>
+<title>Users</title>
+{% if database %}
+  <h1>Database = {{ database }}!</h1>
+{% else %}
+  <h1>Using Default</h1>
+{% endif %}
+
+{% for user in all_users %}
+<h2>{{ user.firstName + ' ' + user.lastName}}</h2>
+<p>{{ user.email }}</p>
+{% endfor %}
