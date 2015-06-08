@@ -6,7 +6,11 @@
   <h1>Using Default</h1>
 {% endif %}
 
-{% for user in all_users %}
-<h2>{{ user.firstName + ' ' + user.lastName}}</h2>
-<p>{{ user.email }}</p>
+{% for log in all_logs %}
+<h2>{{ log.name}}</h2>
+<p>{{ log.etherContent }}</p>
+<p>{{ log.communeContent }}</p>
+<p>{{ log.academicContent }}</p>
+<p>{{ log.emotionContent }}</p>
+<p>{{ log.physicsContent }}</p>
 {% endfor %}
