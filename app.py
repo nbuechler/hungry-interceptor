@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template
 from flask.ext.pymongo import PyMongo
+from flask.ext.pymongo import MongoClient
 
 app = Flask(__name__)
 # connect to MongoDB with the defaults
@@ -10,13 +11,14 @@ mongo1 = PyMongo(app)
 app.config['MONGO2_DBNAME'] = 'evgroio-dev'
 mongo2 = PyMongo(app, config_prefix='MONGO2')
 
-#'mongodb://evgroio01:admin@ds041238.mongolab.com:41238/heroku_app36697506'
+#remoteDB1
+mongolab_uri = 'mongodb://evgroio01:admin@ds041238.mongolab.com:41238/heroku_app36697506'
+client = MongoClient(mongolab_uri,
+                     connectTimeoutMS=30000,
+                     socketTimeoutMS=None,
+                     socketKeepAlive=True)
 
-## connect to another MongoDB server altogether
-#app.config['MONGO3_HOST'] = 'another.host.example.com'
-#app.config['MONGO3_PORT'] = 27017
-#app.config['MONGO3_DBNAME'] = 'dbname_three'
-#mongo3 = PyMongo(app, config_prefix='MONGO3')
+remoteDB1 = client.get_default_database()
 
 @app.route('/')
 def home_page():
@@ -42,6 +44,11 @@ def users(database=None):
 @app.route('/logs/<database>')
 def logs(database=None):
     all_logs = mongo2.db.logs.find({})
+    if database == 'remote':
+        print('Receiving remote data')
+        all_logs = remoteDB1.logs.find({})
+    else:
+        database = 'default'
     return render_template('logs.html',
         all_logs=all_logs, database=database)
 
