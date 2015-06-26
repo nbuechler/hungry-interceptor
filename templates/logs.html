@@ -8,9 +8,13 @@
 
 {% for log in all_logs %}
 <h2>{{ log.name}}</h2>
-<p>{{ log.etherContent }}</p>
-<p>{{ log.communeContent }}</p>
-<p>{{ log.academicContent }}</p>
-<p>{{ log.emotionContent }}</p>
-<p>{{ log.physicContent }}</p>
+
+<table>
+</table>
+
+<p>{{ log.etherContent }} <strong style="color: red;">({{ log.etherContentLength }})</strong></p>
+<p>{{ log.communeContent }} <strong style="color: red;">({{ log.communeContentLength }})</strong></p>
+<p>{{ log.academicContent }} <strong style="color: red;">({{ log.academicContentLength }})</strong></p>
+<p>{{ log.emotionContent }} <strong style="color: red;">({{ log.emotionContentLength }})</strong></p>
+<p>{{ log.physicContent }} <strong style="color: red;">({{ log.physicContentLength }})</strong></p>
 {% endfor %}
