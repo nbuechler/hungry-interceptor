@@ -1,0 +1,38 @@
+<div>User Page</div>
+<h6>For detailing info about a specific user</h6>
+<br>
+
+<h1>Database = {{ database }}!</h1>
+<div>Hello world, here is a user...</div>
+
+<hr>
+
+<table border="solid 1px gray">
+
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody style="text-align: center;">
+        <tr>
+            <td>First Name</td>
+            <td>{{ user.firstName }}</td>
+        </tr>
+        <tr>
+            <td>Last Name</td>
+            <td>{{ user.lastName }}</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td>Roles</td>
+            <td>{{ user.roles }}</td>
+        </tr>
+        
+    </tbody>
+    
+</table>
