@@ -33,9 +33,8 @@ def secret_page():
     foo = mongo2.db.users
     return 'shhh..this is a secret'
 
-@app.route('/users')
-@app.route('/users/<database>')
-def users(database=None):
+@app.route('/<database>/users')
+def get_users(database=None):
     if database == 'remote':
         print('Receiving remote data')
         all_users = remoteDB1.users.find({})
@@ -45,9 +44,25 @@ def users(database=None):
     return render_template('users.html',
         all_users=all_users, database=database)
 
-@app.route('/logs')
-@app.route('/logs/<database>')
-def logs(database=None):
+#Find a user by first name for fun!
+@app.route('/<database>/users/<first_name>')
+def get_user(database=None, first_name=None):
+    print('User is ' + first_name)
+    if database == 'remote':
+        print('Receiving remote data')
+        user = remoteDB1.users.find_one({'firstName': first_name})
+        print('==User==')
+        print(user)
+    else:
+        database = 'default'
+        user = mongo2.db.users.find_one({'firstName': first_name})
+        print('==User==')
+        print(user)
+    return render_template('userPage.html',
+        user=user, database=database)
+
+@app.route('/<database>/logs')
+def get_logs(database=None):
     if database == 'remote':
         print('Receiving remote data')
         all_logs = remoteDB1.logs.find({})
