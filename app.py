@@ -44,6 +44,18 @@ def get_users(database=None):
     return render_template('users.html',
         all_users=all_users, database=database)
 
+#Go to new user create page
+@app.route('/<database>/users/new')
+def new_user(database=None):
+    if database == 'remote':
+        print('Receiving remote data')
+    else:
+        database = 'default'
+    return render_template('newUser.html', database=database)
+
+#TODO, make the form insert something into mongo -- create a method for the form to use
+
+
 #Find a user by first name for fun!
 @app.route('/<database>/users/<first_name>')
 def get_user(database=None, first_name=None):
