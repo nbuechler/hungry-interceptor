@@ -1,5 +1,10 @@
 from flask import Flask
 from flask import render_template, redirect, url_for
+
+from flask.ext.wtf import Form
+from wtforms import StringField, BooleanField
+from wtforms.validators import DataRequired
+
 from flask.ext.pymongo import PyMongo
 from flask.ext.pymongo import MongoClient
 
@@ -44,15 +49,22 @@ def get_users(database=None):
     return render_template('users.html',
         all_users=all_users, database=database)
 
+#Form
+class DefaultForm(Form):
+    fieldA = StringField('fieldA', validators=[DataRequired()])
+    
 #Go to new user create page
 @app.route('/<database>/users/new')
 def new_user(database=None):
-    
+#    form = DefaultForm()
     if database == 'remote':
         print('Receiving remote data')
     else:
         database = 'default'
-    return render_template('newUser.html', database=database)
+    return render_template('newUser.html',
+#                           form=form,
+                           database=database
+                          )
 
 #Makes a form insert a user record into mongo instance
 @app.route('/<database>/users/create', methods=["GET", "POST"])

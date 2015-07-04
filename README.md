@@ -26,3 +26,7 @@ After learning about basic neural network models and frameworks, it would be nea
 
 
 #TODO: More details about this here
+
+
+Ongoing Dependency List:  
+pip install flask-wtf 
