@@ -1,0 +1,13 @@
+<!doctype html>
+<title>Logs</title>
+{% if database %}
+  <h1>Database = {{ database }}!</h1>
+{% else %}
+  <h1>Using Default</h1>
+{% endif %}
+
+{% for activity in all_activities %}
+
+<p>{{activity}}</p>
+
+{% endfor %}
