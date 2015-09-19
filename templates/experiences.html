@@ -6,7 +6,7 @@
   <h1>Using Default</h1>
 {% endif %}
 
-{% for user in all_users %}
-<h2>{{ user.firstName + ' ' + user.lastName}}</h2>
-<p>{{ user.email }}</p>
+{% for experience in all_experiences %}
+<h2>{{ experience.name}}</h2>
+<p>{{ experience }}</p>
 {% endfor %}

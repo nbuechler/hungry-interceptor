@@ -83,6 +83,17 @@ def get_user(database=None, first_name=None):
     return render_template('userPage.html',
         user=user, database=database)
 
+@app.route('/<database>/experiences')
+def get_experiences(database=None):
+    if database == 'remote':
+        print('Receiving remote data')
+        all_experiences = remoteDB1.experiences.find({})
+    else:
+        database = 'default'
+        all_experiences = mongo2.db.experiences.find({})
+    return render_template('experiences.html',
+        all_experiences=all_experiences, database=database)
+
 @app.route('/<database>/logs')
 def get_logs(database=None):
     if database == 'remote':
