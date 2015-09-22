@@ -83,6 +83,17 @@ def get_user(database=None, first_name=None):
     return render_template('userPage.html',
         user=user, database=database)
 
+@app.route('/<database>/activities/public')
+def get_public_activities(database=None):
+    if database == 'remote':
+        print('Receiving remote data')
+        all_activities = remoteDB1.activities.find({'privacy': 1})
+    else:
+        database = 'default'
+        all_activities = mongo2.db.activities.find({'privacy': 1})
+    return render_template('activities.html',
+        all_activities=all_activities, database=database)
+
 @app.route('/<database>/experiences/public')
 def get_public_experiences(database=None):
     if database == 'remote':
@@ -93,6 +104,17 @@ def get_public_experiences(database=None):
         all_experiences = mongo2.db.experiences.find({'privacy': 1})
     return render_template('experiences.html',
         all_experiences=all_experiences, database=database)
+
+@app.route('/<database>/activities')
+def get_activities(database=None):
+    if database == 'remote':
+        print('Receiving remote data')
+        all_activities = remoteDB1.activities.find({})
+    else:
+        database = 'default'
+        all_activities = mongo2.db.activities.find({})
+    return render_template('activities.html',
+        all_activities=all_activities, database=database)
 
 @app.route('/<database>/experiences')
 def get_experiences(database=None):
@@ -115,17 +137,6 @@ def get_logs(database=None):
         all_logs = mongo2.db.logs.find({})
     return render_template('logs.html',
         all_logs=all_logs, database=database)
-
-@app.route('/<database>/activities')
-def get_activities(database=None):
-    if database == 'remote':
-        print('Receiving remote data')
-        all_activities = remoteDB1.activities.find({})
-    else:
-        database = 'default'
-        all_activities = mongo2.db.activities.find({})
-    return render_template('activities.html',
-        all_activities=all_activities, database=database)
 
 if __name__ == '__main__':
     app.run()
