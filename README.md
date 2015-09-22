@@ -1,6 +1,6 @@
 # hungry-interceptor
 Intercepts data, does something with it, stores it
-
+This app is going to be a gate keeper for the rest of the engines
 
 #Steps
 .. first, install virtualenv if not done so already -- https://virtualenv.pypa.io/en/latest/installation.html
