@@ -1,10 +1,9 @@
 from flask import Flask
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, jsonify
 
 #from .forms import DefaultForm
 
-from flask.ext.pymongo import PyMongo
-from flask.ext.pymongo import MongoClient
+from flask.ext.pymongo import PyMongo, MongoClient
 
 app = Flask(__name__)
 # connect to MongoDB with the defaults
@@ -137,6 +136,21 @@ def get_logs(database=None):
         all_logs = mongo2.db.logs.find({})
     return render_template('logs.html',
         all_logs=all_logs, database=database)
+
+@app.route('/dummy')
+def get_all_dummy():
+    allOfIt = dict({'all' : [
+        {'pies': [
+                  {'key': 'P1', 'data': [2, 4, 5, 4, 7]},
+                  {'key': 'P2', 'data': [3, 2, 9, 1, 8]},
+                  {'key': 'P3', 'data': [3, 4, 0, 7, 8]},
+                  {'key': 'P4', 'data': [3, 5, 5, 0, 4]},
+                  {'key': 'P5', 'data': [3, 8, 3, 2, 3]}
+                ]},
+        {'logCounts': [14, 23, 22, 14, 30]}
+    ]})
+
+    return jsonify(**allOfIt)
 
 if __name__ == '__main__':
     app.run()
