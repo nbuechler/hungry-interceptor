@@ -5,7 +5,10 @@ from flask import render_template, redirect, url_for, jsonify
 
 from flask.ext.pymongo import PyMongo, MongoClient
 
+from flask.ext.cors import CORS
+
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}}) #CORS :WARNING everything!
 # connect to MongoDB with the defaults
 mongo1 = PyMongo(app)
 

@@ -32,3 +32,11 @@ After learning about basic neural network models and frameworks, it would be nea
 
 Ongoing Dependency List:  
 pip install flask-wtf
+pip install -U flask-cors
+
+-->https://flask-cors.readthedocs.org/en/latest/
+
+#CORS
+from flask.ext.cors import CORS
+
+cors = CORS(app, resources={r"/*": {"origins": "*"}}) #CORS :WARNING everything!
