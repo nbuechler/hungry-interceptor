@@ -2,6 +2,8 @@
 Intercepts data, does something with it, stores it
 This app is going to be a gate keeper for the rest of the engines
 
+Its primary function is getting data from its counterpart in the front end side of the app. Or sending data it to its counterpart via its mechanisms and apis.
+
 #Steps
 .. first, install virtualenv if not done so already -- https://virtualenv.pypa.io/en/latest/installation.html
 
@@ -11,7 +13,7 @@ This app is going to be a gate keeper for the rest of the engines
 
 .. we are using 'Flask-PyMongo' - so next, run this command: $ pip install Flask-PyMongo
 
-.. read about it here: 
+.. read about it here:
 
 https://flask-pymongo.readthedocs.org/en/latest/
 
@@ -29,4 +31,4 @@ After learning about basic neural network models and frameworks, it would be nea
 
 
 Ongoing Dependency List:  
-pip install flask-wtf 
+pip install flask-wtf
