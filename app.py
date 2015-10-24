@@ -25,6 +25,7 @@ client = MongoClient(mongolab_uri,
 
 remoteDB1 = client.get_default_database()
 
+#TODO: List out more apis for specific calls I need
 @app.route('/')
 def home_page():
     foo = mongo2.db.users
