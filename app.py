@@ -143,7 +143,8 @@ def get_logs(database=None):
 
 @app.route('/dummy')
 def get_all_dummy():
-    allOfIt = dict({'all' : [
+    allOfIt = dict(
+    {'all' : [
         {'pies': [
                   {'key': 'P1', 'data': [2, 4, 5, 4, 7]},
                   {'key': 'P2', 'data': [3, 2, 9, 1, 8]},
@@ -151,7 +152,9 @@ def get_all_dummy():
                   {'key': 'P4', 'data': [3, 5, 5, 0, 4]},
                   {'key': 'P5', 'data': [3, 8, 3, 2, 3]}
                 ]},
-        {'logCounts': [14, 23, 22, 14, 30]}
+        {'logCounts': [14, 23, 22, 14, 30]},
+        {'description_primary': 'The main desciption is going to detail that this is one view of the data'},
+        {'description_secondary': 'The secondary description is going to detail that this is really a lot more information'}
     ]})
 
     return jsonify(**allOfIt)
