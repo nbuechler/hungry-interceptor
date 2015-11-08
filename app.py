@@ -143,7 +143,8 @@ def get_logs(database=None):
 
 @app.route('/dummy')
 def get_all_dummy():
-    allOfIt = dict({'all' : [
+    allOfIt = dict(
+    {'all' : [
         {'pies': [
                   {'key': 'P1', 'data': [2, 4, 5, 4, 7]},
                   {'key': 'P2', 'data': [3, 2, 9, 1, 8]},
@@ -151,7 +152,27 @@ def get_all_dummy():
                   {'key': 'P4', 'data': [3, 5, 5, 0, 4]},
                   {'key': 'P5', 'data': [3, 8, 3, 2, 3]}
                 ]},
-        {'logCounts': [14, 23, 22, 14, 30]}
+        {'logCounts': [14, 23, 22, 14, 30]},
+        {'description_primary': 'The main desciption is going to detail that this is one view of the data'},
+        {'description_secondary': 'The secondary description is going to detail that this is really a lot more information'}
+    ]})
+
+    return jsonify(**allOfIt)
+
+@app.route('/altdummy')
+def get_all_altdummy():
+    allOfIt = dict(
+    {'all' : [
+        {'pies': [
+                  {'key': 'P1', 'data': [6, 5, 8, 8, 7]},
+                  {'key': 'P2', 'data': [3, 6, 9, 1, 8]},
+                  {'key': 'P3', 'data': [3, 0, 8, 6, 3]},
+                  {'key': 'P4', 'data': [3, 5, 5, 0, 4]},
+                  {'key': 'P5', 'data': [8, 0, 3, 5, 6]}
+                ]},
+        {'logCounts': [14, 23, 22, 14, 30]},
+        {'description_primary': 'The main desciption --- look it is different!'},
+        {'description_secondary': 'The secondary description --- look at the data below, it should be, too!'}
     ]})
 
     return jsonify(**allOfIt)
