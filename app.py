@@ -146,6 +146,8 @@ def process_logs(user=None):
     print user
     if user == 'all':
         print 'got all, here are all logs'
+        all_logs = remoteDB1.logs.find({})
+        print all_logs
     else:
         print 'user detected, do something!'
         # TODO: do something to get specific user
