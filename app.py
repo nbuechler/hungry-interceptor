@@ -141,9 +141,14 @@ def get_logs(database=None):
     return render_template('logs.html',
         all_logs=all_logs, database=database)
 
-@app.route('/process-logs')
+@app.route('/process-logs/<user>')
 def process_logs(user=None):
     print user
+    if user == 'all':
+        print 'got all, here are all logs'
+    else:
+        print 'user detected, do something!'
+        # TODO: do something to get specific user
     return 'Success!'
 
 @app.route('/dummy')
