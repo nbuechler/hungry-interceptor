@@ -1,6 +1,11 @@
 from flask import Flask
 from flask import render_template, redirect, url_for, jsonify
 
+
+# bson
+import json
+from bson import json_util
+
 #from .forms import DefaultForm
 
 from flask.ext.pymongo import PyMongo, MongoClient
@@ -140,6 +145,43 @@ def get_logs(database=None):
         all_logs = mongo2.db.logs.find({})
     return render_template('logs.html',
         all_logs=all_logs, database=database)
+
+# This is the method that starts the processing of the logs, and it will change
+# over time as I get better and think more about the dependecy structure.
+
+# The general gist od this is that the logs should be processed like the dummy
+# example below so that another service can use this method as a sevice.
+
+# The cursor object gets turned into a json which then in turn gets made into a
+# a python dictionary. Then processing can happen on it and be returned ultimately
+# --> like so:    return jsonify(**allOfIt)
+
+
+@app.route('/process-logs/<user>')
+def process_logs(user=None):
+    print user
+    if user == 'all':
+        print 'got all, here are all logs'
+        # [all_logs for all_logs in remoteDB1.logs.find({})]
+
+        cursor = remoteDB1.logs.find({})
+
+        # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
+
+        json_items = []
+        json_pies = []
+        for item in cursor:
+            json_item = json.dumps(item, default=json_util.default)
+            json_items.append(json_item)
+
+
+        the_dict = json.loads(json_docs[10])
+        # http://www.tutorialspoint.com/python/dictionary_get.htm
+        print the_dict.get('etherContentLength')
+    else:
+        print 'user detected, do something!'
+        # TODO: do something to get specific user
+    return 'Success!'
 
 @app.route('/dummy')
 def get_all_dummy():
