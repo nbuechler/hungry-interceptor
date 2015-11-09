@@ -141,6 +141,11 @@ def get_logs(database=None):
     return render_template('logs.html',
         all_logs=all_logs, database=database)
 
+@app.route('/process-logs')
+def process_logs(user=None):
+    print user
+    return 'Success!'
+
 @app.route('/dummy')
 def get_all_dummy():
     allOfIt = dict(
