@@ -175,11 +175,28 @@ def process_logs(user=None):
             json_item = json.dumps(item, default=json_util.default)
             json_items.append(json_item)
 
+            # Create a new python dictionary from the json_item, we'll call it json_dict
+            json_dict = json.loads(json_item)
+            # Create an empty array to hold the data I care about, in this case
+            # the data is an array of five numbers for each json_dict, the content lengths (characters)
+            content_lengths = []
+
+            print '========json_item========'
+            # print json_dict
+            print '---data---'
+            content_lengths.append(json_dict.get('physicContentLength'))
+            content_lengths.append(json_dict.get('emotionContentLength'))
+            content_lengths.append(json_dict.get('academicContentLength'))
+            content_lengths.append(json_dict.get('communeContentLength'))
+            content_lengths.append(json_dict.get('etherContentLength'))
+            print content_lengths
+            print '---data---'
+            print '=================='
 
         the_dict = json.loads(json_items[10])
         raw_dict['all'] = json_items
         # # http://www.tutorialspoint.com/python/dictionary_get.htm
-        print the_dict
+        # print the_dict
         return jsonify(**the_dict)
         # return jsonify(**raw_dict)
     else:
