@@ -180,9 +180,6 @@ def process_logs(user=None):
         communeArrayTotal = 0
         etherArrayTotal = 0
 
-        # Create an array for all the totals
-        word_array_dict = {'logCounts': []},
-
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
             json_items.append(json_item)
@@ -216,9 +213,7 @@ def process_logs(user=None):
             print json_dict
             print '=================='
 
-        # Append the totals to it now that the 'for in' loop is done
-
-        print physicArrayTotal.__class__
+        # Append the totals to an array now that the 'for in' loop is done
         counts = []
         counts.append(physicArrayTotal)
         counts.append(emotionArrayTotal)
@@ -226,8 +221,8 @@ def process_logs(user=None):
         counts.append(communeArrayTotal)
         counts.append(etherArrayTotal)
 
-        print counts
-
+        # Create an dictionart for all the totals
+        word_array_dict = {'logCounts': counts},
         print word_array_dict
 
         the_dict = json.loads(json_items[9])
