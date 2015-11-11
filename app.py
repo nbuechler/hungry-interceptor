@@ -197,6 +197,15 @@ def process_logs(user=None):
             word_array_lengths.append(json_dict.get('communeArrayLength'))
             word_array_lengths.append(json_dict.get('etherArrayLength'))
 
+            print json_dict.get('name')
+            print json_dict.get('physicContent')
+            print json_dict.get('emotionContent')
+            print json_dict.get('academicContent')
+            print json_dict.get('communeContent')
+            print json_dict.get('etherContent')
+            print json_key
+            print word_array_lengths
+
             # By the way, we are also counting the total lengths
             if json_dict.get('physicArrayLength') > 0:
                 physicArrayTotal += json_dict.get('physicArrayLength')
@@ -225,7 +234,7 @@ def process_logs(user=None):
         word_array_dict = {'logCounts': counts},
         print word_array_dict
 
-        the_dict = json.loads(json_items[9])
+        the_dict = json.loads(json_items[20])
         # print the_dict
         return jsonify(**the_dict)
         # return jsonify(**raw_dict)
