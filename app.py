@@ -170,6 +170,7 @@ def process_logs(user=None):
 
         raw_dict = {'all': []}
         json_items = []
+        # Create an array to store the data intended for pie charts
         json_pies = []
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
@@ -180,9 +181,6 @@ def process_logs(user=None):
             # Create an empty array to hold the data I care about, in this case
             # the data is an array of five numbers for each json_dict, the content lengths (characters)
             content_lengths = []
-
-            print '========json_item========'
-            # print json_dict
             print '---data---'
             content_lengths.append(json_dict.get('physicContentLength'))
             content_lengths.append(json_dict.get('emotionContentLength'))
@@ -191,6 +189,9 @@ def process_logs(user=None):
             content_lengths.append(json_dict.get('etherContentLength'))
             print content_lengths
             print '---data---'
+
+            print '========json_item========'
+            print json_dict
             print '=================='
 
         the_dict = json.loads(json_items[10])
