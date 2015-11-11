@@ -161,29 +161,85 @@ def get_logs(database=None):
 def process_logs(user=None):
     print user
     if user == 'all':
-        print 'got all, here are all logs'
+        # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
+
+        print '!!!got all, here are all logs!!!'
         # [all_logs for all_logs in remoteDB1.logs.find({})]
 
         cursor = remoteDB1.logs.find({})
 
-        # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
 
-        raw_dict = {'all': []}
         json_items = []
-        json_pies = []
+        # Create a pie dictionary to set up the building of data intended for pie charts.
+        pie_dict = {'pies': []}
+
+        # Create counters for the total lengths of word_arrays
+        physicArrayTotal = 0
+        emotionArrayTotal = 0
+        academicArrayTotal = 0
+        communeArrayTotal = 0
+        etherArrayTotal = 0
+
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
             json_items.append(json_item)
 
+            # Create a new python dictionary from the json_item, we'll call it json_dict
+            json_dict = json.loads(json_item)
+            # Define the json key for the array to hold the
+            json_key = json_dict.get('_id').get('$oid')
+            # Create an empty array to hold the data I care about, in this case
+            # the data is an array of five numbers for each json_dict, the word_array lengths (words)
+            word_array_lengths = []
+            word_array_lengths.append(json_dict.get('physicArrayLength'))
+            word_array_lengths.append(json_dict.get('emotionArrayLength'))
+            word_array_lengths.append(json_dict.get('academicArrayLength'))
+            word_array_lengths.append(json_dict.get('communeArrayLength'))
+            word_array_lengths.append(json_dict.get('etherArrayLength'))
 
-        the_dict = json.loads(json_items[10])
-        raw_dict['all'] = json_items
-        # # http://www.tutorialspoint.com/python/dictionary_get.htm
-        print the_dict
+            print json_dict.get('name')
+            print json_dict.get('physicContent')
+            print json_dict.get('emotionContent')
+            print json_dict.get('academicContent')
+            print json_dict.get('communeContent')
+            print json_dict.get('etherContent')
+            print json_key
+            print word_array_lengths
+
+            # By the way, we are also counting the total lengths
+            if json_dict.get('physicArrayLength') > 0:
+                physicArrayTotal += json_dict.get('physicArrayLength')
+            if json_dict.get('emotionArrayLength') > 0:
+                emotionArrayTotal += json_dict.get('emotionArrayLength')
+            if json_dict.get('academicArrayLength') > 0:
+                academicArrayTotal += json_dict.get('academicArrayLength')
+            if json_dict.get('communeArrayLength') > 0:
+                communeArrayTotal += json_dict.get('communeArrayLength')
+            if json_dict.get('etherArrayLength') > 0:
+                etherArrayTotal += json_dict.get('etherArrayLength')
+
+            print '========json_item========'
+            print json_dict
+            print '=================='
+
+        # Append the totals to an array now that the 'for in' loop is done
+        counts = []
+        counts.append(physicArrayTotal)
+        counts.append(emotionArrayTotal)
+        counts.append(academicArrayTotal)
+        counts.append(communeArrayTotal)
+        counts.append(etherArrayTotal)
+
+        # Create an dictionart for all the totals
+        word_array_dict = {'logCounts': counts},
+        print word_array_dict
+
+        the_dict = json.loads(json_items[20])
+        # print the_dict
         return jsonify(**the_dict)
         # return jsonify(**raw_dict)
     else:
-        print 'user detected, do something!'
+        print '!!!user detected, do something!!!'
         # TODO: do something to get specific user
     return 'Success!'
 
