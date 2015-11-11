@@ -224,4 +224,5 @@ def get_all_altdummy():
     return jsonify(**allOfIt)
 
 if __name__ == '__main__':
-    app.run()
+    # app.run()
+    app.run(debug=True)
