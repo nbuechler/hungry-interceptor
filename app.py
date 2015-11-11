@@ -175,9 +175,10 @@ def process_logs(user=None):
             json_items.append(json_item)
 
 
-        the_dict = json.loads(json_docs[10])
-        # http://www.tutorialspoint.com/python/dictionary_get.htm
+        the_dict = json.loads(json_items[10])
+        # # http://www.tutorialspoint.com/python/dictionary_get.htm
         print the_dict.get('etherContentLength')
+        return jsonify(**the_dict)
     else:
         print 'user detected, do something!'
         # TODO: do something to get specific user
