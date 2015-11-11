@@ -168,6 +168,7 @@ def process_logs(user=None):
 
         # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
 
+        raw_dict = {'all': []}
         json_items = []
         json_pies = []
         for item in cursor:
@@ -175,9 +176,12 @@ def process_logs(user=None):
             json_items.append(json_item)
 
 
-        the_dict = json.loads(json_docs[10])
-        # http://www.tutorialspoint.com/python/dictionary_get.htm
-        print the_dict.get('etherContentLength')
+        the_dict = json.loads(json_items[10])
+        raw_dict['all'] = json_items
+        # # http://www.tutorialspoint.com/python/dictionary_get.htm
+        print the_dict
+        return jsonify(**the_dict)
+        # return jsonify(**raw_dict)
     else:
         print 'user detected, do something!'
         # TODO: do something to get specific user
