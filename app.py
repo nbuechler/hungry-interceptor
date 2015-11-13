@@ -219,6 +219,7 @@ def process_logs(user=None):
                 etherArrayTotal += json_dict.get('etherArrayLength')
 
             print '========json_item========'
+            print '========start here========'
             print json_dict
             print '=================='
 
