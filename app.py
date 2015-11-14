@@ -164,10 +164,8 @@ def process_logs(user=None):
         # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
 
         print '!!!got all, here are all logs!!!'
-        # [all_logs for all_logs in remoteDB1.logs.find({})]
 
         cursor = remoteDB1.logs.find({})
-
 
         json_items = []
         # Create a pie dictionary to set up the building of data intended for pie charts.
@@ -196,7 +194,6 @@ def process_logs(user=None):
             word_array_lengths.append(json_dict.get('academicArrayLength'))
             word_array_lengths.append(json_dict.get('communeArrayLength'))
             word_array_lengths.append(json_dict.get('etherArrayLength'))
-
             # Get the content for each of the word array values, and order it correctly in the array
             word_array_contents = []
             word_array_contents.append(json_dict.get('physicContent'))
@@ -204,16 +201,16 @@ def process_logs(user=None):
             word_array_contents.append(json_dict.get('academicContent'))
             word_array_contents.append(json_dict.get('communeContent'))
             word_array_contents.append(json_dict.get('etherContent'))
-
+            # Assemble a pie_instance_dict
             pie_instance_dict = {
                                 'key': json_key,
                                 'data': word_array_lengths,
                                 'values': word_array_contents,
                                 'name': json_dict.get('name')
                                 }
-            print pie_instance_dict
-
-            # By the way, we are also counting the total lengths
+            # Assembled pie_instance_dict now gets appended to the end of pies in pie_dict
+            pie_dict['pies'].append(pie_instance_dict)
+            # Remember, we are also counting the total lengths
             if json_dict.get('physicArrayLength') > 0:
                 physicArrayTotal += json_dict.get('physicArrayLength')
             if json_dict.get('emotionArrayLength') > 0:
@@ -226,7 +223,6 @@ def process_logs(user=None):
                 etherArrayTotal += json_dict.get('etherArrayLength')
 
             print '========json_item========'
-            print '========start here========'
             print json_dict
             print '=================='
 
