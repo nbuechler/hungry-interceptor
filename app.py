@@ -158,27 +158,27 @@ def get_logs(database=None):
 
 
 @app.route('/process-logs/<user>')
+@app.route('/dummy')
 def process_logs(user=None):
     print user
-    if user == 'all':
+    if user != 'all':
         # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
 
         print '!!!got all, here are all logs!!!'
-        # [all_logs for all_logs in remoteDB1.logs.find({})]
 
         cursor = remoteDB1.logs.find({})
-
 
         json_items = []
         # Create a pie dictionary to set up the building of data intended for pie charts.
         pie_dict = {'pies': []}
-
         # Create counters for the total lengths of word_arrays
         physicArrayTotal = 0
         emotionArrayTotal = 0
         academicArrayTotal = 0
         communeArrayTotal = 0
         etherArrayTotal = 0
+        # Create a main dictionary for the response
+        main_return_dict = {'all' : []}
 
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
@@ -191,22 +191,43 @@ def process_logs(user=None):
             # Create an empty array to hold the data I care about, in this case
             # the data is an array of five numbers for each json_dict, the word_array lengths (words)
             word_array_lengths = []
-            word_array_lengths.append(json_dict.get('physicArrayLength'))
-            word_array_lengths.append(json_dict.get('emotionArrayLength'))
-            word_array_lengths.append(json_dict.get('academicArrayLength'))
-            word_array_lengths.append(json_dict.get('communeArrayLength'))
-            word_array_lengths.append(json_dict.get('etherArrayLength'))
-
-            print json_dict.get('name')
-            print json_dict.get('physicContent')
-            print json_dict.get('emotionContent')
-            print json_dict.get('academicContent')
-            print json_dict.get('communeContent')
-            print json_dict.get('etherContent')
-            print json_key
-            print word_array_lengths
-
-            # By the way, we are also counting the total lengths
+            if json_dict.get('physicArrayLength') > 0:
+                word_array_lengths.append(json_dict.get('physicArrayLength'))
+            else:
+                word_array_lengths.append(0)
+            if json_dict.get('emotionArrayLength') > 0:
+                word_array_lengths.append(json_dict.get('emotionArrayLength'))
+            else:
+                word_array_lengths.append(0)
+            if json_dict.get('academicArrayLength') > 0:
+                word_array_lengths.append(json_dict.get('academicArrayLength'))
+            else:
+                word_array_lengths.append(0)
+            if json_dict.get('communeArrayLength') > 0:
+                word_array_lengths.append(json_dict.get('communeArrayLength'))
+            else:
+                word_array_lengths.append(0)
+            if json_dict.get('etherArrayLength') > 0:
+                word_array_lengths.append(json_dict.get('etherArrayLength'))
+            else:
+                word_array_lengths.append(0)
+            # Get the content for each of the word array values, and order it correctly in the array
+            word_array_contents = []
+            word_array_contents.append(json_dict.get('physicContent'))
+            word_array_contents.append(json_dict.get('emotionContent'))
+            word_array_contents.append(json_dict.get('academicContent'))
+            word_array_contents.append(json_dict.get('communeContent'))
+            word_array_contents.append(json_dict.get('etherContent'))
+            # Assemble a pie_instance_dict
+            pie_instance_dict = {
+                                'key': json_key,
+                                'data': word_array_lengths,
+                                'values': word_array_contents,
+                                'name': json_dict.get('name')
+                                }
+            # Assembled pie_instance_dict now gets appended to the end of pies in pie_dict
+            pie_dict['pies'].append(pie_instance_dict)
+            # Remember, we are also counting the total lengths
             if json_dict.get('physicArrayLength') > 0:
                 physicArrayTotal += json_dict.get('physicArrayLength')
             if json_dict.get('emotionArrayLength') > 0:
@@ -218,11 +239,6 @@ def process_logs(user=None):
             if json_dict.get('etherArrayLength') > 0:
                 etherArrayTotal += json_dict.get('etherArrayLength')
 
-            print '========json_item========'
-            print '========start here========'
-            print json_dict
-            print '=================='
-
         # Append the totals to an array now that the 'for in' loop is done
         counts = []
         counts.append(physicArrayTotal)
@@ -230,21 +246,25 @@ def process_logs(user=None):
         counts.append(academicArrayTotal)
         counts.append(communeArrayTotal)
         counts.append(etherArrayTotal)
-
         # Create an dictionart for all the totals
-        word_array_dict = {'logCounts': counts},
-        print word_array_dict
+        word_array_dict = {'logCounts': counts}
+
+        # Assemble the main_return_dict
+        main_return_dict['all'].append(pie_dict)
+        main_return_dict['all'].append(word_array_dict)
+        main_return_dict['all'].append({'description_primary': 'This is all the data in the database!'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely'})
 
         the_dict = json.loads(json_items[20])
         # print the_dict
-        return jsonify(**the_dict)
+        return jsonify(**main_return_dict)
         # return jsonify(**raw_dict)
     else:
         print '!!!user detected, do something!!!'
         # TODO: do something to get specific user
     return 'Success!'
 
-@app.route('/dummy')
+@app.route('/dummyold')
 def get_all_dummy():
     allOfIt = dict(
     {'all' : [
