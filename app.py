@@ -197,14 +197,21 @@ def process_logs(user=None):
             word_array_lengths.append(json_dict.get('communeArrayLength'))
             word_array_lengths.append(json_dict.get('etherArrayLength'))
 
-            print json_dict.get('name')
-            print json_dict.get('physicContent')
-            print json_dict.get('emotionContent')
-            print json_dict.get('academicContent')
-            print json_dict.get('communeContent')
-            print json_dict.get('etherContent')
-            print json_key
-            print word_array_lengths
+            # Get the content for each of the word array values, and order it correctly in the array
+            word_array_contents = []
+            word_array_contents.append(json_dict.get('physicContent'))
+            word_array_contents.append(json_dict.get('emotionContent'))
+            word_array_contents.append(json_dict.get('academicContent'))
+            word_array_contents.append(json_dict.get('communeContent'))
+            word_array_contents.append(json_dict.get('etherContent'))
+
+            pie_instance_dict = {
+                                'key': json_key,
+                                'data': word_array_lengths,
+                                'values': word_array_contents,
+                                'name': json_dict.get('name')
+                                }
+            print pie_instance_dict
 
             # By the way, we are also counting the total lengths
             if json_dict.get('physicArrayLength') > 0:
@@ -232,7 +239,7 @@ def process_logs(user=None):
         counts.append(etherArrayTotal)
 
         # Create an dictionart for all the totals
-        word_array_dict = {'logCounts': counts},
+        word_array_dict = {'logCounts': counts}
         print word_array_dict
 
         the_dict = json.loads(json_items[20])
