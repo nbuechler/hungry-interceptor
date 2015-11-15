@@ -161,14 +161,11 @@ def get_logs(database=None):
 @app.route('/dummy')
 def process_logs(user=None):
     print user
-    if user != 'all':
+    if user:
         # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
-
-        print '!!!got all, here are all logs!!!'
 
         cursor = remoteDB1.logs.find({})
 
-        json_items = []
         # Create a pie dictionary to set up the building of data intended for pie charts.
         pie_dict = {'pies': []}
         # Create counters for the total lengths of word_arrays
@@ -182,7 +179,6 @@ def process_logs(user=None):
 
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
-            json_items.append(json_item)
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
@@ -255,14 +251,12 @@ def process_logs(user=None):
         main_return_dict['all'].append({'description_primary': 'This is all the data in the database!'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely'})
 
-        the_dict = json.loads(json_items[20])
         # print the_dict
         return jsonify(**main_return_dict)
         # return jsonify(**raw_dict)
     else:
-        print '!!!user detected, do something!!!'
-        # TODO: do something to get specific user
-    return 'Success!'
+        # Do nothing
+        return 'You get nothing!'
 
 @app.route('/dummyold')
 def get_all_dummy():
