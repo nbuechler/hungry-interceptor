@@ -8,7 +8,7 @@ from bson import json_util
 
 #from .forms import DefaultForm
 
-from flask.ext.pymongo import PyMongo, MongoClient
+from flask.ext.pymongo import PyMongo, MongoClient, ObjectId
 
 from flask.ext.cors import CORS
 
@@ -159,16 +159,13 @@ def get_logs(database=None):
 
 @app.route('/process-logs/<user>')
 @app.route('/dummy')
-def process_logs(user=None):
+def process_logs(user='5647e645f360690b003aa9e2'):
     print user
-    if user != 'all':
-        # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
+    if user:
+        # Make it take a user id dynamically
+        # https://api.mongodb.org/python/current/tutorial.html
+        cursor = remoteDB1.logs.find({"user": ObjectId('5647e645f360690b003aa9e2')}) #works! React User id
 
-        print '!!!got all, here are all logs!!!'
-
-        cursor = remoteDB1.logs.find({})
-
-        json_items = []
         # Create a pie dictionary to set up the building of data intended for pie charts.
         pie_dict = {'pies': []}
         # Create counters for the total lengths of word_arrays
@@ -180,9 +177,9 @@ def process_logs(user=None):
         # Create a main dictionary for the response
         main_return_dict = {'all' : []}
 
+        # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
-            json_items.append(json_item)
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
@@ -252,17 +249,15 @@ def process_logs(user=None):
         # Assemble the main_return_dict
         main_return_dict['all'].append(pie_dict)
         main_return_dict['all'].append(word_array_dict)
-        main_return_dict['all'].append({'description_primary': 'This is all the data in the database!'})
+        main_return_dict['all'].append({'description_primary': 'This is data for the React User from the database!'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely'})
 
-        the_dict = json.loads(json_items[20])
         # print the_dict
         return jsonify(**main_return_dict)
-        # return jsonify(**raw_dict)
+        # return json_item
     else:
-        print '!!!user detected, do something!!!'
-        # TODO: do something to get specific user
-    return 'Success!'
+        # Do nothing
+        return 'You get nothing!'
 
 @app.route('/dummyold')
 def get_all_dummy():
