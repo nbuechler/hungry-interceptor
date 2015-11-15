@@ -8,7 +8,7 @@ from bson import json_util
 
 #from .forms import DefaultForm
 
-from flask.ext.pymongo import PyMongo, MongoClient
+from flask.ext.pymongo import PyMongo, MongoClient, ObjectId
 
 from flask.ext.cors import CORS
 
@@ -159,12 +159,14 @@ def get_logs(database=None):
 
 @app.route('/process-logs/<user>')
 @app.route('/dummy')
-def process_logs(user=None):
+def process_logs(user='5647e645f360690b003aa9e2'):
     print user
     if user:
         # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
 
-        cursor = remoteDB1.logs.find({})
+
+        # Make it take a user id dynamically
+        cursor = remoteDB1.logs.find({"user": ObjectId('5647e645f360690b003aa9e2')}) #works! React User id
 
         # Create a pie dictionary to set up the building of data intended for pie charts.
         pie_dict = {'pies': []}
@@ -253,7 +255,7 @@ def process_logs(user=None):
 
         # print the_dict
         return jsonify(**main_return_dict)
-        # return jsonify(**raw_dict)
+        # return json_item
     else:
         # Do nothing
         return 'You get nothing!'
