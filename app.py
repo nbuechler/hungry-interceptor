@@ -162,10 +162,8 @@ def get_logs(database=None):
 def process_logs(user='5647e645f360690b003aa9e2'):
     print user
     if user:
-        # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
-
-
         # Make it take a user id dynamically
+        # https://api.mongodb.org/python/current/tutorial.html
         cursor = remoteDB1.logs.find({"user": ObjectId('5647e645f360690b003aa9e2')}) #works! React User id
 
         # Create a pie dictionary to set up the building of data intended for pie charts.
@@ -179,6 +177,7 @@ def process_logs(user='5647e645f360690b003aa9e2'):
         # Create a main dictionary for the response
         main_return_dict = {'all' : []}
 
+        # http://stackoverflow.com/questions/11280382/python-mongodb-pymongo-json-encoding-and-decoding
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
 
@@ -250,7 +249,7 @@ def process_logs(user='5647e645f360690b003aa9e2'):
         # Assemble the main_return_dict
         main_return_dict['all'].append(pie_dict)
         main_return_dict['all'].append(word_array_dict)
-        main_return_dict['all'].append({'description_primary': 'This is all the data in the database!'})
+        main_return_dict['all'].append({'description_primary': 'This is data for the React User from the database!'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely'})
 
         # print the_dict
