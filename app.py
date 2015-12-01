@@ -20,6 +20,8 @@ mongo1 = PyMongo(app)
 ## connect to another MongoDB database on the same host
 app.config['MONGO2_DBNAME'] = 'evgroio-dev'
 mongo2 = PyMongo(app, config_prefix='MONGO2')
+app.config['MONGO3_DBNAME'] = 'test'
+mongo3 = PyMongo(app, config_prefix='MONGO3')
 
 #remoteDB1
 mongolab_uri = 'mongodb://evgroio01:admin@ds041238.mongolab.com:41238/heroku_app36697506'
@@ -33,7 +35,7 @@ remoteDB1 = client.get_default_database()
 #TODO: List out more apis for specific calls I need
 @app.route('/')
 def home_page():
-    foo = mongo2.db.users
+    foo = mongo3.db.users
     print(foo)
     print(__name__)
     print(2+2)
@@ -41,7 +43,7 @@ def home_page():
 
 @app.route('/secret')
 def secret_page():
-    foo = mongo2.db.users
+    foo = mongo3.db.users
     return 'shhh..this is a secret'
 
 @app.route('/<database>/users')
@@ -51,7 +53,7 @@ def get_users(database=None):
         all_users = remoteDB1.users.find({})
     else:
         database = 'default'
-        all_users = mongo2.db.users.find({})
+        all_users = mongo3.db.users.find({})
     return render_template('users.html',
         all_users=all_users, database=database)
 
@@ -85,7 +87,7 @@ def get_user(database=None, first_name=None):
         print(user)
     else:
         database = 'default'
-        user = mongo2.db.users.find_one({'firstName': first_name})
+        user = mongo3.db.users.find_one({'firstName': first_name})
         print('==User==')
         print(user)
     return render_template('userPage.html',
@@ -98,7 +100,7 @@ def get_public_activities(database=None):
         all_activities = remoteDB1.activities.find({'privacy': 1})
     else:
         database = 'default'
-        all_activities = mongo2.db.activities.find({'privacy': 1})
+        all_activities = mongo3.db.activities.find({'privacy': 1})
     return render_template('activities.html',
         all_activities=all_activities, database=database)
 
@@ -109,7 +111,7 @@ def get_public_experiences(database=None):
         all_experiences = remoteDB1.experiences.find({'privacy': 1})
     else:
         database = 'default'
-        all_experiences = mongo2.db.experiences.find({'privacy': 1})
+        all_experiences = mongo3.db.experiences.find({'privacy': 1})
     return render_template('experiences.html',
         all_experiences=all_experiences, database=database)
 
@@ -120,7 +122,7 @@ def get_activities(database=None):
         all_activities = remoteDB1.activities.find({})
     else:
         database = 'default'
-        all_activities = mongo2.db.activities.find({})
+        all_activities = mongo3.db.activities.find({})
     return render_template('activities.html',
         all_activities=all_activities, database=database)
 
@@ -131,7 +133,7 @@ def get_experiences(database=None):
         all_experiences = remoteDB1.experiences.find({})
     else:
         database = 'default'
-        all_experiences = mongo2.db.experiences.find({})
+        all_experiences = mongo3.db.experiences.find({})
     return render_template('experiences.html',
         all_experiences=all_experiences, database=database)
 
@@ -142,7 +144,7 @@ def get_logs(database=None):
         all_logs = remoteDB1.logs.find({})
     else:
         database = 'default'
-        all_logs = mongo2.db.logs.find({})
+        all_logs = mongo3.db.logs.find({})
     return render_template('logs.html',
         all_logs=all_logs, database=database)
 
@@ -159,12 +161,15 @@ def get_logs(database=None):
 
 @app.route('/process-logs/<user>')
 @app.route('/dummy')
-def process_logs(user='5647e645f360690b003aa9e2'):
+def process_logs(user=None):
     print user
     if user:
         # Make it take a user id dynamically
         # https://api.mongodb.org/python/current/tutorial.html
-        cursor = remoteDB1.logs.find({"user": ObjectId('5647e645f360690b003aa9e2')}) #works! React User id
+        # cursor = mongo3.db.logs.find({"user": ObjectId('562d722a3f1f9f541814a3e8')}) #works! React User id
+        cursor = mongo3.db.logs.find({"user": ObjectId(user)}) #works! React User id
+        print user
+
 
         # Create a pie dictionary to set up the building of data intended for pie charts.
         pie_dict = {'pies': []}
