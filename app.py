@@ -159,17 +159,13 @@ def get_logs(database=None):
 # --> like so:    return jsonify(**allOfIt)
 
 
-@app.route('/process-logs/<user>')
-@app.route('/dummy')
+@app.route('/process-logs-overview/<user>')
 def process_logs(user=None):
-    print user
     if user:
         # Make it take a user id dynamically
         # https://api.mongodb.org/python/current/tutorial.html
         # cursor = mongo3.db.logs.find({"user": ObjectId('562d722a3f1f9f541814a3e8')}) #works! React User id
         cursor = mongo3.db.logs.find({"user": ObjectId(user)}) #works! React User id
-        print user
-
 
         # Create a pie dictionary to set up the building of data intended for pie charts.
         pie_dict = {'pies': []}
@@ -254,8 +250,9 @@ def process_logs(user=None):
         # Assemble the main_return_dict
         main_return_dict['all'].append(pie_dict)
         main_return_dict['all'].append(word_array_dict)
-        main_return_dict['all'].append({'description_primary': 'This is data for the React User from the database!'})
-        main_return_dict['all'].append({'description_secondary': 'Use it wisely'})
+        main_return_dict['all'].append({'description_primary': 'The log information for every log you have written.'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
+        main_return_dict['all'].append({'title': 'Log Summary'})
 
         # print the_dict
         return jsonify(**main_return_dict)
@@ -277,7 +274,8 @@ def get_all_dummy():
                 ]},
         {'logCounts': [14, 23, 22, 14, 30]},
         {'description_primary': 'The main desciption is going to detail that this is one view of the data'},
-        {'description_secondary': 'The secondary description is going to detail that this is really a lot more information'}
+        {'description_secondary': 'The secondary description is going to detail that this is really a lot more information'},
+        {'title': 'Something'}
     ]})
 
     return jsonify(**allOfIt)
@@ -295,7 +293,8 @@ def get_all_altdummy():
                 ]},
         {'logCounts': [14, 23, 22, 14, 30]},
         {'description_primary': 'The main desciption --- look it is different!'},
-        {'description_secondary': 'The secondary description --- look at the data below, it should be, too!'}
+        {'description_secondary': 'The secondary description --- look at the data below, it should be, too!'},
+        {'title': 'Something'}
     ]})
 
     return jsonify(**allOfIt)
