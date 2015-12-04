@@ -13,6 +13,7 @@ from flask.ext.pymongo import PyMongo, MongoClient, ObjectId
 from flask.ext.cors import CORS
 
 app = Flask(__name__)
+
 cors = CORS(app, resources={r"/*": {"origins": "*"}}) #CORS :WARNING everything!
 # connect to MongoDB with the defaults
 mongo1 = PyMongo(app)
@@ -274,7 +275,7 @@ def process_experiences_overview(user=None):
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
-            main_return_dict['all'].append(json_item)
+            main_return_dict['all'].append(json_dict)
 
         return jsonify(**main_return_dict)
 
@@ -291,7 +292,7 @@ def process_activities_overview(user=None):
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
-            main_return_dict['all'].append(json_item)
+            main_return_dict['all'].append(json_dict)
 
         return jsonify(**main_return_dict)
 
@@ -333,6 +334,6 @@ def get_all_altdummy():
 
     return jsonify(**allOfIt)
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # app.run()
-    app.run(debug=True)
+    # app.run(debug=True)

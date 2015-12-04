@@ -21,11 +21,15 @@ https://flask-pymongo.readthedocs.org/en/latest/
 
 ..
 
+#Run the application
+python app/runserver.py
+
 
 #Future plans
 
 After learning about basic neural network models and frameworks, it would be neat to see how this project might interact with frameworks like these: Blocks, Lasagne, Keras, and/or Theano... but there is a lot of room for growth and developing what we all might do with the data. We probably need A LOT more.
 
+Tensorflow just came out a few weeks ago from early December 2015.
 
 #TODO: More details about this here
 
