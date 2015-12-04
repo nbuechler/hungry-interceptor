@@ -13,6 +13,7 @@ from flask.ext.pymongo import PyMongo, MongoClient, ObjectId
 from flask.ext.cors import CORS
 
 app = Flask(__name__)
+
 cors = CORS(app, resources={r"/*": {"origins": "*"}}) #CORS :WARNING everything!
 # connect to MongoDB with the defaults
 mongo1 = PyMongo(app)
