@@ -274,7 +274,7 @@ def process_experiences_overview(user=None):
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
-            main_return_dict['all'].append(json_item)
+            main_return_dict['all'].append(json_dict)
 
         return jsonify(**main_return_dict)
 
@@ -291,7 +291,7 @@ def process_activities_overview(user=None):
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
-            main_return_dict['all'].append(json_item)
+            main_return_dict['all'].append(json_dict)
 
         return jsonify(**main_return_dict)
 
