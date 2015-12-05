@@ -49,7 +49,6 @@ def get_logs(database=None):
 # a python dictionary. Then processing can happen on it and be returned ultimately
 # --> like so:    return jsonify(**allOfIt)
 
-
 @logs.route('/overview/<user>')
 def process_logs_overview(user=None):
     if user:
