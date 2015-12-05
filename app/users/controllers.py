@@ -20,7 +20,7 @@ def tester():
     print(foo)
     return 'Users!'
 
-@users.route('/<database>/users')
+@users.route('/<database>/all')
 def get_users(database=None):
     if database == 'remote':
         print('Receiving remote data')
@@ -32,7 +32,7 @@ def get_users(database=None):
         all_users=all_users, database=database)
 
 #Go to new user create page
-@users.route('/<database>/users/new')
+@users.route('/<database>/new')
 def new_user(database=None):
 #    form = DefaultForm()
     if database == 'remote':
@@ -45,7 +45,7 @@ def new_user(database=None):
                           )
 
 #Find a user by first name for fun!
-@users.route('/<database>/users/<first_name>')
+@users.route('/<database>/<first_name>')
 def get_user(database=None, first_name=None):
     print('User is ' + first_name)
     if database == 'remote':
