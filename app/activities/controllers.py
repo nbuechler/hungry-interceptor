@@ -42,7 +42,6 @@ def get_activities(database=None):
     return render_template('activities.html',
         all_activities=all_activities, database=database)
 
-
 # This is the method that starts the processing of the activities, and it will change
 # over time as I get better and think more about the dependecy structure.
 

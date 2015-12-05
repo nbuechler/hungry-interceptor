@@ -40,12 +40,10 @@ def get_experiences(database=None):
     return render_template('experiences.html',
         all_experiences=all_experiences, database=database)
 
-
-
 # This is the method that starts the processing of the experiences, and it will change
 # over time as I get better and think more about the dependecy structure.
 
-@experiences.route('/process-experiences-overview/<user>')
+@experiences.route('/overview/<user>')
 def process_experiences_overview(user=None):
         cursor = mongo3.db.experiences.find({"user": ObjectId('562d722a3f1f9f541814a3e8')}) #works! React User id
 
