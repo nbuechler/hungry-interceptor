@@ -43,7 +43,7 @@ def get_activities(database=None):
         all_activities=all_activities, database=database)
 
 
-# This is the method that starts the processing of the experiences, and it will change
+# This is the method that starts the processing of the activities, and it will change
 # over time as I get better and think more about the dependecy structure.
 
 @activities.route('/overview/<user>')

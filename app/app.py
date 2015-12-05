@@ -82,23 +82,6 @@ def process_experiences_overview(user=None):
 
         return jsonify(**main_return_dict)
 
-# This is the method that starts the processing of the experiences, and it will change
-# over time as I get better and think more about the dependecy structure.
-
-@app.route('/process-activities-overview/<user>')
-def process_activities_overview(user=None):
-        cursor = mongo3.db.activities.find({"user": ObjectId('562d722a3f1f9f541814a3e8')}) #works! React User id
-
-        main_return_dict = {'all' : []}
-        for item in cursor:
-            json_item = json.dumps(item, default=json_util.default)
-
-            # Create a new python dictionary from the json_item, we'll call it json_dict
-            json_dict = json.loads(json_item)
-            main_return_dict['all'].append(json_dict)
-
-        return jsonify(**main_return_dict)
-
 @app.route('/dummyold')
 def get_all_dummy():
     allOfIt = dict(
