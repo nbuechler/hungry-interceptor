@@ -38,16 +38,7 @@ def secret_page():
     return 'shhh..this is a secret'
 
 
-@app.route('/<database>/activities/public')
-def get_public_activities(database=None):
-    if database == 'remote':
-        print('Receiving remote data')
-        all_activities = remoteDB1.activities.find({'privacy': 1})
-    else:
-        database = 'default'
-        all_activities = mongo3.db.activities.find({'privacy': 1})
-    return render_template('activities.html',
-        all_activities=all_activities, database=database)
+
 
 @app.route('/<database>/experiences/public')
 def get_public_experiences(database=None):
@@ -60,16 +51,6 @@ def get_public_experiences(database=None):
     return render_template('experiences.html',
         all_experiences=all_experiences, database=database)
 
-@app.route('/<database>/activities')
-def get_activities(database=None):
-    if database == 'remote':
-        print('Receiving remote data')
-        all_activities = remoteDB1.activities.find({})
-    else:
-        database = 'default'
-        all_activities = mongo3.db.activities.find({})
-    return render_template('activities.html',
-        all_activities=all_activities, database=database)
 
 @app.route('/<database>/experiences')
 def get_experiences(database=None):

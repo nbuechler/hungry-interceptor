@@ -20,6 +20,29 @@ def tester():
     print(foo)
     return 'Activities!'
 
+@activities.route('/<database>/public')
+def get_public_activities(database=None):
+    if database == 'remote':
+        print('Receiving remote data')
+        all_activities = remoteDB1.activities.find({'privacy': 1})
+    else:
+        database = 'default'
+        all_activities = mongo3.db.activities.find({'privacy': 1})
+    return render_template('activities.html',
+        all_activities=all_activities, database=database)
+
+@activities.route('/<database>/all')
+def get_activities(database=None):
+    if database == 'remote':
+        print('Receiving remote data')
+        all_activities = remoteDB1.activities.find({})
+    else:
+        database = 'default'
+        all_activities = mongo3.db.activities.find({})
+    return render_template('activities.html',
+        all_activities=all_activities, database=database)
+
+
 # This is the method that starts the processing of the experiences, and it will change
 # over time as I get better and think more about the dependecy structure.
 
