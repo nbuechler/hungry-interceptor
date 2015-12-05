@@ -6,93 +6,37 @@ from flask import render_template, redirect, url_for, jsonify
 import json
 from bson import json_util
 
-#from .forms import DefaultForm
+# mongo dependecies
+from flask.ext.pymongo import ObjectId
 
-from flask.ext.pymongo import PyMongo, MongoClient, ObjectId
-
+# CORS dependecies
 from flask.ext.cors import CORS
+
+#databases
+# from config.database import mongo1, mongo2, mongo3, remoteDB1
+
+# mongo dependecies
+# from flask.ext.pymongo import ObjectId
+
+# bson
+import json
+from bson import json_util
 
 app = Flask(__name__)
 
+#CORS instance
 cors = CORS(app, resources={r"/*": {"origins": "*"}}) #CORS :WARNING everything!
-# connect to MongoDB with the defaults
-mongo1 = PyMongo(app)
 
-## connect to another MongoDB database on the same host
-app.config['MONGO2_DBNAME'] = 'evgroio-dev'
-mongo2 = PyMongo(app, config_prefix='MONGO2')
-app.config['MONGO3_DBNAME'] = 'test'
-mongo3 = PyMongo(app, config_prefix='MONGO3')
-
-#remoteDB1
-mongolab_uri = 'mongodb://evgroio01:admin@ds041238.mongolab.com:41238/heroku_app36697506'
-client = MongoClient(mongolab_uri,
-                     connectTimeoutMS=30000,
-                     socketTimeoutMS=None,
-                     socketKeepAlive=True)
-
-remoteDB1 = client.get_default_database()
 
 #TODO: List out more apis for specific calls I need
 @app.route('/')
 def home_page():
-    foo = mongo3.db.users
-    print(foo)
-    print(__name__)
-    print(2+2)
     return 'hello world'
 
 @app.route('/secret')
 def secret_page():
-    foo = mongo3.db.users
     return 'shhh..this is a secret'
 
-@app.route('/<database>/users')
-def get_users(database=None):
-    if database == 'remote':
-        print('Receiving remote data')
-        all_users = remoteDB1.users.find({})
-    else:
-        database = 'default'
-        all_users = mongo3.db.users.find({})
-    return render_template('users.html',
-        all_users=all_users, database=database)
-
-#Go to new user create page
-@app.route('/<database>/users/new')
-def new_user(database=None):
-#    form = DefaultForm()
-    if database == 'remote':
-        print('Receiving remote data')
-    else:
-        database = 'default'
-    return render_template('newUser.html',
-#                           form=form,
-                           database=database
-                          )
-
-#Makes a form insert a user record into mongo instance
-@app.route('/<database>/users/create', methods=["GET", "POST"])
-def create_user(database=None):
-    print('called create_user')
-    return render_template('createdUser.html')
-
-#Find a user by first name for fun!
-@app.route('/<database>/users/<first_name>')
-def get_user(database=None, first_name=None):
-    print('User is ' + first_name)
-    if database == 'remote':
-        print('Receiving remote data')
-        user = remoteDB1.users.find_one({'firstName': first_name})
-        print('==User==')
-        print(user)
-    else:
-        database = 'default'
-        user = mongo3.db.users.find_one({'firstName': first_name})
-        print('==User==')
-        print(user)
-    return render_template('userPage.html',
-        user=user, database=database)
 
 @app.route('/<database>/activities/public')
 def get_public_activities(database=None):
