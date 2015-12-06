@@ -53,6 +53,11 @@ def process_experiences_overview(user=None):
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
-            main_return_dict['all'].append(json_dict)
+
+        main_return_dict['all'].append(json_dict) # last json dict, and needs refactoring
+        main_return_dict['all'].append({'another_data': 'No Data'})
+        main_return_dict['all'].append({'description_primary': 'The experience information for every log you have written.'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
+        main_return_dict['all'].append({'title': 'Experience Summary'})
 
         return jsonify(**main_return_dict)
