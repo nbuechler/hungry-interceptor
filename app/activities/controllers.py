@@ -47,7 +47,7 @@ def get_activities(database=None):
 
 @activities.route('/overview/<user>')
 def process_activities_overview(user=None):
-        cursor = mongo3.db.activities.find({"user": ObjectId('562d722a3f1f9f541814a3e8')}) #works! React User id
+        cursor = mongo3.db.activities.find({"user": ObjectId(user)}) #works! React User id
 
         # Create a data dictionary to set up the building of data intended for different charts.
         data_dict = {'data': []}
