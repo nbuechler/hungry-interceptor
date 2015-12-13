@@ -45,7 +45,7 @@ def get_experiences(database=None):
 
 @experiences.route('/overview/<user>')
 def process_experiences_overview(user=None):
-        cursor = mongo3.db.experiences.find({"user": ObjectId('562d722a3f1f9f541814a3e8')}) #works! React User id
+        cursor = mongo3.db.experiences.find({"user": ObjectId(user)}) #works! React User id
 
         # Create a data dictionary to set up the building of data intended for different charts.
         data_dict = {'data': []}
