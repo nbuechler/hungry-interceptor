@@ -150,3 +150,41 @@ def process_logs_overview(user=None):
     else:
         # Do nothing
         return 'You get nothing!'
+
+@logs.route('/supplement/<user>')
+def process_logs_supplement(user=None):
+        cursor = mongo3.db.logs.find({"user": ObjectId(user)}) #works! React User id
+
+        # Create a data dictionary to set up the building of data intended for different charts.
+        data_dict = {'data': []}
+
+        # Create a dictionary to hold the main object
+        main_return_dict = {'all' : []}
+
+        # Create a list to hold the time counts (in seconds)
+        word_length_counts_dict = []
+        for item in cursor:
+            json_item = json.dumps(item, default=json_util.default)
+
+            # Create a new python dictionary from the json_item, we'll call it json_dict
+            json_dict = json.loads(json_item)
+
+            # Append the second count to the second_counts_dict
+            word_length_counts_dict.append({
+                'physic': json_dict.get('physicContentLength'),
+                'emotion': json_dict.get('emotionContentLength'),
+                'academic': json_dict.get('academicContentLength'),
+                'commune': json_dict.get('communeContentLength'),
+                'ether': json_dict.get('etherContentLength'),
+                })
+
+            # Append the entire json_dict dictionary
+            data_dict['data'].append(json_dict)
+
+        main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
+        main_return_dict['all'].append({'wordLengthsCounts': word_length_counts_dict})
+        main_return_dict['all'].append({'description_primary': 'The experience information for every log you have written.'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
+        main_return_dict['all'].append({'title': 'Experience Summary'})
+
+        return jsonify(**main_return_dict)
