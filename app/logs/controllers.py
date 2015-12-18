@@ -209,11 +209,11 @@ def process_logs_word_lengths(user=None):
 
             # Append the second count to the second_counts_dict
             word_lengths_counts_dict.append([
-                json_dict.get('physicContentLength'),
-                json_dict.get('emotionContentLength'),
-                json_dict.get('academicContentLength'),
-                json_dict.get('communeContentLength'),
-                json_dict.get('etherContentLength'),
+                json_dict.get('physicArrayLength'),
+                json_dict.get('emotionArrayLength'),
+                json_dict.get('academicArrayLength'),
+                json_dict.get('communeArrayLength'),
+                json_dict.get('etherArrayLength'),
                 ])
 
             # Append the entire json_dict dictionary
