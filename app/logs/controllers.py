@@ -170,13 +170,13 @@ def process_logs_character_lengths(user=None):
             json_dict = json.loads(json_item)
 
             # Append the second count to the second_counts_dict
-            character_lengths_counts_dict.append({
-                'physic': json_dict.get('physicContentLength'),
-                'emotion': json_dict.get('emotionContentLength'),
-                'academic': json_dict.get('academicContentLength'),
-                'commune': json_dict.get('communeContentLength'),
-                'ether': json_dict.get('etherContentLength'),
-                })
+            character_lengths_counts_dict.append([
+                json_dict.get('physicContentLength'),
+                json_dict.get('emotionContentLength'),
+                json_dict.get('academicContentLength'),
+                json_dict.get('communeContentLength'),
+                json_dict.get('etherContentLength'),
+                ])
 
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
@@ -208,13 +208,13 @@ def process_logs_word_lengths(user=None):
             json_dict = json.loads(json_item)
 
             # Append the second count to the second_counts_dict
-            word_lengths_counts_dict.append({
-                'physic': json_dict.get('physicContentLength'),
-                'emotion': json_dict.get('emotionContentLength'),
-                'academic': json_dict.get('academicContentLength'),
-                'commune': json_dict.get('communeContentLength'),
-                'ether': json_dict.get('etherContentLength'),
-                })
+            word_lengths_counts_dict.append([
+                json_dict.get('physicContentLength'),
+                json_dict.get('emotionContentLength'),
+                json_dict.get('academicContentLength'),
+                json_dict.get('communeContentLength'),
+                json_dict.get('etherContentLength'),
+                ])
 
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
