@@ -183,7 +183,7 @@ def process_logs_character_lengths(user=None):
 
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
         main_return_dict['all'].append({'characterLengthsCounts': character_lengths_counts_dict})
-        main_return_dict['all'].append({'description_primary': 'The experience information for every log you have written.'})
+        main_return_dict['all'].append({'description_primary': 'The character length information for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Experience Summary'})
 
@@ -221,7 +221,7 @@ def process_logs_word_lengths(user=None):
 
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
         main_return_dict['all'].append({'wordLengthsCounts': word_lengths_counts_dict})
-        main_return_dict['all'].append({'description_primary': 'The experience information for every log you have written.'})
+        main_return_dict['all'].append({'description_primary': 'The word length information for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Experience Summary'})
 
