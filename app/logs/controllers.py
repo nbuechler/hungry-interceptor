@@ -182,10 +182,10 @@ def process_logs_character_lengths(user=None):
             data_dict['data'].append(json_dict)
 
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'characterLengthsCounts': character_lengths_counts_dict})
+        main_return_dict['all'].append({'characterLengthCounts': character_lengths_counts_dict})
         main_return_dict['all'].append({'description_primary': 'The character length information for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
-        main_return_dict['all'].append({'title': 'Experience Summary'})
+        main_return_dict['all'].append({'title': 'Character Lengths'})
 
         return jsonify(**main_return_dict)
 
@@ -220,9 +220,9 @@ def process_logs_word_lengths(user=None):
             data_dict['data'].append(json_dict)
 
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'wordLengthsCounts': word_lengths_counts_dict})
+        main_return_dict['all'].append({'wordLengthCounts': word_lengths_counts_dict})
         main_return_dict['all'].append({'description_primary': 'The word length information for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
-        main_return_dict['all'].append({'title': 'Experience Summary'})
+        main_return_dict['all'].append({'title': 'Word Lengths'})
 
         return jsonify(**main_return_dict)
