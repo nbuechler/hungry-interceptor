@@ -43,10 +43,42 @@ def get_activities(database=None):
         all_activities=all_activities, database=database)
 
 # This is the method that starts the processing of the activities, and it will change
-# over time as I get better and think more about the dependecy structure.
+# over time as I get better and think more about the dependency structure.
 
 @activities.route('/overview/<user>')
 def process_activities_overview(user=None):
+        cursor = mongo3.db.activities.find({"user": ObjectId(user)}) #works! React User id
+
+        # Create a data dictionary to set up the building of data intended for different charts.
+        data_dict = {'data': []}
+
+        # Create a dictionary to hold the main object
+        main_return_dict = {'all' : []}
+
+        # Create a list to hold the time counts (in seconds)
+        importance_counts_dict = []
+        for item in cursor:
+            json_item = json.dumps(item, default=json_util.default)
+
+            # Create a new python dictionary from the json_item, we'll call it json_dict
+            json_dict = json.loads(json_item)
+
+            # Append the second count to the second_counts_dict
+            importance_counts_dict.append(json_dict.get('importance'))
+
+            # Append the entire json_dict dictionary
+            data_dict['data'].append(json_dict)
+
+        main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
+        main_return_dict['all'].append({'importanceCounts': importance_counts_dict})
+        main_return_dict['all'].append({'description_primary': 'The activity information for every log you have written.'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
+        main_return_dict['all'].append({'title': 'Activity Summary'})
+
+        return jsonify(**main_return_dict)
+
+@activities.route('/s/<user>')
+def process_activities_s(user=None):
         cursor = mongo3.db.activities.find({"user": ObjectId(user)}) #works! React User id
 
         # Create a data dictionary to set up the building of data intended for different charts.
