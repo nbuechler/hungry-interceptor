@@ -122,12 +122,12 @@ def process_experiences_statistics(user=None):
                 'totalWords' : 0,
                 'totalExperiences' : 0,
                 }
+                
         for item in cursor:
+            json_item = json.dumps(item, default=json_util.default)
 
             # Count total Experiences
             totals_dict['totalExperiences'] += 1
-
-            json_item = json.dumps(item, default=json_util.default)
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)

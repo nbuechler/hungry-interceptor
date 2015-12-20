@@ -97,8 +97,22 @@ def process_activities_statistics(user=None):
         # the data is an array of privacy info
         privacy_dict = [0, 0]
 
+        # Totals
+        totals_dict = {
+                'totalImportance' : 0,
+                'totalWords' : 0,
+                'totalActivities' : 0,
+                }
+        averages_dict = {
+                'avgImportance' : 0,
+                'avgWords' : 0,
+                }
+
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
+
+            # Count total Experiences
+            totals_dict['totalActivities'] += 1
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
@@ -106,8 +120,14 @@ def process_activities_statistics(user=None):
             # Append the second count to the second_counts_dict
             importance_counts_dict.append(json_dict.get('importance'))
 
+            # Count total importance
+            totals_dict['totalImportance'] += json_dict.get('importance')
+
             # Append the second count to the second_counts_dict
             word_length_dict.append(json_dict.get('descriptionArrayLength'))
+
+            # Count total words
+            totals_dict['totalWords'] += json_dict.get('descriptionArrayLength')
 
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
@@ -118,8 +138,18 @@ def process_activities_statistics(user=None):
             else:
                 privacy_dict[1] += 1
 
+        # Average total Importance
+        averages_dict['avgImportance'] = totals_dict['totalImportance'] / len(importance_counts_dict)
+        averages_dict['avgWords'] = totals_dict['totalWords'] / len(word_length_dict)
+
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'importanceCounts': importance_counts_dict, 'wordLengths': word_length_dict, 'privacyCounts': privacy_dict})
+        main_return_dict['all'].append(
+            {'importanceCounts': importance_counts_dict,
+             'wordLengths': word_length_dict,
+             'privacyCounts': privacy_dict,
+             'totals': totals_dict,
+             'averages': averages_dict,
+             })
         main_return_dict['all'].append({'description_primary': 'The activity Statistics for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Activity Statistics'})
