@@ -103,6 +103,8 @@ def process_activities_statistics(user=None):
                 'totalWords' : 0,
                 'totalActivities' : 0,
                 }
+
+        # Averages
         averages_dict = {
                 'avgImportance' : 0,
                 'avgWords' : 0,

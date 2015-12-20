@@ -122,7 +122,13 @@ def process_experiences_statistics(user=None):
                 'totalWords' : 0,
                 'totalExperiences' : 0,
                 }
-                
+
+        # Averages
+        averages_dict = {
+                'avgSeconds' : 0,
+                'avgWords' : 0,
+                }
+
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
 
@@ -183,6 +189,10 @@ def process_experiences_statistics(user=None):
             else:
                 print 'pronoun not found'
 
+        # Average total Importance
+        averages_dict['avgSeconds'] = totals_dict['totalSeconds'] / len(second_counts_dict)
+        averages_dict['avgWords'] = totals_dict['totalWords'] / len(word_length_dict)
+
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
         main_return_dict['all'].append(
             {'secondCounts': second_counts_dict,
@@ -191,6 +201,7 @@ def process_experiences_statistics(user=None):
              'pronouns': pronoun_dict,
              'experienceTimes': experience_time_dict,
              'totals': totals_dict,
+             'averages': averages_dict,
              })
         main_return_dict['all'].append({'description_primary': 'The experience statistics for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
