@@ -124,6 +124,12 @@ def process_experiences_statistics(user=None):
             data_dict['data'].append(json_dict)
 
             # Count the different privacies
+            if json_dict.get('privacy') < 1:
+                privacy_dict[0] += 1
+            else:
+                privacy_dict[1] += 1
+
+            # Count the different pronouns
             if json_dict.get('pronoun') == 'I':
                 pronoun_dict['singular1stPerson'] += 1
             elif json_dict.get('pronoun') == 'You':
