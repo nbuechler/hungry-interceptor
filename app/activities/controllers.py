@@ -120,8 +120,8 @@ def process_activities_statistics(user=None):
 
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
         main_return_dict['all'].append({'importanceCounts': importance_counts_dict, 'wordLengths': word_length_dict, 'privacyCounts': privacy_dict})
-        main_return_dict['all'].append({'description_primary': 'The activity information for every log you have written.'})
+        main_return_dict['all'].append({'description_primary': 'The activity Statistics for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
-        main_return_dict['all'].append({'title': 'Activity Summary'})
+        main_return_dict['all'].append({'title': 'Activity Statistics'})
 
         return jsonify(**main_return_dict)
