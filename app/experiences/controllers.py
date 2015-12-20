@@ -90,6 +90,24 @@ def process_experiences_statistics(user=None):
 
         # Create a list to hold the time counts (in seconds)
         second_counts_dict = []
+
+        # Create an empty array to hold the data I care about, in this case
+        # the data is an array of privacy info
+        privacy_dict = [0, 0]
+
+        # Create an empty array to hold the data I care about, in this case
+        # the data is an array of privacy info
+        pronoun_dict = {
+                    'singular1stPerson': 0,
+                    'singular2ndPerson': 0,
+                    'masculine3rdPerson': 0,
+                    'femine3rdPerson': 0,
+                    'neuter3rdPerson': 0,
+                    'plural2ndPerson': 0,
+                    'plural1stPerson': 0,
+                    'plural3rdPerson': 0,
+                    }
+
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
 
@@ -105,8 +123,28 @@ def process_experiences_statistics(user=None):
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
 
+            # Count the different privacies
+            if json_dict.get('pronoun') == 'I':
+                pronoun_dict['singular1stPerson'] += 1
+            elif json_dict.get('pronoun') == 'You':
+                pronoun_dict['singular2ndPerson'] += 1
+            elif json_dict.get('pronoun') == 'He':
+                pronoun_dict['masculine3rdPerson'] += 1
+            elif json_dict.get('pronoun') == 'She':
+                pronoun_dict['femine3rdPerson'] += 1
+            elif json_dict.get('pronoun') == 'It':
+                pronoun_dict['neuter3rdPerson'] += 1
+            elif json_dict.get('pronoun') == 'You all':
+                pronoun_dict['plural2ndPerson'] += 1
+            elif json_dict.get('pronoun') == 'We':
+                pronoun_dict['plural1stPerson'] += 1
+            elif json_dict.get('pronoun') == 'They':
+                pronoun_dict['plural3rdPerson'] += 1
+            else:
+                print 'pronoun not found'
+
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'secondCounts': second_counts_dict, 'wordLengths': word_length_dict})
+        main_return_dict['all'].append({'secondCounts': second_counts_dict, 'wordLengths': word_length_dict, 'privacyCounts': privacy_dict, 'pronounDict': pronoun_dict})
         main_return_dict['all'].append({'description_primary': 'The experience statistics for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Experience Statistics'})
