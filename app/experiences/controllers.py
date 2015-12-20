@@ -108,6 +108,14 @@ def process_experiences_statistics(user=None):
                     'plural3rdPerson': 0,
                     }
 
+        # Create an empty array to hold the data I care about, in this case
+        # the data is an array of experience time info
+        experience_time_dict = {
+                    'before': 0,
+                    'while': 0,
+                    'after': 0,
+                    }
+
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
 
@@ -149,8 +157,24 @@ def process_experiences_statistics(user=None):
             else:
                 print 'pronoun not found'
 
+            # Count the different pronouns
+            if json_dict.get('experienceTime') == 'Before':
+                experience_time_dict['before'] += 1
+            elif json_dict.get('experienceTime') == 'While':
+                experience_time_dict['while'] += 1
+            elif json_dict.get('experienceTime') == 'After':
+                experience_time_dict['after'] += 1
+            else:
+                print 'pronoun not found'
+
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'secondCounts': second_counts_dict, 'wordLengths': word_length_dict, 'privacyCounts': privacy_dict, 'pronounDict': pronoun_dict})
+        main_return_dict['all'].append(
+            {'secondCounts': second_counts_dict,
+             'wordLengths': word_length_dict,
+             'privacyCounts': privacy_dict,
+             'pronouns': pronoun_dict,
+             'experienceTimes': experience_time_dict}
+             )
         main_return_dict['all'].append({'description_primary': 'The experience statistics for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Experience Statistics'})
