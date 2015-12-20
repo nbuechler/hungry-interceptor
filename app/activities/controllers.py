@@ -77,8 +77,8 @@ def process_activities_overview(user=None):
 
         return jsonify(**main_return_dict)
 
-@activities.route('/s/<user>')
-def process_activities_s(user=None):
+@activities.route('/statistics/<user>')
+def process_activities_statistics(user=None):
         cursor = mongo3.db.activities.find({"user": ObjectId(user)}) #works! React User id
 
         # Create a data dictionary to set up the building of data intended for different charts.
@@ -86,6 +86,9 @@ def process_activities_s(user=None):
 
         # Create a dictionary to hold the main object
         main_return_dict = {'all' : []}
+
+        # Create a list to hold the time counts (in seconds)
+        word_length_dict = []
 
         # Create a list to hold the time counts (in seconds)
         importance_counts_dict = []
@@ -98,11 +101,14 @@ def process_activities_s(user=None):
             # Append the second count to the second_counts_dict
             importance_counts_dict.append(json_dict.get('importance'))
 
+            # Append the second count to the second_counts_dict
+            word_length_dict.append(json_dict.get('descriptionArrayLength'))
+
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
 
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'importanceCounts': importance_counts_dict})
+        main_return_dict['all'].append({'importanceCounts': importance_counts_dict, 'wordLengths': word_length_dict})
         main_return_dict['all'].append({'description_primary': 'The activity information for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Activity Summary'})
