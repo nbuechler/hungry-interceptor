@@ -108,8 +108,32 @@ def process_experiences_statistics(user=None):
                     'plural3rdPerson': 0,
                     }
 
+        # Create an empty array to hold the data I care about, in this case
+        # the data is an array of experience time info
+        experience_time_dict = {
+                    'before': 0,
+                    'while': 0,
+                    'after': 0,
+                    }
+
+        # Totals
+        totals_dict = {
+                'totalSeconds' : 0,
+                'totalWords' : 0,
+                'totalExperiences' : 0,
+                }
+
+        # Averages
+        averages_dict = {
+                'avgSeconds' : 0,
+                'avgWords' : 0,
+                }
+
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
+
+            # Count total Experiences
+            totals_dict['totalExperiences'] += 1
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
             json_dict = json.loads(json_item)
@@ -117,8 +141,14 @@ def process_experiences_statistics(user=None):
             # Append the second count to the second_counts_dict
             second_counts_dict.append(json_dict.get('seconds'))
 
+            # Count total seconds
+            totals_dict['totalSeconds'] += json_dict.get('seconds')
+
             # Append the second count to the second_counts_dict
             word_length_dict.append(json_dict.get('descriptionArrayLength'))
+
+            # Count total words
+            totals_dict['totalWords'] += json_dict.get('descriptionArrayLength')
 
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
@@ -149,8 +179,30 @@ def process_experiences_statistics(user=None):
             else:
                 print 'pronoun not found'
 
+            # Count the different pronouns
+            if json_dict.get('experienceTime') == 'Before':
+                experience_time_dict['before'] += 1
+            elif json_dict.get('experienceTime') == 'While':
+                experience_time_dict['while'] += 1
+            elif json_dict.get('experienceTime') == 'After':
+                experience_time_dict['after'] += 1
+            else:
+                print 'pronoun not found'
+
+        # Average total Importance
+        averages_dict['avgSeconds'] = totals_dict['totalSeconds'] / len(second_counts_dict)
+        averages_dict['avgWords'] = totals_dict['totalWords'] / len(word_length_dict)
+
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'secondCounts': second_counts_dict, 'wordLengths': word_length_dict, 'privacyCounts': privacy_dict, 'pronounDict': pronoun_dict})
+        main_return_dict['all'].append(
+            {'secondCounts': second_counts_dict,
+             'wordLengths': word_length_dict,
+             'privacyCounts': privacy_dict,
+             'pronouns': pronoun_dict,
+             'experienceTimes': experience_time_dict,
+             'totals': totals_dict,
+             'averages': averages_dict,
+             })
         main_return_dict['all'].append({'description_primary': 'The experience statistics for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Experience Statistics'})
