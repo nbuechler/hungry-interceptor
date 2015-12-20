@@ -116,7 +116,17 @@ def process_experiences_statistics(user=None):
                     'after': 0,
                     }
 
+        # Totals
+        totals_dict = {
+                'totalSeconds' : 0,
+                'totalWords' : 0,
+                'totalExperiences' : 0,
+                }
         for item in cursor:
+
+            # Count total Experiences
+            totals_dict['totalExperiences'] += 1
+
             json_item = json.dumps(item, default=json_util.default)
 
             # Create a new python dictionary from the json_item, we'll call it json_dict
@@ -125,8 +135,14 @@ def process_experiences_statistics(user=None):
             # Append the second count to the second_counts_dict
             second_counts_dict.append(json_dict.get('seconds'))
 
+            # Count total seconds
+            totals_dict['totalSeconds'] += json_dict.get('seconds')
+
             # Append the second count to the second_counts_dict
             word_length_dict.append(json_dict.get('descriptionArrayLength'))
+
+            # Count total words
+            totals_dict['totalWords'] += json_dict.get('descriptionArrayLength')
 
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
@@ -173,8 +189,9 @@ def process_experiences_statistics(user=None):
              'wordLengths': word_length_dict,
              'privacyCounts': privacy_dict,
              'pronouns': pronoun_dict,
-             'experienceTimes': experience_time_dict}
-             )
+             'experienceTimes': experience_time_dict,
+             'totals': totals_dict,
+             })
         main_return_dict['all'].append({'description_primary': 'The experience statistics for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Experience Statistics'})
