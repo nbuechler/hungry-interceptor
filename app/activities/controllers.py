@@ -92,6 +92,11 @@ def process_activities_statistics(user=None):
 
         # Create a list to hold the time counts (in seconds)
         importance_counts_dict = []
+
+        # Create an empty array to hold the data I care about, in this case
+        # the data is an array of privacy info
+        privacy_dict = [0, 0]
+
         for item in cursor:
             json_item = json.dumps(item, default=json_util.default)
 
@@ -107,8 +112,16 @@ def process_activities_statistics(user=None):
             # Append the entire json_dict dictionary
             data_dict['data'].append(json_dict)
 
+            # Count the different privacies
+            if json_dict.get('privacy') < 1:
+                privacy_dict[0] += 1
+            else:
+                privacy_dict[1] += 1
+
+
+
         main_return_dict['all'].append(data_dict) # last json dict, and needs refactoring
-        main_return_dict['all'].append({'importanceCounts': importance_counts_dict, 'wordLengths': word_length_dict})
+        main_return_dict['all'].append({'importanceCounts': importance_counts_dict, 'wordLengths': word_length_dict, 'privacyCounts': privacy_dict})
         main_return_dict['all'].append({'description_primary': 'The activity information for every log you have written.'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Activity Summary'})
