@@ -22,4 +22,4 @@ client = MongoClient(mongolab_uri,
 remoteDB1 = client.get_default_database()
 
 ## connect to default instance of neo4j
-secure_graph1 = Graph("https://neo4j:admin@0.0.0.0:7474/db/data/")  
+secure_graph1 = Graph("http://neo4j:admin@0.0.0.0:7474/db/data/")  

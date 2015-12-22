@@ -7,6 +7,9 @@ from config.databases import mongo1, mongo2, mongo3, remoteDB1, secure_graph1
 # mongo dependecies
 from flask.ext.pymongo import ObjectId
 
+# neo4j dependecies
+from py2neo import Node, Relationship
+
 # bson
 import json
 from bson import json_util
@@ -60,3 +63,12 @@ def get_user(database=None, first_name=None):
         print(user)
     return render_template('userPage.html',
         user=user, database=database)
+
+# Move a user to the neo4j databse
+@users.route('/neo/<user_a>/<user_b>')
+def add_user(user_a=None, user_b=None):
+    a = Node("Person", name=user_a)
+    b = Node("Person", name=user_b)
+    a_knows_b = Relationship(a, "KNOWS", b)
+    secure_graph1.create(a_knows_b)
+    return 'success'
