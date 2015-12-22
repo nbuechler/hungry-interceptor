@@ -21,6 +21,11 @@ https://flask-pymongo.readthedocs.org/en/latest/
 
 ..
 
+#Start databases
+Start mongo:: mongod
+Start Neo4j:: sudo /etc/init.d/neo4j-service start
+
+
 #Run the application
 python app/runserver.py
 

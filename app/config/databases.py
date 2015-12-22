@@ -1,7 +1,7 @@
 from app import app
 
 from flask.ext.pymongo import PyMongo, MongoClient
-
+from py2neo import Graph
 
 # connect to MongoDB with the defaults
 mongo1 = PyMongo(app)
@@ -20,3 +20,6 @@ client = MongoClient(mongolab_uri,
                      socketKeepAlive=True)
 
 remoteDB1 = client.get_default_database()
+
+## connect to default instance of neo4j
+secure_graph1 = Graph("http://neo4j:admin@0.0.0.0:7474/db/data/")  

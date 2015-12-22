@@ -2,10 +2,13 @@ from flask import Blueprint
 from flask import render_template, redirect, url_for, jsonify
 
 #databases
-from config.database import mongo1, mongo2, mongo3, remoteDB1
+from config.databases import mongo1, mongo2, mongo3, remoteDB1, secure_graph1
 
 # mongo dependecies
 from flask.ext.pymongo import ObjectId
+
+# neo4j dependecies
+from py2neo import Node, Relationship
 
 # bson
 import json
@@ -60,3 +63,40 @@ def get_user(database=None, first_name=None):
         print(user)
     return render_template('userPage.html',
         user=user, database=database)
+
+# Move a user to the neo4j databse
+'''
+This method deletes all the nodes then adds all the users with the email attr
+This method also adds all the experiences with the name attr because of course let's experiment
+'''
+@users.route('/mongo2neo/add_all_users')
+def add_all_users():
+    cursor = mongo3.db.users.find({}) #find all users
+
+    secure_graph1.delete_all()
+
+    for item in cursor:
+        json_item = json.dumps(item, default=json_util.default)
+
+        # Create a new python dictionary from the json_item, we'll call it json_dict
+        json_dict = json.loads(json_item)
+
+        # Create a bunch of user nodes
+        new_node = Node("User", email=json_dict.get('email'))
+        secure_graph1.create(new_node)
+
+        print json_dict.get('email')
+
+    cursor = mongo3.db.experiences.find({}) #find all users
+
+    for item in cursor:
+        json_item = json.dumps(item, default=json_util.default)
+
+        # Create a new python dictionary from the json_item, we'll call it json_dict
+        json_dict = json.loads(json_item)
+
+        # Create a bunch of user nodes
+        new_node = Node("Experience", name=json_dict.get('name'))
+        secure_graph1.create(new_node)
+
+    return 'success'
