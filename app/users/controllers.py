@@ -65,10 +65,38 @@ def get_user(database=None, first_name=None):
         user=user, database=database)
 
 # Move a user to the neo4j databse
-@users.route('/neo/<user_a>/<user_b>')
-def add_user(user_a=None, user_b=None):
-    a = Node("Person", name=user_a)
-    b = Node("Person", name=user_b)
-    a_knows_b = Relationship(a, "KNOWS", b)
-    secure_graph1.create(a_knows_b)
+'''
+This method deletes all the nodes then adds all the users with the email attr
+This method also adds all the experiences with the name attr because of course let's experiment
+'''
+@users.route('/mongo2neo/add_all_users')
+def add_all_users():
+    cursor = mongo3.db.users.find({}) #find all users
+
+    secure_graph1.delete_all()
+
+    for item in cursor:
+        json_item = json.dumps(item, default=json_util.default)
+
+        # Create a new python dictionary from the json_item, we'll call it json_dict
+        json_dict = json.loads(json_item)
+
+        # Create a bunch of user nodes
+        new_node = Node("User", email=json_dict.get('email'))
+        secure_graph1.create(new_node)
+
+        print json_dict.get('email')
+
+    cursor = mongo3.db.experiences.find({}) #find all users
+
+    for item in cursor:
+        json_item = json.dumps(item, default=json_util.default)
+
+        # Create a new python dictionary from the json_item, we'll call it json_dict
+        json_dict = json.loads(json_item)
+
+        # Create a bunch of user nodes
+        new_node = Node("Experience", name=json_dict.get('name'))
+        secure_graph1.create(new_node)
+
     return 'success'
