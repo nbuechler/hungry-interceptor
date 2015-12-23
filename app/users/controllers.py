@@ -82,10 +82,11 @@ def add_all_users():
         json_dict = json.loads(json_item)
 
         # Create a bunch of user nodes
-        new_node = Node("User", email=json_dict.get('email'))
+        new_node = Node("User", email=json_dict.get('email'), user_id=json_dict.get('_id').get('$oid'))
         secure_graph1.create(new_node)
 
         print json_dict.get('email')
+        print json_dict.get('_id').get('$oid')
 
     cursor = mongo3.db.experiences.find({}) #find all users
 
