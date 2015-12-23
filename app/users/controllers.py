@@ -71,32 +71,39 @@ This method also adds all the experiences with the name attr because of course l
 '''
 @users.route('/mongo2neo/add_all_users')
 def add_all_users():
-    cursor = mongo3.db.users.find({}) #find all users
+    user_cursor = mongo3.db.users.find({}) #find all users
 
     secure_graph1.delete_all()
 
-    for item in cursor:
+    for item in user_cursor:
         json_item = json.dumps(item, default=json_util.default)
 
         # Create a new python dictionary from the json_item, we'll call it json_dict
         json_dict = json.loads(json_item)
 
         # Create a bunch of user nodes
-        new_node = Node("User", email=json_dict.get('email'))
-        secure_graph1.create(new_node)
+        new_user_node = Node("User", email=json_dict.get('email'), user_id=json_dict.get('_id').get('$oid'))
+        secure_graph1.create(new_user_node)
 
+
+        print '=====New====='
         print json_dict.get('email')
+        print '============='
+        user = json_dict.get('_id').get('$oid')
 
-    cursor = mongo3.db.experiences.find({}) #find all users
+        experience_cursor = mongo3.db.experiences.find({"user": ObjectId(user)}) #find all users
 
-    for item in cursor:
-        json_item = json.dumps(item, default=json_util.default)
+        for item in experience_cursor:
+            json_item = json.dumps(item, default=json_util.default)
 
-        # Create a new python dictionary from the json_item, we'll call it json_dict
-        json_dict = json.loads(json_item)
+            # Create a new python dictionary from the json_item, we'll call it json_dict
+            json_dict = json.loads(json_item)
 
-        # Create a bunch of user nodes
-        new_node = Node("Experience", name=json_dict.get('name'))
-        secure_graph1.create(new_node)
+            print json_dict.get('name')
+
+            # Create a bunch of user nodes
+            new_experience_node = Node("Experience", name=json_dict.get('name'))
+            user_experienced_experience = Relationship(new_user_node, "EXPERIENCED", new_experience_node)
+            secure_graph1.create(user_experienced_experience)
 
     return 'success'
