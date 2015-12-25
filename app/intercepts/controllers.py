@@ -37,8 +37,8 @@ def intercepts_create_constraint():
 '''
 This method deletes all the records then adds all relationships and nodes
 '''
-@intercepts.route('/mongo2neo/intercepts_create_users')
-def intercepts_create_users():
+@intercepts.route('/mongo2neo/intercepts_create_records')
+def intercepts_create_records():
 
     # Clear the database
     secure_graph1.delete_all()
@@ -72,7 +72,7 @@ def intercepts_create_users():
             # Create a bunch of activity nodes
             new_activity_node = Node("Activity",
                 name=json_dict.get('name'),
-                activity_id=json_dict.get('_id').get('$oid'),
+                # activity_id=json_dict.get('_id').get('$oid'),
                 privacy=json_dict.get('privacy'),
                 word_length=json_dict.get('descriptionArrayLength'),
                 )
@@ -101,7 +101,7 @@ def intercepts_create_users():
                 # Create a bunch of experience nodes
                 new_experience_node = Node("Experience",
                     name=json_dict.get('name'),
-                    experience_id=json_dict.get('_id').get('$oid'),
+                    # experience_id=json_dict.get('_id').get('$oid'),
                     privacy=json_dict.get('privacy'),
                     word_length=json_dict.get('descriptionArrayLength'),
                     )
@@ -133,41 +133,120 @@ def intercepts_create_users():
                     # Create a bunch of experience nodes
                     new_log_node = Node("Log",
                         name=json_dict.get('name'),
-                        log_id=json_dict.get('_id').get('$oid'),
+                        # log_id=json_dict.get('_id').get('$oid'),
                         privacy=json_dict.get('privacy'),
                         physicArrayLength=json_dict.get('physicArrayLength'),
                         emotionArrayLength=json_dict.get('emotionArrayLength'),
                         academicArrayLength=json_dict.get('academicArrayLength'),
                         communeArrayLength=json_dict.get('communeArrayLength'),
                         etherArrayLength=json_dict.get('etherArrayLength'),
+                        physicContent=json_dict.get('physicContent'),
+                        emotionContent=json_dict.get('emotionContent'),
+                        academicContent=json_dict.get('academicContent'),
+                        communeContent=json_dict.get('communeContent'),
+                        etherContent=json_dict.get('etherContent'),
                         )
                     logNode = secure_graph1.merge_one(new_log_node)
 
-                    for word in json_dict.get('physicArray'):
-                        new_word_node = Node("Word", name=word, characters=len(word))
-                        wordNode = secure_graph1.merge_one(new_word_node)
-                        log_has_word = Relationship(logNode, "HAS", wordNode)
-                        secure_graph1.create_unique(log_has_word)
-                    for word in json_dict.get('emotionArray'):
-                        new_word_node = Node("Word", name=word, characters=len(word))
-                        wordNode = secure_graph1.merge_one(new_word_node)
-                        log_has_word = Relationship(logNode, "HAS", wordNode)
-                        secure_graph1.create_unique(log_has_word)
-                    for word in json_dict.get('academicArray'):
-                        new_word_node = Node("Word", name=word, characters=len(word))
-                        wordNode = secure_graph1.merge_one(new_word_node)
-                        log_has_word = Relationship(logNode, "HAS", wordNode)
-                        secure_graph1.create_unique(log_has_word)
-                    for word in json_dict.get('communeArray'):
-                        new_word_node = Node("Word", name=word, characters=len(word))
-                        wordNode = secure_graph1.merge_one(new_word_node)
-                        log_has_word = Relationship(logNode, "HAS", wordNode)
-                        secure_graph1.create_unique(log_has_word)
-                    for word in json_dict.get('etherArray'):
-                        new_word_node = Node("Word", name=word, characters=len(word))
-                        wordNode = secure_graph1.merge_one(new_word_node)
-                        log_has_word = Relationship(logNode, "HAS", wordNode)
-                        secure_graph1.create_unique(log_has_word)
+                    ## Only do the iteration step if there is a word to add
+                    if json_dict.get('physicArrayLength') > 0:
+                        new_sub_log_node = Node("PhysicLog",
+                            parentLogName=json_dict.get('name'),
+                            privacy=json_dict.get('privacy'),
+                            wordLength=json_dict.get('physicArrayLength'),
+                            content=json_dict.get('physicContent'),
+                            )
+                        subLogNode = secure_graph1.merge_one(new_sub_log_node)
+                        log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
+                        secure_graph1.create(log_contains_sub)
+
+                        for word in json_dict.get('physicArray'):
+                            new_word_node = Node("Word", name=word, characters=len(word))
+                            wordNode = secure_graph1.merge_one(new_word_node)
+                            log_has_word = Relationship(logNode, "HAS", wordNode)
+                            secure_graph1.create_unique(log_has_word)
+                            sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
+                            secure_graph1.create_unique(sublog_has_word)
+
+                    ## Only do the iteration step if there is a word to add
+                    if json_dict.get('emotionArrayLength') > 0:
+                        new_sub_log_node = Node("EmotionLog",
+                            parentLogName=json_dict.get('name'),
+                            privacy=json_dict.get('privacy'),
+                            wordLength=json_dict.get('emotionArrayLength'),
+                            content=json_dict.get('emotionContent'),
+                            )
+                        subLogNode = secure_graph1.merge_one(new_sub_log_node)
+                        log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
+                        secure_graph1.create(log_contains_sub)
+
+                        for word in json_dict.get('emotionArray'):
+                            new_word_node = Node("Word", name=word, characters=len(word))
+                            wordNode = secure_graph1.merge_one(new_word_node)
+                            log_has_word = Relationship(logNode, "HAS", wordNode)
+                            secure_graph1.create_unique(log_has_word)
+                            sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
+                            secure_graph1.create_unique(sublog_has_word)
+
+                    ## Only do the iteration step if there is a word to add
+                    if json_dict.get('academicArrayLength') > 0:
+                        new_sub_log_node = Node("AcademicLog",
+                            parentLogName=json_dict.get('name'),
+                            privacy=json_dict.get('privacy'),
+                            wordLength=json_dict.get('academicArrayLength'),
+                            content=json_dict.get('academicContent'),
+                            )
+                        subLogNode = secure_graph1.merge_one(new_sub_log_node)
+                        log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
+                        secure_graph1.create(log_contains_sub)
+
+                        for word in json_dict.get('academicArray'):
+                            new_word_node = Node("Word", name=word, characters=len(word))
+                            wordNode = secure_graph1.merge_one(new_word_node)
+                            log_has_word = Relationship(logNode, "HAS", wordNode)
+                            secure_graph1.create_unique(log_has_word)
+                            sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
+                            secure_graph1.create_unique(sublog_has_word)
+
+                    ## Only do the iteration step if there is a word to add
+                    if json_dict.get('communeArrayLength') > 0:
+                        new_sub_log_node = Node("CommuneLog",
+                            parentLogName=json_dict.get('name'),
+                            privacy=json_dict.get('privacy'),
+                            wordLength=json_dict.get('communeArrayLength'),
+                            content=json_dict.get('communeContent'),
+                            )
+                        subLogNode = secure_graph1.merge_one(new_sub_log_node)
+                        log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
+                        secure_graph1.create(log_contains_sub)
+
+                        for word in json_dict.get('communeArray'):
+                            new_word_node = Node("Word", name=word, characters=len(word))
+                            wordNode = secure_graph1.merge_one(new_word_node)
+                            log_has_word = Relationship(logNode, "HAS", wordNode)
+                            secure_graph1.create_unique(log_has_word)
+                            sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
+                            secure_graph1.create_unique(sublog_has_word)
+
+                    ## Only do the iteration step if there is a word to add
+                    if json_dict.get('etherArrayLength') > 0:
+                        new_sub_log_node = Node("EtherLog",
+                            parentLogName=json_dict.get('name'),
+                            privacy=json_dict.get('privacy'),
+                            wordLength=json_dict.get('etherArrayLength'),
+                            content=json_dict.get('etherContent'),
+                            )
+                        subLogNode = secure_graph1.merge_one(new_sub_log_node)
+                        log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
+                        secure_graph1.create(log_contains_sub)
+
+                        for word in json_dict.get('etherArray'):
+                            new_word_node = Node("Word", name=word, characters=len(word))
+                            wordNode = secure_graph1.merge_one(new_word_node)
+                            log_has_word = Relationship(logNode, "HAS", wordNode)
+                            secure_graph1.create_unique(log_has_word)
+                            sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
+                            secure_graph1.create_unique(sublog_has_word)
 
                     experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
                     secure_graph1.create(experience_contains_log)
