@@ -121,15 +121,37 @@ def intercepts_create_users():
                         name=json_dict.get('name'),
                         log_id=json_dict.get('_id').get('$oid'),
                         privacy=json_dict.get('privacy'),
-                        # word_length=json_dict.get('academicArrayLength'),
+                        physicArrayLength=json_dict.get('physicArrayLength'),
+                        emotionArrayLength=json_dict.get('emotionArrayLength'),
+                        academicArrayLength=json_dict.get('academicArrayLength'),
+                        communeArrayLength=json_dict.get('communeArrayLength'),
+                        etherArrayLength=json_dict.get('etherArrayLength'),
                         )
-                    # for word in json_dict.get('descriptionArray'):
-                    #     new_word_node = Node("Word", name=word, characters=len(word))
-                    #     experience_has_word = Relationship(new_experience_node, "HAS", new_word_node)
-                    #     secure_graph1.create(experience_has_word)
+                    for word in json_dict.get('physicArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('emotionArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('academicArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('communeArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('etherArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
 
                     experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
                     secure_graph1.create(experience_contains_log)
+                    user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
+                    secure_graph1.create(user_logged_log)
 
 
     return 'success'
