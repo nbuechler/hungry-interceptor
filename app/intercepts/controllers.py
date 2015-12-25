@@ -51,7 +51,7 @@ def intercepts_create_users():
 
         ####
         user = json_dict.get('_id').get('$oid')
-        activity_cursor = mongo3.db.activities.find({"user": ObjectId(user)}) #find all activitiyes for a user
+        activity_cursor = mongo3.db.activities.find({"user": ObjectId(user)}) #find all activities for a user
         ####
         # For every activity create a node
         ####
@@ -77,7 +77,7 @@ def intercepts_create_users():
 
             ####
             activity = json_dict.get('_id').get('$oid')
-            experience_cursor = mongo3.db.experiences.find({"firstActivity": ObjectId(activity)}) #find all activitiyes for a user
+            experience_cursor = mongo3.db.experiences.find({"firstActivity": ObjectId(activity)}) #find all experiences for an activity
             ####
             # For every activity create a node
             ####
@@ -104,6 +104,54 @@ def intercepts_create_users():
                 user_experienced_experience = Relationship(new_user_node, "EXPERIENCED", new_experience_node)
                 secure_graph1.create(user_experienced_experience)
 
+                ####
+                experience = json_dict.get('_id').get('$oid')
+                log_cursor = mongo3.db.logs.find({"firstExperience": ObjectId(experience)}) #find all logs for an experience
+                ####
+                # For every activity create a node
+                ####
+                for log in log_cursor:
+                    json_log = json.dumps(log, default=json_util.default)
+
+                    # Create a new python dictionary from the json_experience, we'll call it json_dict
+                    json_dict = json.loads(json_log)
+
+                    # Create a bunch of experience nodes
+                    new_log_node = Node("Log",
+                        name=json_dict.get('name'),
+                        log_id=json_dict.get('_id').get('$oid'),
+                        privacy=json_dict.get('privacy'),
+                        physicArrayLength=json_dict.get('physicArrayLength'),
+                        emotionArrayLength=json_dict.get('emotionArrayLength'),
+                        academicArrayLength=json_dict.get('academicArrayLength'),
+                        communeArrayLength=json_dict.get('communeArrayLength'),
+                        etherArrayLength=json_dict.get('etherArrayLength'),
+                        )
+                    for word in json_dict.get('physicArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('emotionArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('academicArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('communeArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+                    for word in json_dict.get('etherArray'):
+                        new_word_node = Node("Word", name=word, characters=len(word))
+                        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+                        secure_graph1.create(log_has_word)
+
+                    experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
+                    secure_graph1.create(experience_contains_log)
+                    user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
+                    secure_graph1.create(user_logged_log)
 
 
     return 'success'
