@@ -23,11 +23,19 @@ def tester():
     print(foo)
     return 'Intercepts!'
 
+# Create constraints
+'''
+This method creates constrains
+'''
+@intercepts.route('/mongo2neo/intercepts_create_constraint')
+def intercepts_create_constraint():
+    secure_graph1.schema.create_uniqueness_constraint("Word", "name")
+    return 'success'
+
 # Move a user and some relationship to the neo4j databse
 ## A word_length is the number of words in the descriptionArrayLength
 '''
-This method deletes all the nodes then adds all the users with the email attr
-This method also adds all the activites with the name attr because of course let's experiment
+This method deletes all the records then adds all relationships and nodes
 '''
 @intercepts.route('/mongo2neo/intercepts_create_users')
 def intercepts_create_users():
@@ -70,6 +78,7 @@ def intercepts_create_users():
                 )
             for word in json_dict.get('descriptionArray'):
                 new_word_node = Node("Word", name=word, characters=len(word))
+                secure_graph1.merge_one(new_word_node)
                 activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
                 secure_graph1.create(activity_has_word)
             user_did_activity = Relationship(new_user_node, "DID", new_activity_node)
@@ -96,6 +105,7 @@ def intercepts_create_users():
                     )
                 for word in json_dict.get('descriptionArray'):
                     new_word_node = Node("Word", name=word, characters=len(word))
+                    secure_graph1.merge_one(new_word_node)
                     experience_has_word = Relationship(new_experience_node, "HAS", new_word_node)
                     secure_graph1.create(experience_has_word)
 
@@ -129,22 +139,27 @@ def intercepts_create_users():
                         )
                     for word in json_dict.get('physicArray'):
                         new_word_node = Node("Word", name=word, characters=len(word))
+                        secure_graph1.merge_one(new_word_node)
                         log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                         secure_graph1.create(log_has_word)
                     for word in json_dict.get('emotionArray'):
                         new_word_node = Node("Word", name=word, characters=len(word))
+                        secure_graph1.merge_one(new_word_node)
                         log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                         secure_graph1.create(log_has_word)
                     for word in json_dict.get('academicArray'):
                         new_word_node = Node("Word", name=word, characters=len(word))
+                        secure_graph1.merge_one(new_word_node)
                         log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                         secure_graph1.create(log_has_word)
                     for word in json_dict.get('communeArray'):
                         new_word_node = Node("Word", name=word, characters=len(word))
+                        secure_graph1.merge_one(new_word_node)
                         log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                         secure_graph1.create(log_has_word)
                     for word in json_dict.get('etherArray'):
                         new_word_node = Node("Word", name=word, characters=len(word))
+                        secure_graph1.merge_one(new_word_node)
                         log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                         secure_graph1.create(log_has_word)
 
