@@ -37,7 +37,7 @@ def intercepts_create_constraint():
 '''
 This method deletes all the records then adds all relationships and nodes
 '''
-@intercepts.route('/mongo2neo/intercepts_create_records')
+@intercepts.route('/mongo2neo/intercepts_create_records_u')
 def intercepts_create_records():
 
     # Clear the database
@@ -83,6 +83,9 @@ def intercepts_create_records():
                 wordNode = secure_graph1.merge_one(new_word_node)
                 activity_has_word = Relationship(actNode, "HAS", wordNode)
                 secure_graph1.create_unique(activity_has_word)
+                user_spoke_word = Relationship(new_user_node, "SPOKE", wordNode)
+                secure_graph1.create(user_spoke_word)
+
             user_did_activity = Relationship(new_user_node, "DID", new_activity_node)
             secure_graph1.create(user_did_activity)
 
@@ -103,6 +106,7 @@ def intercepts_create_records():
                     name=json_dict.get('name'),
                     # experience_id=json_dict.get('_id').get('$oid'),
                     privacy=json_dict.get('privacy'),
+                    pronoun=json_dict.get('pronoun'),
                     word_length=json_dict.get('descriptionArrayLength'),
                     )
                 expNode = secure_graph1.merge_one(new_experience_node)
@@ -112,6 +116,8 @@ def intercepts_create_records():
                     wordNode = secure_graph1.merge_one(new_word_node)
                     experience_has_word = Relationship(expNode, "HAS", wordNode)
                     secure_graph1.create_unique(experience_has_word)
+                    user_spoke_word = Relationship(new_user_node, "SPOKE", wordNode)
+                    secure_graph1.create(user_spoke_word)
 
                 activity_contains_experience = Relationship(new_activity_node, "CONTAINS", new_experience_node)
                 secure_graph1.create(activity_contains_experience)
@@ -159,6 +165,8 @@ def intercepts_create_records():
                         subLogNode = secure_graph1.merge_one(new_sub_log_node)
                         log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
                         secure_graph1.create(log_contains_sub)
+                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", subLogNode)
+                        secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('physicArray'):
                             new_word_node = Node("Word", name=word, characters=len(word))
@@ -167,6 +175,8 @@ def intercepts_create_records():
                             secure_graph1.create_unique(log_has_word)
                             sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
                             secure_graph1.create_unique(sublog_has_word)
+                            user_spoke_word = Relationship(new_user_node, "SPOKE", wordNode)
+                            secure_graph1.create(user_spoke_word)
 
                     ## Only do the iteration step if there is a word to add
                     if json_dict.get('emotionArrayLength') > 0:
@@ -179,6 +189,8 @@ def intercepts_create_records():
                         subLogNode = secure_graph1.merge_one(new_sub_log_node)
                         log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
                         secure_graph1.create(log_contains_sub)
+                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", subLogNode)
+                        secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('emotionArray'):
                             new_word_node = Node("Word", name=word, characters=len(word))
@@ -187,6 +199,8 @@ def intercepts_create_records():
                             secure_graph1.create_unique(log_has_word)
                             sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
                             secure_graph1.create_unique(sublog_has_word)
+                            user_spoke_word = Relationship(new_user_node, "SPOKE", wordNode)
+                            secure_graph1.create(user_spoke_word)
 
                     ## Only do the iteration step if there is a word to add
                     if json_dict.get('academicArrayLength') > 0:
@@ -199,6 +213,8 @@ def intercepts_create_records():
                         subLogNode = secure_graph1.merge_one(new_sub_log_node)
                         log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
                         secure_graph1.create(log_contains_sub)
+                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", subLogNode)
+                        secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('academicArray'):
                             new_word_node = Node("Word", name=word, characters=len(word))
@@ -207,6 +223,8 @@ def intercepts_create_records():
                             secure_graph1.create_unique(log_has_word)
                             sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
                             secure_graph1.create_unique(sublog_has_word)
+                            user_spoke_word = Relationship(new_user_node, "SPOKE", wordNode)
+                            secure_graph1.create(user_spoke_word)
 
                     ## Only do the iteration step if there is a word to add
                     if json_dict.get('communeArrayLength') > 0:
@@ -219,6 +237,8 @@ def intercepts_create_records():
                         subLogNode = secure_graph1.merge_one(new_sub_log_node)
                         log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
                         secure_graph1.create(log_contains_sub)
+                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", subLogNode)
+                        secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('communeArray'):
                             new_word_node = Node("Word", name=word, characters=len(word))
@@ -227,6 +247,8 @@ def intercepts_create_records():
                             secure_graph1.create_unique(log_has_word)
                             sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
                             secure_graph1.create_unique(sublog_has_word)
+                            user_spoke_word = Relationship(new_user_node, "SPOKE", wordNode)
+                            secure_graph1.create(user_spoke_word)
 
                     ## Only do the iteration step if there is a word to add
                     if json_dict.get('etherArrayLength') > 0:
@@ -239,6 +261,8 @@ def intercepts_create_records():
                         subLogNode = secure_graph1.merge_one(new_sub_log_node)
                         log_contains_sub = Relationship(logNode, "CONTAINS", subLogNode)
                         secure_graph1.create(log_contains_sub)
+                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", subLogNode)
+                        secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('etherArray'):
                             new_word_node = Node("Word", name=word, characters=len(word))
@@ -247,6 +271,8 @@ def intercepts_create_records():
                             secure_graph1.create_unique(log_has_word)
                             sublog_has_word = Relationship(subLogNode, "HAS", wordNode)
                             secure_graph1.create_unique(sublog_has_word)
+                            user_spoke_word = Relationship(new_user_node, "SPOKE", wordNode)
+                            secure_graph1.create(user_spoke_word)
 
                     experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
                     secure_graph1.create(experience_contains_log)
