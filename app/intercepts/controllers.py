@@ -32,6 +32,15 @@ def intercepts_create_constraint():
     secure_graph1.schema.create_uniqueness_constraint("Word", "name")
     return 'success'
 
+# Drop constraints
+'''
+This method drops constrains
+'''
+@intercepts.route('/mongo2neo/intercepts_drop_constraint')
+def intercepts_drop_constraint():
+    secure_graph1.schema.drop_uniqueness_constraint("Word", "name")
+    return 'success'
+
 # Move a user and some relationship to the neo4j databse
 ## A word_length is the number of words in the descriptionArrayLength
 '''
@@ -582,7 +591,7 @@ def intercepts_create_records_draft01():
             actNode = secure_graph1.create(new_activity_node)
 
             for word in json_dict.get('descriptionArray'):
-                new_word_node = Node("Word", name=word, characters=len(word))
+                new_word_node = Node("Word", name=word)
                 wordNode = secure_graph1.merge_one(new_word_node)
                 # activity_has_word = Relationship(actNode, "HAS", wordNode)
                 # secure_graph1.create_unique(activity_has_word)
@@ -615,7 +624,7 @@ def intercepts_create_records_draft01():
                 expNode = secure_graph1.create(new_experience_node)
 
                 for word in json_dict.get('descriptionArray'):
-                    new_word_node = Node("Word", name=word, characters=len(word))
+                    new_word_node = Node("Word", name=word)
                     wordNode = secure_graph1.merge_one(new_word_node)
                     # experience_has_word = Relationship(expNode, "HAS", wordNode)
                     # secure_graph1.create_unique(experience_has_word)
@@ -672,7 +681,7 @@ def intercepts_create_records_draft01():
                         # secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('physicArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word)
                             wordNode = secure_graph1.merge_one(new_word_node)
                             # log_has_word = Relationship(logNode, "HAS", wordNode)
                             # secure_graph1.create_unique(log_has_word)
@@ -696,7 +705,7 @@ def intercepts_create_records_draft01():
                         # secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('emotionArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word)
                             wordNode = secure_graph1.merge_one(new_word_node)
                             # log_has_word = Relationship(logNode, "HAS", wordNode)
                             # secure_graph1.create_unique(log_has_word)
@@ -720,7 +729,7 @@ def intercepts_create_records_draft01():
                         # secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('academicArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word)
                             wordNode = secure_graph1.merge_one(new_word_node)
                             # log_has_word = Relationship(logNode, "HAS", wordNode)
                             # secure_graph1.create_unique(log_has_word)
@@ -744,7 +753,7 @@ def intercepts_create_records_draft01():
                         # secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('communeArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word)
                             wordNode = secure_graph1.merge_one(new_word_node)
                             # log_has_word = Relationship(logNode, "HAS", wordNode)
                             # secure_graph1.create_unique(log_has_word)
@@ -768,7 +777,7 @@ def intercepts_create_records_draft01():
                         # secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('etherArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word)
                             wordNode = secure_graph1.merge_one(new_word_node)
                             # log_has_word = Relationship(logNode, "HAS", wordNode)
                             # secure_graph1.create_unique(log_has_word)
