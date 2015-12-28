@@ -75,7 +75,7 @@ def intercepts_create_records():
         # Create a bunch of user nodes
         new_user_node = Node("User",
             email=json_dict.get('email'),
-            # user_id=json_dict.get('_id').get('$oid')
+            user_id=json_dict.get('_id').get('$oid')
             )
 
         ####
@@ -93,7 +93,7 @@ def intercepts_create_records():
             # Create a bunch of activity nodes
             new_activity_node = Node("Activity",
                 name=json_dict.get('name'),
-                # activity_id=json_dict.get('_id').get('$oid'),
+                activity_id=json_dict.get('_id').get('$oid'),
                 privacy=json_dict.get('privacy'),
                 word_length=json_dict.get('descriptionArrayLength'),
                 )
@@ -123,7 +123,7 @@ def intercepts_create_records():
                 # Create a bunch of experience nodes
                 new_experience_node = Node("Experience",
                     name=json_dict.get('name'),
-                    # experience_id=json_dict.get('_id').get('$oid'),
+                    experience_id=json_dict.get('_id').get('$oid'),
                     privacy=json_dict.get('privacy'),
                     pronoun=json_dict.get('pronoun'),
                     word_length=json_dict.get('descriptionArrayLength'),
