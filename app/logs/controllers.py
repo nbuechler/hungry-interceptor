@@ -7,6 +7,9 @@ from config.databases import mongo1, mongo2, mongo3, remoteDB1, secure_graph1
 # mongo dependecies
 from flask.ext.pymongo import ObjectId
 
+# neo4j dependecies
+from py2neo.cypher import RecordList
+
 # bson
 import json
 from bson import json_util
@@ -227,6 +230,8 @@ def process_logs_word_lengths(user=None):
 
         return jsonify(**main_return_dict)
 
-@logs.route('/contains/sub_log')
+@logs.route('/contains/sub_log/<user>')
 def query_logs_contains_sub_logs(user=None):
+    cypher = secure_graph1.cypher
+    print cypher.execute("MATCH (n:User)-[r:LOGGED]->() RETURN n,r")
     return 'success'
