@@ -156,7 +156,7 @@ def intercepts_create_records():
                     # Create a bunch of experience nodes
                     new_log_node = Node("Log",
                         name=json_dict.get('name'),
-                        # log_id=json_dict.get('_id').get('$oid'),
+                        log_id=json_dict.get('_id').get('$oid'),
                         privacy=json_dict.get('privacy'),
                         physicArrayLength=json_dict.get('physicArrayLength'),
                         emotionArrayLength=json_dict.get('emotionArrayLength'),
@@ -174,6 +174,7 @@ def intercepts_create_records():
                     if json_dict.get('physicArrayLength') > 0:
                         new_sub_log_node = Node("PhysicLog",
                             parentLogName=json_dict.get('name'),
+                            parentLogId=json_dict.get('_id').get('$oid'),
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('physicArrayLength'),
                             content=json_dict.get('physicContent'),
@@ -197,6 +198,7 @@ def intercepts_create_records():
                     if json_dict.get('emotionArrayLength') > 0:
                         new_sub_log_node = Node("EmotionLog",
                             parentLogName=json_dict.get('name'),
+                            parentLogId=json_dict.get('_id').get('$oid'),
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('emotionArrayLength'),
                             content=json_dict.get('emotionContent'),
@@ -219,6 +221,7 @@ def intercepts_create_records():
                     if json_dict.get('academicArrayLength') > 0:
                         new_sub_log_node = Node("AcademicLog",
                             parentLogName=json_dict.get('name'),
+                            parentLogId=json_dict.get('_id').get('$oid'),
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('academicArrayLength'),
                             content=json_dict.get('academicContent'),
@@ -241,6 +244,7 @@ def intercepts_create_records():
                     if json_dict.get('communeArrayLength') > 0:
                         new_sub_log_node = Node("CommuneLog",
                             parentLogName=json_dict.get('name'),
+                            parentLogId=json_dict.get('_id').get('$oid'),
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('communeArrayLength'),
                             content=json_dict.get('communeContent'),
@@ -263,6 +267,7 @@ def intercepts_create_records():
                     if json_dict.get('etherArrayLength') > 0:
                         new_sub_log_node = Node("EtherLog",
                             parentLogName=json_dict.get('name'),
+                            parentLogId=json_dict.get('_id').get('$oid'),
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('etherArrayLength'),
                             content=json_dict.get('etherContent'),
