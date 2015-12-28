@@ -226,3 +226,7 @@ def process_logs_word_lengths(user=None):
         main_return_dict['all'].append({'title': 'Word Lengths'})
 
         return jsonify(**main_return_dict)
+
+@logs.route('/contains/sub_log')
+def query_logs_contains_sub_logs(user=None):
+    return 'success'
