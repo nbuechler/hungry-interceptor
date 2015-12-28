@@ -230,8 +230,13 @@ def process_logs_word_lengths(user=None):
 
         return jsonify(**main_return_dict)
 
-@logs.route('/contains/sub_log/<user>')
+@logs.route('/has/word/<user>')
 def query_logs_contains_sub_logs(user=None):
     cypher = secure_graph1.cypher
-    print cypher.execute("MATCH (n:User)-[r:LOGGED]->() RETURN n,r")
+    # TODO: Add a j definition for the returned json
+    for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:LOGGED]->(log)-[h:HAS]->(word) RETURN log,word"):
+        print '==============='
+        print record[0].properties # log properties
+        print record[1].properties # word properties
+    # TODO Return these records as a json
     return 'success'
