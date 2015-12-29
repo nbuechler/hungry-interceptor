@@ -240,6 +240,11 @@ def query_logs_contains_sub_logs(user=None):
         all_nodes_dict = {'allNodes': []}
 
         # Create a dictionary to hold all the nodes
+        # source - the source node (an element in all_nodes_dict).
+        # target - the target node (an element in all_nodes_dict).
+        all_links_dict = {'allLinks': []}
+
+        # Create a dictionary to hold all the nodes
         log_nodes_dict = {'logNodes': []}
 
         # Create a dictionary to hold all the nodes
@@ -249,18 +254,22 @@ def query_logs_contains_sub_logs(user=None):
 
         ## Assuming that all the logs are queried only when each of the words are then queried
         current_log_id_for_word_nodes = ''
+        current_node_number_for_log_id = node_number
         for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:LOGGED]->(log)-[h:HAS]->(word) RETURN log,word"):
             if(current_log_id_for_word_nodes != record[0].properties.get('log_id')):
                 print '======='+ str(node_number) +'======='
                 all_nodes_dict['allNodes'].append(record[0].properties)
                 log_nodes_dict['logNodes'].append(record[0].properties)
                 current_log_id_for_word_nodes = record[0].properties.get('log_id')
+            all_links_dict['allLinks'].append({"source": current_node_number_for_log_id, "target":  1})
             all_nodes_dict['allNodes'].append(record[1].properties)
             print record[0].properties.get('log_id') # log properties
             print record[1].properties # word properties
             word_nodes_dict['wordNodes'].append(record[1].properties)
             node_number += 1
 
+        main_return_dict['all'].append({'totalLinks': len(all_links_dict['allLinks'])})
+        main_return_dict['all'].append(all_links_dict)
         main_return_dict['all'].append(all_nodes_dict)
         # main_return_dict['all'].append(log_nodes_dict)
         # main_return_dict['all'].append(word_nodes_dict)
