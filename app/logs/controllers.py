@@ -237,16 +237,35 @@ def query_logs_contains_sub_logs(user=None):
         main_return_dict = {'all' : []}
 
         # Create a dictionary to hold all the nodes
+        all_nodes_dict = {'allNodes': []}
+
+        # Create a dictionary to hold all the nodes
+        log_nodes_dict = {'logNodes': []}
+
+        # Create a dictionary to hold all the nodes
         word_nodes_dict = {'wordNodes': []}
 
         node_number = 0
+
+        ## Assuming that all the logs are queried only when each of the words are then queried
+        current_log_id_for_word_nodes = ''
         for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:LOGGED]->(log)-[h:HAS]->(word) RETURN log,word"):
-            print '======='+ str(node_number) +'======='
-            print record[0].properties # log properties
+            if(current_log_id_for_word_nodes != record[0].properties.get('log_id')):
+                print '======='+ str(node_number) +'======='
+                all_nodes_dict['allNodes'].append(record[0].properties)
+                log_nodes_dict['logNodes'].append(record[0].properties)
+                current_log_id_for_word_nodes = record[0].properties.get('log_id')
+            all_nodes_dict['allNodes'].append(record[1].properties)
+            print record[0].properties.get('log_id') # log properties
             print record[1].properties # word properties
             word_nodes_dict['wordNodes'].append(record[1].properties)
             node_number += 1
 
-        main_return_dict['all'].append(word_nodes_dict)
+        main_return_dict['all'].append(all_nodes_dict)
+        # main_return_dict['all'].append(log_nodes_dict)
+        # main_return_dict['all'].append(word_nodes_dict)
+        main_return_dict['all'].append({'totalNodes': len(all_nodes_dict['allNodes'])})
+        main_return_dict['all'].append({'totalLogs': len(log_nodes_dict['logNodes'])})
+        main_return_dict['all'].append({'totalWords': len(word_nodes_dict['wordNodes'])})
 
         return jsonify(**main_return_dict)
