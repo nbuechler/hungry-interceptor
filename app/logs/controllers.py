@@ -236,6 +236,12 @@ def query_logs_contains_sub_logs(user=None):
         # Create a dictionary to hold the main object
         main_return_dict = {'all' : []}
 
+        # Create a data dictionary to set up the building of data intended for different charts.
+        data_dict = {'data': []}
+
+        # Create a data dictionary to set up the building of data intended for different charts.
+        agr_data_dict = {'aggregateData': []}
+
         # Create a dictionary to hold all the nodes
         all_nodes_dict = {'allNodes': []}
 
@@ -270,6 +276,11 @@ def query_logs_contains_sub_logs(user=None):
             word_nodes_dict['wordNodes'].append(record[1].properties)
             node_number += 1
 
+        main_return_dict['all'].append(data_dict)
+        main_return_dict['all'].append(agr_data_dict)
+        main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of words and their relationship to the logs'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
+        main_return_dict['all'].append({'title': 'Log Clusters'})
         main_return_dict['all'].append(all_links_dict)
         main_return_dict['all'].append(all_nodes_dict)
         main_return_dict['all'].append(log_nodes_dict)
