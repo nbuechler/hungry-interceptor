@@ -75,7 +75,8 @@ def intercepts_create_records():
         # Create a bunch of user nodes
         new_user_node = Node("User",
             email=json_dict.get('email'),
-            user_id=json_dict.get('_id').get('$oid')
+            user_id=json_dict.get('_id').get('$oid'),
+            nodeType='user',
             )
 
         ####
@@ -96,10 +97,11 @@ def intercepts_create_records():
                 activity_id=json_dict.get('_id').get('$oid'),
                 privacy=json_dict.get('privacy'),
                 word_length=json_dict.get('descriptionArrayLength'),
+                nodeType='activity',
                 )
 
             for word in json_dict.get('descriptionArray'):
-                new_word_node = Node("Word", name=word, characters=len(word))
+                new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
                 activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
                 secure_graph1.create(activity_has_word)
                 user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
@@ -127,10 +129,11 @@ def intercepts_create_records():
                     privacy=json_dict.get('privacy'),
                     pronoun=json_dict.get('pronoun'),
                     word_length=json_dict.get('descriptionArrayLength'),
+                    nodeType='experience',
                     )
 
                 for word in json_dict.get('descriptionArray'):
-                    new_word_node = Node("Word", name=word, characters=len(word))
+                    new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
                     experience_has_word = Relationship(new_experience_node, "HAS", new_word_node)
                     secure_graph1.create(experience_has_word)
                     user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
@@ -168,6 +171,7 @@ def intercepts_create_records():
                         academicContent=json_dict.get('academicContent'),
                         communeContent=json_dict.get('communeContent'),
                         etherContent=json_dict.get('etherContent'),
+                        nodeType='log',
                         )
 
                     ## Only do the iteration step if there is a word to add
@@ -178,6 +182,7 @@ def intercepts_create_records():
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('physicArrayLength'),
                             content=json_dict.get('physicContent'),
+                            nodeType='sublog',
                             )
                         log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
@@ -185,7 +190,7 @@ def intercepts_create_records():
                         secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('physicArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
                             log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                             secure_graph1.create(log_has_word)
                             sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
@@ -202,6 +207,7 @@ def intercepts_create_records():
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('emotionArrayLength'),
                             content=json_dict.get('emotionContent'),
+                            nodeType='sublog',
                             )
                         log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
@@ -209,7 +215,7 @@ def intercepts_create_records():
                         secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('emotionArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
                             log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                             secure_graph1.create(log_has_word)
                             sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
@@ -225,6 +231,7 @@ def intercepts_create_records():
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('academicArrayLength'),
                             content=json_dict.get('academicContent'),
+                            nodeType='sublog',
                             )
                         log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
@@ -232,7 +239,7 @@ def intercepts_create_records():
                         secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('academicArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
                             log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                             secure_graph1.create(log_has_word)
                             sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
@@ -248,6 +255,7 @@ def intercepts_create_records():
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('communeArrayLength'),
                             content=json_dict.get('communeContent'),
+                            nodeType='sublog',
                             )
                         log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
@@ -255,7 +263,7 @@ def intercepts_create_records():
                         secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('communeArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
                             log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                             secure_graph1.create(log_has_word)
                             sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
@@ -271,6 +279,7 @@ def intercepts_create_records():
                             privacy=json_dict.get('privacy'),
                             wordLength=json_dict.get('etherArrayLength'),
                             content=json_dict.get('etherContent'),
+                            nodeType='sublog',
                             )
                         log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
@@ -278,7 +287,7 @@ def intercepts_create_records():
                         secure_graph1.create(user_described_sublog)
 
                         for word in json_dict.get('etherArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word))
+                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
                             log_has_word = Relationship(new_log_node, "HAS", new_word_node)
                             secure_graph1.create(log_has_word)
                             sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
