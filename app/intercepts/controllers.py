@@ -14,6 +14,9 @@ from py2neo import Node, Relationship, Path
 import json
 from bson import json_util
 
+# date
+import datetime
+
 intercepts = Blueprint('intercepts', __name__)
 
 @intercepts.route('/')
@@ -156,6 +159,10 @@ def intercepts_create_records():
                     # Create a new python dictionary from the json_experience, we'll call it json_dict
                     json_dict = json.loads(json_log)
 
+                    milliDate = json_dict.get('created').get('$date')
+                    date = datetime.datetime.fromtimestamp(milliDate/1000.0)
+
+
                     # Create a bunch of experience nodes
                     new_log_node = Node("Log",
                         name=json_dict.get('name'),
@@ -171,6 +178,13 @@ def intercepts_create_records():
                         academicContent=json_dict.get('academicContent'),
                         communeContent=json_dict.get('communeContent'),
                         etherContent=json_dict.get('etherContent'),
+                        milliDate=milliDate,
+                        year=date.year,
+                        month=date.month,
+                        day=date.day,
+                        hour=date.hour,
+                        minute=date.minute,
+                        second=date.second,
                         nodeType='log',
                         )
 
