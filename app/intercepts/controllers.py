@@ -14,6 +14,9 @@ from py2neo import Node, Relationship, Path
 import json
 from bson import json_util
 
+# date
+import datetime
+
 intercepts = Blueprint('intercepts', __name__)
 
 @intercepts.route('/')
@@ -41,7 +44,7 @@ def intercepts_drop_constraint():
     # secure_graph1.schema.drop_uniqueness_constraint("Word", "name")
     return 'success'
 
-# Move a user and some relationship to the neo4j databse
+# Move a user and some relationship to the neo4j database
 ## A word_length is the number of words in the descriptionArrayLength
 '''
 This method deletes all the records then adds all relationships and nodes.
@@ -156,6 +159,10 @@ def intercepts_create_records():
                     # Create a new python dictionary from the json_experience, we'll call it json_dict
                     json_dict = json.loads(json_log)
 
+                    milliDate = json_dict.get('created').get('$date')
+                    date = datetime.datetime.fromtimestamp(milliDate/1000.0)
+
+
                     # Create a bunch of experience nodes
                     new_log_node = Node("Log",
                         name=json_dict.get('name'),
@@ -171,6 +178,13 @@ def intercepts_create_records():
                         academicContent=json_dict.get('academicContent'),
                         communeContent=json_dict.get('communeContent'),
                         etherContent=json_dict.get('etherContent'),
+                        milliDate=milliDate,
+                        year=date.year,
+                        month=date.month,
+                        day=date.day,
+                        hour=date.hour,
+                        minute=date.minute,
+                        second=date.second,
                         nodeType='log',
                         )
 
@@ -300,5 +314,24 @@ def intercepts_create_records():
                     user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
                     secure_graph1.create(user_logged_log)
 
+
+    return 'success'
+
+# Move an event - as a year, month, or day - and some relationship to the neo4j database
+'''
+To find all nodes in a year (event):
+  MATCH (n:Log) where n.year = 2016 RETURN (n)
+
+To find all nodes in a month (event):
+  MATCH (n:Log) where n.year = 2016 and n.month = 1 RETURN (n)
+
+To find all nodes in a day (event):
+  MATCH (n:Log) where n.year = 2016 and n.month = 1 and n.day = 6 RETURN (n)
+'''
+@intercepts.route('/mongo2neo/intercepts_create_event_supplement')
+def intercepts_create_event_supplement():
+
+    # TODO: Creat events with the following attributes...
+    # logCount, highestValue, totals for each category, winningCategoryName
 
     return 'success'
