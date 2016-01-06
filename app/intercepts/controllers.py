@@ -44,7 +44,7 @@ def intercepts_drop_constraint():
     # secure_graph1.schema.drop_uniqueness_constraint("Word", "name")
     return 'success'
 
-# Move a user and some relationship to the neo4j databse
+# Move a user and some relationship to the neo4j database
 ## A word_length is the number of words in the descriptionArrayLength
 '''
 This method deletes all the records then adds all relationships and nodes.
@@ -314,5 +314,24 @@ def intercepts_create_records():
                     user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
                     secure_graph1.create(user_logged_log)
 
+
+    return 'success'
+
+# Move an event - as a year, month, or day - and some relationship to the neo4j database
+'''
+To find all nodes in a year (event):
+  MATCH (n:Log) where n.year = 2016 RETURN (n)
+
+To find all nodes in a month (event):
+  MATCH (n:Log) where n.year = 2016 and n.month = 1 RETURN (n)
+
+To find all nodes in a day (event):
+  MATCH (n:Log) where n.year = 2016 and n.month = 1 and n.day = 6 RETURN (n)
+'''
+@intercepts.route('/mongo2neo/intercepts_create_event_supplement')
+def intercepts_create_event_supplement():
+
+    # TODO: Creat events with the following attributes...
+    # logCount, highestValue, totals for each category, winningCategoryName
 
     return 'success'
