@@ -345,7 +345,7 @@ def intercepts_create_event_supplement():
     cypher = secure_graph1.cypher
 
     # TODO : Add iser om MATCH (n:Log) where user relationship blah
-    for record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day"):
+    for record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user"):
         print record
         sums = cypher.execute("MATCH (n:Log) where n.year = " + str(record[0]) + " and n.month = " + str(record[1]) + " and n.day = " + str(record[2]) + " " +
                              "RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength)")[0]
