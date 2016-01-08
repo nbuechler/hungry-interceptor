@@ -319,6 +319,15 @@ def intercepts_create_records():
 
 # Move an event - as a year, month, or day - and some relationship to the neo4j database
 '''
+The whole point of running this step is to store this information as a data warehouse
+
+To find all the distinct dates (event):
+    MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day
+
+To find all the sums we care about for a give date (event):
+    MATCH (n:Log) where n.year = 2016 and n.month = 1 and n.day = 6
+    RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength)
+
 To find all nodes in a year (event):
   MATCH (n:Log) where n.year = 2016 RETURN (n)
 
@@ -330,8 +339,32 @@ To find all nodes in a day (event):
 '''
 @intercepts.route('/mongo2neo/intercepts_create_event_supplement')
 def intercepts_create_event_supplement():
-
-    # TODO: Creat events with the following attributes...
+    # Create events with the following attributes...
     # logCount, highestValue, totals for each category, winningCategoryName
+    cypher = secure_graph1.cypher
+
+    # TODO : Add iser om MATCH (n:Log) where user relationship blah
+    for record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day"):
+        print record
+        sums = cypher.execute("MATCH (n:Log) where n.year = " + str(record[0]) + " and n.month = " + str(record[1]) + " and n.day = " + str(record[2]) + " " +
+                             "RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength)")[0]
+        # print sums
+        # print sums[0]
+        new_event_node = Node("Event",
+            ymd=str(record[0]) + '-' + str(record[1]) + '-' + str(record[2]),
+            year=record[0],
+            month=record[1],
+            day=record[2],
+            physicArrayLengthSum = sums[0],
+            academicArrayLengthSum = sums[1],
+            emotionArrayLengthSum = sums[2],
+            communeArrayLengthSum = sums[3],
+            etherArrayLengthSum = sums[4],
+            )
+
+        secure_graph1.create(new_event_node)
+
+        # TODO : Create relationships to logs, something like event 'includes' log
+        # TODO : Create relationships to user, something like user 'lived' event
 
     return 'success'
