@@ -165,6 +165,7 @@ def intercepts_create_records():
 
                     # Create a bunch of experience nodes
                     new_log_node = Node("Log",
+                        user=user,
                         name=json_dict.get('name'),
                         log_id=json_dict.get('_id').get('$oid'),
                         privacy=json_dict.get('privacy'),
