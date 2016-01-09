@@ -349,33 +349,27 @@ def intercepts_create_event_supplement():
     cypher = secure_graph1.cypher
 
     # TODO : Add iser om MATCH (n:Log) where user relationship blah
-    for record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user"):
-        print record
-        sums = cypher.execute("MATCH (n:Log) where n.year = " + str(record[0]) + " and n.month = " + str(record[1]) + " and n.day = " + str(record[2]) + " " +
-                              "RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength)")[0]
-        # print sums
-        # print sums[0]
-        # new_event_node = Node("Event",
-        #     ymd=str(record[0]) + '-' + str(record[1]) + '-' + str(record[2]),
-        #     year=record[0],
-        #     month=record[1],
-        #     day=record[2],
-        #     physicArrayLengthSum = sums[0],
-        #     academicArrayLengthSum = sums[1],
-        #     emotionArrayLengthSum = sums[2],
-        #     communeArrayLengthSum = sums[3],
-        #     etherArrayLengthSum = sums[4],
-        #     )
+    for event_record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user"):
+        sums = cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " " +
+                              "RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), n.user")[0]
 
-        for log_record in record:
-            for log in cypher.execute("MATCH (n:Log) where n.year = " + str(record[0]) + " and n.month = " + str(record[1]) + " and n.day = " + str(record[2]) + " " + "RETURN n"):
-                print log
-        # Create event relationships to logs
-        # event_includes_log = Relationship(new_event_node, "INCLUDES", new_word_node)
-        # secure_graph1.create(event_includes_log)
+        new_event_node = Node("Event",
+            user = sums[5],
+            ymd=str(event_record[0]) + '-' + str(event_record[1]) + '-' + str(event_record[2]),
+            year=event_record[0],
+            month=event_record[1],
+            day=event_record[2],
+            physicArrayLengthSum = sums[0],
+            academicArrayLengthSum = sums[1],
+            emotionArrayLengthSum = sums[2],
+            communeArrayLengthSum = sums[3],
+            etherArrayLengthSum = sums[4],
+            )
 
-        # Create event relationships to user
-        # user_lived_event = Relationship(new_user_node, "LIVED", new_event_node)
-        # secure_graph1.create(user_lived_event)
+        for log_record in cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " " +
+                                         "RETURN n"):
+            for log_node in log_record:
+                event_includes_log = Relationship(new_event_node, "INCLUDES", log_node)
+                secure_graph1.create(event_includes_log)
 
     return 'success'
