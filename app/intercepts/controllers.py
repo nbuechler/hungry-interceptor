@@ -348,11 +348,13 @@ def intercepts_create_event_supplement():
     # logCount, highestValue, totals for each category, winningCategoryName
     cypher = secure_graph1.cypher
 
-    # TODO : Add iser om MATCH (n:Log) where user relationship blah
+    # All distinct events for each give user
     for event_record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user"):
-        sums = cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " " +
+        sums = cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " +
                               "RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), n.user")[0]
 
+        # TODO Add the 'winning category'
+        # TODO Add the 'number of logs for the event'
         new_event_node = Node("Event",
             user = sums[5],
             ymd=str(event_record[0]) + '-' + str(event_record[1]) + '-' + str(event_record[2]),
@@ -366,7 +368,7 @@ def intercepts_create_event_supplement():
             etherArrayLengthSum = sums[4],
             )
 
-        for log_record in cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " " +
+        for log_record in cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " + " " +
                                          "RETURN n"):
             for log_node in log_record:
                 event_includes_log = Relationship(new_event_node, "INCLUDES", log_node)
