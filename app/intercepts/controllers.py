@@ -351,9 +351,19 @@ def intercepts_create_event_supplement():
     # All distinct events for each give user
     for event_record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user"):
         sums = cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " +
-                              "RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), n.user")[0]
+                              "RETURN sum(n.physicArrayLength), sum(n.emotionArrayLength), sum(n.academicArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), n.user")[0]
 
-        # TODO Add the 'winning category'
+
+        # Find the position of the max values in the list
+        winningIndexes = []
+
+        sum_list = [sums[0], sums[1], sums[2], sums[3], sums[4]]
+        max_value = max(sum_list)
+
+        for idx,s in enumerate(sum_list):
+            if s >= max_value:
+                winningIndexes.append(idx)
+
         # TODO Add the 'number of logs for the event'
         new_event_node = Node("Event",
             user = sums[5],
@@ -362,10 +372,11 @@ def intercepts_create_event_supplement():
             month=event_record[1],
             day=event_record[2],
             physicArrayLengthSum = sums[0],
-            academicArrayLengthSum = sums[1],
-            emotionArrayLengthSum = sums[2],
+            emotionArrayLengthSum = sums[1],
+            academicArrayLengthSum = sums[2],
             communeArrayLengthSum = sums[3],
             etherArrayLengthSum = sums[4],
+            winningIndexes = winningIndexes,
             )
 
         for log_record in cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " + " " +
