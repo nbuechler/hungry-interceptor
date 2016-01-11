@@ -351,7 +351,7 @@ def intercepts_create_event_supplement():
     # All distinct events for each give user
     for event_record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user"):
         sums = cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " +
-                              "RETURN sum(n.physicArrayLength), sum(n.emotionArrayLength), sum(n.academicArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), n.user")[0]
+                              "RETURN sum(n.physicArrayLength), sum(n.emotionArrayLength), sum(n.academicArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), n.user, count(n)")[0]
 
 
         # Find the position of the max values in the list
@@ -364,7 +364,6 @@ def intercepts_create_event_supplement():
             if s >= max_value:
                 winningIndexes.append(idx)
 
-        # TODO Add the 'number of logs for the event'
         new_event_node = Node("Event",
             user = sums[5],
             ymd=str(event_record[0]) + '-' + str(event_record[1]) + '-' + str(event_record[2]),
@@ -377,6 +376,7 @@ def intercepts_create_event_supplement():
             communeArrayLengthSum = sums[3],
             etherArrayLengthSum = sums[4],
             winningIndexes = winningIndexes,
+            logCount = sums[6],
             )
 
         for log_record in cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " + " " +
