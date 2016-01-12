@@ -291,3 +291,42 @@ def query_logs_contains_sub_logs(user=None):
         main_return_dict['all'].append({'totalWords': len(word_nodes_dict['wordNodes'])})
 
         return jsonify(**main_return_dict)
+
+'''
+To find all events for a give user:
+    MATCH (e:Event {user: '562d722a3f1f9f541814a3e8'}) RETURN e
+'''
+
+@logs.route('/event_summary/<user>')
+def query_logs_event_summary(user=None):
+        cypher = secure_graph1.cypher
+        # Create a dictionary to hold the main object
+        main_return_dict = {'all' : []}
+
+        # Create a data dictionary to set up the building of data intended for different charts.
+        data_dict = {'data': []}
+
+        # Create a data dictionary to set up the building of data intended for different charts.
+        agr_data_dict = {'aggregateData': []}
+
+        # Create a dictionary to hold all the events
+        all_events_dict = {'allEvents': []}
+
+        node_number = 0
+
+        ## Assuming that all the logs are queried only when each of the words are then queried
+        current_log_id_for_word_nodes = ''
+        current_node_number_for_log_id = node_number
+        for record in cypher.execute("MATCH (e:Event {user: '" + user + "'}) RETURN e"):
+            print record[0].properties
+            all_events_dict['allEvents'].append(record[0].properties)
+            node_number += 1
+
+        main_return_dict['all'].append(data_dict)
+        main_return_dict['all'].append(agr_data_dict)
+        main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of words and their relationship to the logs'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
+        main_return_dict['all'].append({'title': 'Total Logs'})
+        main_return_dict['all'].append(all_events_dict)
+
+        return jsonify(**main_return_dict)
