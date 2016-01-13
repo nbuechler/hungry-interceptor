@@ -297,6 +297,8 @@ To find all events for a give user:
     MATCH (e:Event {user: '562d722a3f1f9f541814a3e8'}) RETURN e
 '''
 
+## This method allows for the retrieval of different events for a give user
+
 @logs.route('/event_summary/<user>')
 def query_logs_event_summary(user=None):
         cypher = secure_graph1.cypher
