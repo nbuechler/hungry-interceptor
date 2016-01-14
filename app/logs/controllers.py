@@ -320,7 +320,7 @@ def query_logs_event_summary(user=None):
         current_log_id_for_word_nodes = ''
         current_node_number_for_log_id = node_number
         for record in cypher.execute("MATCH (e:Event {user: '" + user + "'}) RETURN e"):
-            print record[0].properties
+            # print record[0].properties
             all_events_dict['allEvents'].append(record[0].properties)
             node_number += 1
 
