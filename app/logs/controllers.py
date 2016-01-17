@@ -326,7 +326,7 @@ def query_logs_event_summary(user=None):
 
         main_return_dict['all'].append(data_dict)
         main_return_dict['all'].append(agr_data_dict)
-        main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of words and their relationship to the logs'})
+        main_return_dict['all'].append({'description_primary': 'This information is to show the temporal information related to logs'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Total Logs'})
         main_return_dict['all'].append(all_events_dict)
