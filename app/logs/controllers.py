@@ -324,6 +324,162 @@ def query_logs_event_summary(user=None):
             all_events_dict['allEvents'].append(record[0].properties)
             node_number += 1
 
+
+        # Add some more mock data to use
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 10,
+          "communeArrayLengthSum": 10,
+          "day": 28,
+          "emotionArrayLengthSum": 14,
+          "etherArrayLengthSum": 18,
+          "logCount": 13,
+          "month": 11,
+          "physicArrayLengthSum": 25,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            2
+          ],
+          "year": 2015,
+          "ymd": "2015-11-28"
+        }
+        )
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 5,
+          "communeArrayLengthSum": 8,
+          "day": 5,
+          "emotionArrayLengthSum": 2,
+          "etherArrayLengthSum": 0,
+          "logCount": 2,
+          "month": 1,
+          "physicArrayLengthSum": 4,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            1
+          ],
+          "year": 2016,
+          "ymd": "2016-1-5"
+        }
+        )
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 1,
+          "communeArrayLengthSum": 1,
+          "day": 9,
+          "emotionArrayLengthSum": 1,
+          "etherArrayLengthSum": 5,
+          "logCount": 1,
+          "month": 1,
+          "physicArrayLengthSum": 1,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            3
+          ],
+          "year": 2016,
+          "ymd": "2016-1-9"
+        }
+        )
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 5,
+          "communeArrayLengthSum": 8,
+          "day": 15,
+          "emotionArrayLengthSum": 2,
+          "etherArrayLengthSum": 0,
+          "logCount": 2,
+          "month": 1,
+          "physicArrayLengthSum": 4,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            1
+          ],
+          "year": 2016,
+          "ymd": "2016-1-15"
+        }
+        )
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 1,
+          "communeArrayLengthSum": 1,
+          "day": 12,
+          "emotionArrayLengthSum": 1,
+          "etherArrayLengthSum": 5,
+          "logCount": 1,
+          "month": 1,
+          "physicArrayLengthSum": 1,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            0
+          ],
+          "year": 2016,
+          "ymd": "2016-1-12"
+        }
+        )
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 5,
+          "communeArrayLengthSum": 8,
+          "day": 11,
+          "emotionArrayLengthSum": 2,
+          "etherArrayLengthSum": 0,
+          "logCount": 2,
+          "month": 1,
+          "physicArrayLengthSum": 4,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            1
+          ],
+          "year": 2016,
+          "ymd": "2016-1-11"
+        }
+        )
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 1,
+          "communeArrayLengthSum": 1,
+          "day": 10,
+          "emotionArrayLengthSum": 1,
+          "etherArrayLengthSum": 5,
+          "logCount": 1,
+          "month": 1,
+          "physicArrayLengthSum": 1,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            2
+          ],
+          "year": 2016,
+          "ymd": "2016-1-10"
+        }
+        )
+        all_events_dict['allEvents'].append(
+        {
+          "academicArrayLengthSum": 1,
+          "communeArrayLengthSum": 1,
+          "day": 1,
+          "emotionArrayLengthSum": 1,
+          "etherArrayLengthSum": 5,
+          "logCount": 1,
+          "month": 1,
+          "physicArrayLengthSum": 1,
+          "user": "562d722a3f1f9f541814a3e8",
+          "winningIndexes": [
+            2
+          ],
+          "year": 2016,
+          "ymd": "2016-1-1"
+        }
+        )
+        # End mock data
+
+        all_events_dict['allEvents'].sort(key=lambda x: x['ymd'], reverse=False)
+
+        # Keep track of which dates had events
+        agr_data_dict['eventfulDates'] = []
+        for event in all_events_dict['allEvents']:
+            agr_data_dict['eventfulDates'].append(event['ymd'])
+
+
         main_return_dict['all'].append(data_dict)
         main_return_dict['all'].append(agr_data_dict)
         main_return_dict['all'].append({'description_primary': 'This information is to show the temporal information related to logs'})
