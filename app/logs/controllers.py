@@ -324,9 +324,17 @@ def query_logs_event_summary(user=None):
             all_events_dict['allEvents'].append(record[0].properties)
             node_number += 1
 
+        all_events_dict['allEvents'].sort(key=lambda x: x['ymd'], reverse=False)
+
+        # Keep track of which dates had events
+        agr_data_dict['eventfulDates'] = []
+        for event in all_events_dict['allEvents']:
+            agr_data_dict['eventfulDates'].append(event['ymd'])
+
+
         main_return_dict['all'].append(data_dict)
         main_return_dict['all'].append(agr_data_dict)
-        main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of words and their relationship to the logs'})
+        main_return_dict['all'].append({'description_primary': 'This information is to show the temporal information related to logs'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Total Logs'})
         main_return_dict['all'].append(all_events_dict)
