@@ -302,11 +302,22 @@ To find all events for a give user:
 @logs.route('/event_summary/<user>')
 def query_logs_event_summary(user=None):
         cypher = secure_graph1.cypher
+        cursor = mongo3.db.logs.find({"user": ObjectId(user)}) #works! React User id
+
         # Create a dictionary to hold the main object
         main_return_dict = {'all' : []}
 
         # Create a data dictionary to set up the building of data intended for different charts.
-        data_dict = {'data': []}
+        data_dict = {'rawData': []}
+
+        for item in cursor:
+            json_item = json.dumps(item, default=json_util.default)
+
+            # Create a new python dictionary from the json_item, we'll call it json_dict
+            json_dict = json.loads(json_item)
+
+            # Append the entire json_dict dictionary
+            data_dict['rawData'].append(json_dict)
 
         # Create a data dictionary to set up the building of data intended for different charts.
         agr_data_dict = {'aggregateData': []}
