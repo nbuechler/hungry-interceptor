@@ -327,20 +327,44 @@ def query_logs_event_summary(user=None):
 
         node_number = 0
 
+        # Totals are all the words for each kind
+        totalPhysicArrayLengthSum =  0
+        totalEmotionArrayLengthSum =  0
+        totalAcademicArrayLengthSum =  0
+        totalCommuneArrayLengthSum =  0
+        totalEtherArrayLengthSum =  0
+
         ## Assuming that all the logs are queried only when each of the words are then queried
         current_log_id_for_word_nodes = ''
         current_node_number_for_log_id = node_number
         for record in cypher.execute("MATCH (e:Event {user: '" + user + "'}) RETURN e"):
             # print record[0].properties
             all_events_dict['allEvents'].append(record[0].properties)
+            totalPhysicArrayLengthSum += record[0].properties['physicArrayLengthSum']
+            totalEmotionArrayLengthSum += record[0].properties['emotionArrayLengthSum']
+            totalAcademicArrayLengthSum += record[0].properties['academicArrayLengthSum']
+            totalCommuneArrayLengthSum += record[0].properties['communeArrayLengthSum']
+            totalEtherArrayLengthSum += record[0].properties['etherArrayLengthSum']
             node_number += 1
 
+        agr_data_dict['aggregateData'].append({
+            'physicSum': totalPhysicArrayLengthSum,
+            'emotionSum': totalEmotionArrayLengthSum,
+            'academicSum': totalAcademicArrayLengthSum,
+            'communeSum': totalCommuneArrayLengthSum,
+            'etherSum': totalEtherArrayLengthSum,
+        })
         all_events_dict['allEvents'].sort(key=lambda x: x['ymd'], reverse=False)
 
         # Keep track of which dates had events
         agr_data_dict['eventfulDates'] = []
         for event in all_events_dict['allEvents']:
-            agr_data_dict['eventfulDates'].append(event['ymd'])
+            agr_data_dict['eventfulDates'].append({
+                'year': event['year'],
+                'month': event['month'],
+                'day': event['day'],
+                'ymd': event['ymd'],
+            })
 
 
         main_return_dict['all'].append(data_dict)
