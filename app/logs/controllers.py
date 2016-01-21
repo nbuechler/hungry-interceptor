@@ -359,7 +359,11 @@ def query_logs_event_summary(user=None):
         # Keep track of which dates had events
         agr_data_dict['eventfulDates'] = []
         for event in all_events_dict['allEvents']:
-            agr_data_dict['eventfulDates'].append(event['ymd'])
+            agr_data_dict['eventfulDates'].append({
+                'year': event['year'],
+                'month': event['month'],
+                'day': event['day'],
+            })
 
 
         main_return_dict['all'].append(data_dict)
