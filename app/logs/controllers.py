@@ -363,6 +363,7 @@ def query_logs_event_summary(user=None):
                 'year': event['year'],
                 'month': event['month'],
                 'day': event['day'],
+                'ymd': event['ymd'],
             })
 
 
