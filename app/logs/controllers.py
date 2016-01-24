@@ -231,7 +231,7 @@ def process_logs_word_lengths(user=None):
         return jsonify(**main_return_dict)
 
 @logs.route('/has/word/<user>')
-def query_logs_contains_sub_logs(user=None):
+def query_logs_contains_words(user=None):
         cypher = secure_graph1.cypher
         # Create a dictionary to hold the main object
         main_return_dict = {'all' : []}
