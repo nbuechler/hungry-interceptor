@@ -264,7 +264,7 @@ def query_experiences_contains_words(user=None):
         main_return_dict['all'].append(agr_data_dict)
         main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of words and their relationship to the experiences'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
-        main_return_dict['all'].append({'title': 'Log Clusters'})
+        main_return_dict['all'].append({'title': 'Experience Clusters'})
         main_return_dict['all'].append(all_links_dict)
         main_return_dict['all'].append(all_nodes_dict)
         main_return_dict['all'].append(experience_nods_dict)
