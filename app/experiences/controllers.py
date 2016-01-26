@@ -235,7 +235,7 @@ def query_experiences_contains_words(user=None):
         all_links_dict = {'allLinks': []}
 
         # Create a dictionary to hold all the nodes
-        experience_nods_dict = {'experienceNodes': []}
+        experience_nodes_dict = {'experienceNodes': []}
 
         # Create a dictionary to hold all the nodes
         word_nodes_dict = {'wordNodes': []}
@@ -251,7 +251,7 @@ def query_experiences_contains_words(user=None):
                 node_number += 1
                 print '======='+ str(node_number) +'======='
                 all_nodes_dict['allNodes'].append(record[0].properties)
-                experience_nods_dict['experienceNodes'].append(record[0].properties)
+                experience_nodes_dict['experienceNodes'].append(record[0].properties)
                 current_experience_id_for_word_nodes = record[0].properties.get('experience_id')
             all_links_dict['allLinks'].append({"source": current_node_number_for_experience_id, "target":  node_number})
             all_nodes_dict['allNodes'].append(record[1].properties)
@@ -267,11 +267,11 @@ def query_experiences_contains_words(user=None):
         main_return_dict['all'].append({'title': 'Experience Clusters'})
         main_return_dict['all'].append(all_links_dict)
         main_return_dict['all'].append(all_nodes_dict)
-        main_return_dict['all'].append(experience_nods_dict)
+        main_return_dict['all'].append(experience_nodes_dict)
         main_return_dict['all'].append(word_nodes_dict)
         main_return_dict['all'].append({'totalLinks': len(all_links_dict['allLinks'])})
         main_return_dict['all'].append({'totalNodes': len(all_nodes_dict['allNodes'])})
-        main_return_dict['all'].append({'totalExperiences': len(experience_nods_dict['experienceNodes'])})
+        main_return_dict['all'].append({'totalActivities': len(experience_nodes_dict['experienceNodes'])})
         main_return_dict['all'].append({'totalWords': len(word_nodes_dict['wordNodes'])})
 
         return jsonify(**main_return_dict)
