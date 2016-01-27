@@ -159,7 +159,7 @@ def process_activities_statistics(user=None):
         return jsonify(**main_return_dict)
 
 '''
-Experience has word
+Activity has word
 MATCH ()-[r:DID]->(e)-[h:HAS]->(w) RETURN e, w
 '''
 
@@ -213,14 +213,14 @@ def query_activities_contains_words(user=None):
         main_return_dict['all'].append(agr_data_dict)
         main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of words and their relationship to the activities'})
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
-        main_return_dict['all'].append({'title': 'Experience Clusters'})
+        main_return_dict['all'].append({'title': 'Activity Clusters'})
         main_return_dict['all'].append(all_links_dict)
         main_return_dict['all'].append(all_nodes_dict)
         main_return_dict['all'].append(activity_nodes_dict)
         main_return_dict['all'].append(word_nodes_dict)
         main_return_dict['all'].append({'totalLinks': len(all_links_dict['allLinks'])})
         main_return_dict['all'].append({'totalNodes': len(all_nodes_dict['allNodes'])})
-        main_return_dict['all'].append({'totalExperiences': len(activity_nodes_dict['activityNodes'])})
+        main_return_dict['all'].append({'totalActivities': len(activity_nodes_dict['activityNodes'])})
         main_return_dict['all'].append({'totalWords': len(word_nodes_dict['wordNodes'])})
 
         return jsonify(**main_return_dict)

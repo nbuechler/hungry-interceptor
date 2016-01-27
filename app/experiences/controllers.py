@@ -271,14 +271,76 @@ def query_experiences_contains_words(user=None):
         main_return_dict['all'].append(word_nodes_dict)
         main_return_dict['all'].append({'totalLinks': len(all_links_dict['allLinks'])})
         main_return_dict['all'].append({'totalNodes': len(all_nodes_dict['allNodes'])})
-        main_return_dict['all'].append({'totalActivities': len(experience_nodes_dict['experienceNodes'])})
+        main_return_dict['all'].append({'totalExperiences': len(experience_nodes_dict['experienceNodes'])})
         main_return_dict['all'].append({'totalWords': len(word_nodes_dict['wordNodes'])})
 
         return jsonify(**main_return_dict)
 
 '''
+Method to get all Experiences contained by experience:
+
 Experience contains experience
-MATCH ()-[r:EXPERIENCED]->(e)-[h:CONTAINS]->(l) RETURN e, l
+MATCH ()-[r:EXPERIENCED]->(e)-[c:CONTAINS]->(l) RETURN e, l
 '''
 
-# TODO: Add a method to get all Experiences contained by experience
+@experiences.route('/contains/log/<user>')
+def query_experiences_contains_logs(user=None):
+        cypher = secure_graph1.cypher
+        # Create a dictionary to hold the main object
+        main_return_dict = {'all' : []}
+
+        # Create a data dictionary to set up the building of data intended for different charts.
+        data_dict = {'data': []}
+
+        # Create a data dictionary to set up the building of data intended for different charts.
+        agr_data_dict = {'aggregateData': []}
+
+        # Create a dictionary to hold all the nodes
+        all_nodes_dict = {'allNodes': []}
+
+        # Create a dictionary to hold all the nodes
+        # source - the source node (an element in all_nodes_dict).
+        # target - the target node (an element in all_nodes_dict).
+        all_links_dict = {'allLinks': []}
+
+        # Create a dictionary to hold all the nodes
+        experience_nodes_dict = {'experienceNodes': []}
+
+        # Create a dictionary to hold all the nodes
+        log_nodes_dict = {'logNodes': []}
+
+        node_number = 0
+
+        ## Assuming that all the experiences are queried only when each of the logs are then queried
+        current_experience_id_for_log_nodes = ''
+        current_node_number_for_experience_id = node_number
+        for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:EXPERIENCED]->(experience)-[c:CONTAINS]->(log) RETURN experience,log"):
+            if(current_experience_id_for_log_nodes != record[0].properties.get('experience_id')):
+                current_node_number_for_experience_id = node_number
+                node_number += 1
+                print '======='+ str(node_number) +'======='
+                all_nodes_dict['allNodes'].append(record[0].properties)
+                experience_nodes_dict['experienceNodes'].append(record[0].properties)
+                current_experience_id_for_log_nodes = record[0].properties.get('experience_id')
+            all_links_dict['allLinks'].append({"source": current_node_number_for_experience_id, "target":  node_number})
+            all_nodes_dict['allNodes'].append(record[1].properties)
+            print record[0].properties.get('experience_id') # experience properties
+            print record[1].properties # log properties
+            log_nodes_dict['logNodes'].append(record[1].properties)
+            node_number += 1
+
+        main_return_dict['all'].append(data_dict)
+        main_return_dict['all'].append(agr_data_dict)
+        main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of logs and their relationship to the experiences'})
+        main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
+        main_return_dict['all'].append({'title': 'Experience Clusters'})
+        main_return_dict['all'].append(all_links_dict)
+        main_return_dict['all'].append(all_nodes_dict)
+        main_return_dict['all'].append(experience_nodes_dict)
+        main_return_dict['all'].append(log_nodes_dict)
+        main_return_dict['all'].append({'totalLinks': len(all_links_dict['allLinks'])})
+        main_return_dict['all'].append({'totalNodes': len(all_nodes_dict['allNodes'])})
+        main_return_dict['all'].append({'totalExperiences': len(experience_nodes_dict['experienceNodes'])})
+        main_return_dict['all'].append({'totalLogs': len(log_nodes_dict['logNodes'])})
+
+        return jsonify(**main_return_dict)
