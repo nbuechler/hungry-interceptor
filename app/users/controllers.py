@@ -91,6 +91,9 @@ def query_users_contains_unique_word(user=None):
         # Create a dictionary to hold all the nodes
         word_nodes_dict = {'wordNodes': []}
 
+        # Create a dictionary to hold all the nodes
+        totals_dict = {'totalUniqueWords': 0}
+
         for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:SPOKE]->(word) RETURN DISTINCT word.name, count(word.name)"):
             print record
             all_unique_words_dict['allUniqueWords'].append(
@@ -99,6 +102,7 @@ def query_users_contains_unique_word(user=None):
                 'count': record[1]
                 }
             )
+        totals_dict['totalUniqueWords'] = len(all_unique_words_dict['allUniqueWords'])
 
         main_return_dict['all'].append(data_dict)
         main_return_dict['all'].append(agr_data_dict)
@@ -106,6 +110,7 @@ def query_users_contains_unique_word(user=None):
         main_return_dict['all'].append({'description_secondary': 'Use it wisely!'})
         main_return_dict['all'].append({'title': 'Unique words'})
         main_return_dict['all'].append(all_unique_words_dict)
+        main_return_dict['all'].append(totals_dict)
 
         return jsonify(**main_return_dict)
 
