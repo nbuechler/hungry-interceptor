@@ -96,7 +96,7 @@ def query_users_contains_unique_word(user=None):
         # Create a dictionary to hold all the nodes
         word_nodes_dict = {'wordNodes': []}
 
-        for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:EXPERIENCED]->(experience)-[h:HAS]->(word) RETURN experience,word"):
+        for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:SPOKE]->(word) RETURN DISTINCT word.name, count(word.name)"):
             print record
 
         main_return_dict['all'].append(data_dict)
