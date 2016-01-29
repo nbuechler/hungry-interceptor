@@ -102,6 +102,9 @@ def query_users_contains_unique_word(user=None):
                 'count': record[1]
                 }
             )
+
+        all_unique_words_dict['allUniqueWords'].sort(key=lambda x: x['word'], reverse=False)
+
         totals_dict['totalUniqueWords'] = len(all_unique_words_dict['allUniqueWords'])
 
         main_return_dict['all'].append(data_dict)
