@@ -344,6 +344,3 @@ def query_experiences_contains_logs(user=None):
         main_return_dict['all'].append({'totalLogs': len(log_nodes_dict['logNodes'])})
 
         return jsonify(**main_return_dict)
-
-
-# TODO : MATCH ()-[r:DID]->(a)-[b:CONTAINS]->(e)-[c:CONTAINS]->(l) RETURN a, e, l
