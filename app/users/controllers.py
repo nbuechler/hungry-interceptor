@@ -103,18 +103,20 @@ def query_users_contains_unique_word(user=None):
             all_unique_words_dict['allUniqueWords'].append(
                 {
                 'word': record[0],
-                'count': record[1]
+                'count': record[1],
+                'wordLength': len(record[0]),
                 }
             )
             l2h_unique_words_dict['lowToHighUniqueWords'].append(
                 {
                 'word': record[0],
-                'count': record[1]
+                'count': record[1],
+                'wordLength': len(record[0]),
                 }
             )
 
-        all_unique_words_dict['allUniqueWords'].sort(key=lambda x: x['word'], reverse=False)
-        l2h_unique_words_dict['lowToHighUniqueWords'].sort(key=lambda x: (x['count'], x['word']), reverse=False)
+        all_unique_words_dict['allUniqueWords'].sort(key=lambda x: (x['wordLength'], x['word']), reverse=False)
+        l2h_unique_words_dict['lowToHighUniqueWords'].sort(key=lambda x: (x['count'], x['wordLength'], x['word']), reverse=False)
 
         totals_dict['totalUniqueWords'] = len(all_unique_words_dict['allUniqueWords'])
 
