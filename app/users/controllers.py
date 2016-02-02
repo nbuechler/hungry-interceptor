@@ -136,9 +136,9 @@ def query_users_contains_unique_word(user=None):
 # TODO : MATCH ()-[r:DID]->(a)-[c:CONTAINS]->(e)-[cc:CONTAINS]->(l) RETURN a, e, l
 
 '''
-Method to get all Experiences contained by activity:
+Method to get all the Logs contained by Experiences contained by Activities:
 
-Activity contains experience
+Activity contains experience contains log
 MATCH ()-[r:DID]->(a)-[c:CONTAINS]->(e)-[cc:CONTAINS]->(l) RETURN a, e, l
 '''
 
@@ -190,8 +190,8 @@ def query_activities_contains_experiences(user=None):
 
         main_return_dict['all'].append(data_dict)
         main_return_dict['all'].append(agr_data_dict)
-        main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of experiences and their relationship to the activities'})
-        main_return_dict['all'].append({'description_secondary': 'If a node has no links, it will not be displayed!'})
+        main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of logs and their relationship to the activities via experiences'})
+        main_return_dict['all'].append({'description_secondary': 'If an activity has an experience with no log, it will not be displayed. Additionally, this implies that the activity must have have an experience to be displayed.'})
         main_return_dict['all'].append({'title': 'Experience Clusters'})
         main_return_dict['all'].append(all_links_dict)
         main_return_dict['all'].append(all_nodes_dict)
