@@ -199,7 +199,7 @@ def intercepts_create_records():
                             content=json_dict.get('physicContent'),
                             nodeType='sublog',
                             )
-                        log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
+                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
                         user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
                         secure_graph1.create(user_described_sublog)
@@ -224,7 +224,7 @@ def intercepts_create_records():
                             content=json_dict.get('emotionContent'),
                             nodeType='sublog',
                             )
-                        log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
+                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
                         user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
                         secure_graph1.create(user_described_sublog)
@@ -248,7 +248,7 @@ def intercepts_create_records():
                             content=json_dict.get('academicContent'),
                             nodeType='sublog',
                             )
-                        log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
+                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
                         user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
                         secure_graph1.create(user_described_sublog)
@@ -272,7 +272,7 @@ def intercepts_create_records():
                             content=json_dict.get('communeContent'),
                             nodeType='sublog',
                             )
-                        log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
+                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
                         user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
                         secure_graph1.create(user_described_sublog)
@@ -296,7 +296,7 @@ def intercepts_create_records():
                             content=json_dict.get('etherContent'),
                             nodeType='sublog',
                             )
-                        log_contains_sub = Relationship(new_log_node, "CONTAINS", new_sub_log_node)
+                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
                         user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
                         secure_graph1.create(user_described_sublog)
