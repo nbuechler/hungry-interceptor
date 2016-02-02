@@ -142,8 +142,8 @@ Activity contains experience contains log
 MATCH ()-[r:DID]->(a)-[c:CONTAINS]->(e)-[cc:CONTAINS]->(l) RETURN a, e, l
 '''
 
-@users.route('/contains/experience/<user>')
-def query_activities_contains_experiences(user=None):
+@users.route('/did/activity_with_log/<user>')
+def query_activities_contains_logs(user=None):
         cypher = secure_graph1.cypher
         # Create a dictionary to hold the main object
         main_return_dict = {'all' : []}
