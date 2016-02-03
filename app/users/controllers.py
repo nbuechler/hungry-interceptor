@@ -168,12 +168,20 @@ def query_activities_contains_logs(user=None):
         # Create a dictionary to hold all the nodes
         experience_nodes_dict = {'experienceNodes': []}
 
+        # Create a dictionary to hold all the nodes
+        log_nodes_dict = {'logNodes': []}
+
         node_number = 0
 
         ## Assuming that all the activities are queried only when each of the experiences are then queried
         current_activity_id_for_experience_nodes = ''
+        current_experience_id_for_log_nodes = ''
         current_node_number_for_activity_id = node_number
+        current_node_number_for_experience_id = node_number
+
+        # Each record is the smalles unit of the relationship, in this case logs
         for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:DID]->(activity)-[c:CONTAINS]->(experience)-[cc:CONTAINS]->(log) RETURN activity,experience,log"):
+            print record
             if(current_activity_id_for_experience_nodes != record[0].properties.get('activity_id')):
                 current_node_number_for_activity_id = node_number
                 node_number += 1
@@ -197,6 +205,7 @@ def query_activities_contains_logs(user=None):
         main_return_dict['all'].append(all_nodes_dict)
         main_return_dict['all'].append(activity_nodes_dict)
         main_return_dict['all'].append(experience_nodes_dict)
+        main_return_dict['all'].append(log_nodes_dict)
         main_return_dict['all'].append({'totalLinks': len(all_links_dict['allLinks'])})
         main_return_dict['all'].append({'totalNodes': len(all_nodes_dict['allNodes'])})
         main_return_dict['all'].append({'totalActivities': len(activity_nodes_dict['activityNodes'])})
