@@ -185,8 +185,7 @@ def query_activities_contains_logs(user=None):
             print record
 
             if(current_experience_id_for_log_nodes != record[1].properties.get('experience_id')):
-                current_node_number_for_experience_id = node_number
-                node_number += 1
+                # node_number += 1
                 print '======='+ str(node_number) +'======='
 
 
@@ -202,6 +201,7 @@ def query_activities_contains_logs(user=None):
                 print record[0].properties.get('activity_id') # activity properties
                 print record[1].properties # experience properties
                 experience_nodes_dict['experienceNodes'].append(record[1].properties)
+                current_node_number_for_experience_id = node_number
                 node_number += 1
 
 
