@@ -173,7 +173,7 @@ def query_activities_contains_logs(user=None):
         ## Assuming that all the activities are queried only when each of the experiences are then queried
         current_activity_id_for_experience_nodes = ''
         current_node_number_for_activity_id = node_number
-        for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:DID]->(activity)-[c:CONTAINS]->(experience) RETURN activity,experience"):
+        for record in cypher.execute("MATCH (u:User {user_id: '" + user + "'})-[r:DID]->(activity)-[c:CONTAINS]->(experience)-[cc:CONTAINS]->(log) RETURN activity,experience,log"):
             if(current_activity_id_for_experience_nodes != record[0].properties.get('activity_id')):
                 current_node_number_for_activity_id = node_number
                 node_number += 1
