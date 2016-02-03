@@ -186,14 +186,19 @@ def query_activities_contains_logs(user=None):
                 current_node_number_for_activity_id = node_number
                 node_number += 1
                 print '======='+ str(node_number) +'======='
-                all_nodes_dict['allNodes'].append(record[0].properties)
-                activity_nodes_dict['activityNodes'].append(record[0].properties)
-                current_activity_id_for_experience_nodes = record[0].properties.get('activity_id')
-            all_links_dict['allLinks'].append({"source": current_node_number_for_activity_id, "target":  node_number})
-            all_nodes_dict['allNodes'].append(record[1].properties)
-            print record[0].properties.get('activity_id') # activity properties
-            print record[1].properties # experience properties
-            experience_nodes_dict['experienceNodes'].append(record[1].properties)
+                if(current_experience_id_for_log_nodes != record[0].properties.get('experience_id')):
+                    current_node_number_for_experience_id = node_number
+                    node_number += 1
+                    print '======='+ str(node_number) +'======='
+                    all_nodes_dict['allNodes'].append(record[0].properties)
+                    activity_nodes_dict['activityNodes'].append(record[0].properties)
+                    current_experience_id_for_experience_nodes = record[0].properties.get('experience_id')
+                all_links_dict['allLinks'].append({"source": current_node_number_for_experience_id, "target":  node_number})
+                all_nodes_dict['allNodes'].append(record[1].properties)
+                experience_nodes_dict['experienceNodes'].append(record[1].properties)
+            all_links_dict['allLinks'].append({"source": current_node_number_for_experience_id, "target":  node_number})
+            all_nodes_dict['allNodes'].append(record[2].properties)
+            log_nodes_dict['logNodes'].append(record[2].properties)
             node_number += 1
 
         main_return_dict['all'].append(data_dict)
@@ -210,5 +215,6 @@ def query_activities_contains_logs(user=None):
         main_return_dict['all'].append({'totalNodes': len(all_nodes_dict['allNodes'])})
         main_return_dict['all'].append({'totalActivities': len(activity_nodes_dict['activityNodes'])})
         main_return_dict['all'].append({'totalExperiences': len(experience_nodes_dict['experienceNodes'])})
+        main_return_dict['all'].append({'totalExperiences': len(log_nodes_dict['logNodes'])})
 
         return jsonify(**main_return_dict)
