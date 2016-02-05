@@ -213,28 +213,6 @@ def query_activities_contains_logs(user=None):
             log_nodes_dict['logNodes'].append(record[2].properties)
             node_number += 1
 
-            # if(current_activity_id_for_experience_nodes != record[0].properties.get('activity_id')):
-            #     current_node_number_for_activity_id = node_number
-            #     # node_number += 1
-            #     print '======='+ str(node_number) +'==!!1====='
-            #     print '======='+ current_activity_id_for_experience_nodes +'======='
-            #     #########
-            #     if(current_experience_id_for_log_nodes != record[1].properties.get('experience_id')):
-            #         current_node_number_for_experience_id = node_number
-            #         # node_number += 1
-            #         print '======='+ str(node_number) +'======='
-            #         all_nodes_dict['allNodes'].append(record[0].properties)
-            #         activity_nodes_dict['activityNodes'].append(record[0].properties)
-            #         current_experience_id_for_experience_nodes = record[1].properties.get('experience_id')
-            #     #########
-            #     all_links_dict['allLinks'].append({"source": current_node_number_for_activity_id, "target":  node_number})
-            #     all_nodes_dict['allNodes'].append(record[1].properties)
-            #     experience_nodes_dict['experienceNodes'].append(record[1].properties)
-            # all_links_dict['allLinks'].append({"source": current_node_number_for_experience_id, "target":  node_number})
-            # all_nodes_dict['allNodes'].append(record[2].properties)
-            # log_nodes_dict['logNodes'].append(record[2].properties)
-            # node_number += 1
-
         main_return_dict['all'].append(data_dict)
         main_return_dict['all'].append(agr_data_dict)
         main_return_dict['all'].append({'description_primary': 'This information is to show the clusters of logs and their relationship to the activities via experiences'})
