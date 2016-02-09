@@ -46,6 +46,16 @@ def intercepts_drop_constraint():
 
 # Move a user and some relationship to the neo4j database
 ## A word_length is the number of words in the descriptionArrayLength
+
+
+'''
+This method creats a single log node
+'''
+@intercepts.route('/mongo2neo/intercepts_create_single_log')
+def intercepts_create_single_log():
+    print '====create single log node===='
+    return 'success'
+
 '''
 This method deletes all the records then adds all relationships and nodes.
 It relies on there being a mongo database. **VERY IMPORTANT**
