@@ -18,7 +18,7 @@ deploy:
   access_key_id: AKIAIEAMLPHO36E7S73Q
   secret_access_key: *7199400
   bucket: hungry-interceptor-bucket
-  key: latest.zip
+  key: latest.zip # This is the zip that goes in s3
   bundle_type: zip
   application: hungry-interceptor
   deployment_group: logro-development-group
