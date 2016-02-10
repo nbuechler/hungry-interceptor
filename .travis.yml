@@ -1,17 +1,29 @@
 language: python
 python:
-  - "2.7"
-# command to install dependencies
-install: "pip install -r requirements.txt"
-# command to run tests
+- '2.7'
+install: pip install -r requirements.txt
 script: nosetests
-
 deploy:
-    provider: codedeploy
-    access_key_id: AKIAIEAMLPHO36E7S73Q
-    secret_access_key: &1
-      secure: LnrCuX9qGbIhBqS2H3467ANtaRvGy4Ki6dPU9Zehl99VfUpD/BvRqBbELFpIlH2BWq30TaWkB5KnF4rRRCMkuYJlzpi5DLaBo9y3xWP8lNKEUbeQHFZmkgTd9ZKtd1YGtC2rXHBNI1vLBbYnPafGJc9RvRBiF7jKRSzXdD6XRVhahrbPJzBr5XMGOBs7sQQVlTCijFkqp+TAgn4KU3AniYjaOtIyqg5VgK9zB0FsXXO+Ma7Oredv+lR3sPeFMHi078duyADDMlbssiWsg8jEZsABrWHhEn0yFSKXC1FSsSB6LwDOrR05v7MGXAvkyf7WmGOXw1VSy5nvK/bp8aFkpiU3EMOauzppdrwpJ5gQTuCFyjF6EaH3HvVxtWWxUX/JES//JAc/5RY0546QYArKyRs6F7UN7CSLuqZ2xe1RjScN6zQd9KRId8I68/QLjD3ejYvIeNRc3O4oauvIgVzkpoC6/G7Oh7Mde5Qb6A+b75M2oi1PyR+tmYpnYnzHxNsG+9OJOI7XFD7HIYSi2x+7IPA59Qe81vLVGtqxhp/K9+D6fHz0heUYOxgNuoxhlqHzW+Bp08YzgzeO/cbIXPKvdSicehepYDLEPZP0jk7xF5Q5hV18V0p36iDPPT4Op2aycg/WL4OrVD2PxPcTrvf9DY0lgnF0cCAuetI5IJlKnJ0=
-    bucket: "hungry-interceptor-bucket"
-    deployment_group: logro-development-group
-    on:
-      all_branches: true
+- provider: s3
+  access_key_id: AKIAIEAMLPHO36E7S73Q
+  secret_access_key: &7199400
+    secure: tASOOMKz7Vi0cCnVgQZBt5F3PZUHrNQ8mXoMj291rMBS+doi9M6Jev1LRrzOl6tpjifO5NgvjiG3G/5zfdaHMJPBX1pSi0QOjfEVfnou8gbFhuCKJp7aWS/7sBXOpcgd0vvnQchn/ph9atGLzWfwrx4BiySiftOy0uBLZ5QNQPe7rxhaRP//wGVnsOWlBZ2QWNXT0XkPCADwKavWCGVbj0pH/VtEm6hXmFCA9CzohnriYOozQXcWHcN+VMDIkZEAhcH0beF2NLGPHlarP1UuwUEv2IrEHCoBtVqjknBgoNrf60BNQtT6IksoD5FrOQKl0KErpAcoZMmDPq8SLrbHjKzLzmB67dJa/+y7s+22vcbwvPjbFDQWUpS4JX6CWX+29sJSzJIMkH2GbeOF2nkr3kiA2SChcZACAT/2dCQSkGtNdSHTdGpe0koh52b58j4A9wNLpwmPDksXYOkoF6Eg5cA2DkI7PnTufCTJuW09GeX3Lvd/Q6rX7+Hs7M3nS4QX+iFwkaVG6CFBEcqS/QA7SWshu2jj9YhqRkdV2EyOvPYSf8Gd1N4cftWrnIT+gcmWtHKluvKV5e1FhN1t5Y/Q1/C34PpbfYhmoM3GusycNmKpKZQRQJGKa3q3RuQECqH9ZuusnxJSpRW/pcmhEwOc8Og4O05lkWAt1GO2vVxJ8vw=
+  local_dir: dpl_cd_upload
+  skip_cleanup: true
+  on: &6923360
+    repo: nbuechler/hungry-interceptor
+    branch: develop
+  bucket: hungry-interceptor-bucket
+- provider: codedeploy
+  access_key_id: AKIAIEAMLPHO36E7S73Q
+  secret_access_key: *7199400
+  bucket: hungry-interceptor-bucket
+  key: latest.zip
+  bundle_type: zip
+  application: hungry-interceptor
+  deployment_group: logro-development-group
+  on: *6923360
+before_deploy:
+  - zip -r latest *
+  - mkdir -p dpl_cd_upload
+  - mv latest.zip dpl_cd_upload/latest.zip
