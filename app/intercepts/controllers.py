@@ -51,9 +51,19 @@ def intercepts_drop_constraint():
 '''
 This method creats a single log node
 '''
-@intercepts.route('/mongo2neo/intercepts_create_single_log')
-def intercepts_create_single_log():
+@intercepts.route('/mongo2neo/intercepts_create_single_log/<log>')
+def intercepts_create_single_log(log=None):
     print '====create single log node===='
+    print log
+    return 'success'
+
+'''
+This method updates a single log node
+'''
+@intercepts.route('/mongo2neo/intercepts_update_single_log/<log>')
+def intercepts_update_single_log(log=None):
+    print '====update single log node===='
+    print log
     return 'success'
 
 '''
