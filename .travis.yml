@@ -7,11 +7,6 @@ install: "pip install -r requirements.txt"
 script: nosetests
 
 deploy:
-    provider: s3
-    access_key_id: AKIAIEAMLPHO36E7S73Q
-    secret_access_key: &1
-      secure: LnrCuX9qGbIhBqS2H3467ANtaRvGy4Ki6dPU9Zehl99VfUpD/BvRqBbELFpIlH2BWq30TaWkB5KnF4rRRCMkuYJlzpi5DLaBo9y3xWP8lNKEUbeQHFZmkgTd9ZKtd1YGtC2rXHBNI1vLBbYnPafGJc9RvRBiF7jKRSzXdD6XRVhahrbPJzBr5XMGOBs7sQQVlTCijFkqp+TAgn4KU3AniYjaOtIyqg5VgK9zB0FsXXO+Ma7Oredv+lR3sPeFMHi078duyADDMlbssiWsg8jEZsABrWHhEn0yFSKXC1FSsSB6LwDOrR05v7MGXAvkyf7WmGOXw1VSy5nvK/bp8aFkpiU3EMOauzppdrwpJ5gQTuCFyjF6EaH3HvVxtWWxUX/JES//JAc/5RY0546QYArKyRs6F7UN7CSLuqZ2xe1RjScN6zQd9KRId8I68/QLjD3ejYvIeNRc3O4oauvIgVzkpoC6/G7Oh7Mde5Qb6A+b75M2oi1PyR+tmYpnYnzHxNsG+9OJOI7XFD7HIYSi2x+7IPA59Qe81vLVGtqxhp/K9+D6fHz0heUYOxgNuoxhlqHzW+Bp08YzgzeO/cbIXPKvdSicehepYDLEPZP0jk7xF5Q5hV18V0p36iDPPT4Op2aycg/WL4OrVD2PxPcTrvf9DY0lgnF0cCAuetI5IJlKnJ0=
-
     provider: codedeploy
     access_key_id: AKIAIEAMLPHO36E7S73Q
     secret_access_key: &1
