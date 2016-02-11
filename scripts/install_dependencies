@@ -1,3 +1,2 @@
-echo which pip
-echo 'here'
+pip install py2neo==2.0.8
 pip install -r ../requirements.txt
