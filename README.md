@@ -37,6 +37,9 @@ After learning about basic neural network models and frameworks, it would be nea
 
 Tensorflow just came out a few weeks ago from early December 2015.
 
+#Scripts folder
+The scripts folder is for automation
+
 #TODO: More details about this here
 
 
