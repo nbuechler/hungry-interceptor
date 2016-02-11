@@ -1,1 +1,3 @@
+echo which pip
+echo 'here'
 pip install -r ../requirements.txt
