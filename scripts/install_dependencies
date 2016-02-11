@@ -1,2 +1,1 @@
-pip
-echo 'hi'
+pip install -r ../requirements.txt
