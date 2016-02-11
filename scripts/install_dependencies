@@ -1,2 +1,2 @@
-pip install py2neo==2.0.8
-pip install -r ../requirements.txt
+pip install --upgrade pip
+pip install --upgrade -r ../requirements.txt
