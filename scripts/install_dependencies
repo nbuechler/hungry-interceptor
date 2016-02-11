@@ -1,2 +1,2 @@
-pip install --upgrade pip
-pip install --upgrade -r ../requirements.txt
+sudo pip install --upgrade pip
+sudo pip install --upgrade -r ../requirements.txt
