@@ -1,2 +1,2 @@
-pip install --upgrade pip
-pip install --upgrade -r ../requirements.txt
+pip
+echo 'hi'
