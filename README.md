@@ -3,6 +3,7 @@ Intercepts data, does something with it, stores it
 Storing happens in a neo4j database.
 This app is going to be a gate keeper for the rest of the engines, vroom, vroom, go??
 
+
 Its primary function is getting data from its counterpart in the front end side of the app. Or sending data it to its counterpart via its mechanisms and apis.
 
 #Steps
@@ -36,6 +37,9 @@ python app/runserver.py
 After learning about basic neural network models and frameworks, it would be neat to see how this project might interact with frameworks like these: Blocks, Lasagne, Keras, and/or Theano... but there is a lot of room for growth and developing what we all might do with the data. We probably need A LOT more.
 
 Tensorflow just came out a few weeks ago from early December 2015.
+
+#Scripts folder
+The scripts folder is for automation
 
 #TODO: More details about this here
 
