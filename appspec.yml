@@ -1,17 +1,22 @@
-version: 0.0
+version: 0.1
 os: linux
 files:
-  - source: /index.html
+  - source: /
     destination: /var/www/html/
 hooks:
   BeforeInstall:
     - location: scripts/install_dependencies
       timeout: 300
       runas: root
+  ApplicationStart:
     - location: scripts/start_server
       timeout: 300
       runas: root
   ApplicationStop:
-    - location: scripts/stop_server
+    - location: scripts/killall_python
       timeout: 300
       runas: root
+
+
+# Script does not exist at specified location:
+# /opt/codedeploy-agent/deployment-root/38fb66c6-ae44-403a-9f90-82bf507ef132/d-FM20HDO0E/deployment-archive/scripts/install_dependencies
