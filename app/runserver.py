@@ -11,4 +11,4 @@ app.register_blueprint(activities, url_prefix='/activities')
 app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(intercepts, url_prefix='/intercepts')
 
-app.run(debug=True, host='0.0.0.0')
+app.run(debug=True, host='0.0.0.0', port=80)
