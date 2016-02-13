@@ -1,5 +1,8 @@
 version: 0.0
 os: linux
+files:
+  - source: source
+    destination: /webapps/hungry-interceptor
 hooks:
   BeforeInstall:
     - location: scripts/install_dependencies
