@@ -1,3 +1,9 @@
-ls
-pwd
-python /webapps/hungry-interceptor/app/runserver.py
+run()
+{
+    nohup python ../app/runserver.py
+    exit 0
+}
+
+echo this is begin
+run
+echo end

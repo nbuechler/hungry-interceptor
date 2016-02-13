@@ -58,3 +58,6 @@ target/
 
 # virtualenv
 venv/
+
+#nohup
+nohup.out
