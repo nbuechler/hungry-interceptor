@@ -1,1 +1,3 @@
-python ../app/runserver.py
+ls
+pwd
+python /webapps/hungry-interceptor/app/runserver.py

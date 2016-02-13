@@ -41,6 +41,8 @@ Tensorflow just came out a few weeks ago from early December 2015.
 
 #Scripts folder
 The scripts folder is for automation
+If using aws, I encountered problems the 2nd week of Feb, 2016. DO NOT, FOR THE SAKE OF SANITY, UPGRADE PIP from 6.1.1 OR AWS EC2 will bite you.
+
 
 #TODO: More details about this here
 
