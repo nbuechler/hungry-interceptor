@@ -1,3 +1,13 @@
-pwd
-ls
-pip install -r ../requirements.txt
+pip install Flask==0.10.1
+pip install Flask-Cors==2.1.0
+pip install Flask-PyMongo==0.3.1
+pip install Flask-WTF==0.11
+pip install itsdangerous==0.24
+pip install Jinja2==2.8
+pip install MarkupSafe==0.23
+pip install py2neo==2.0.8
+pip install pymongo==2.8.1
+pip install six==1.10.0
+pip install Werkzeug==0.11.3
+pip install wheel==0.24.0
+pip install WTForms==2.0.2
