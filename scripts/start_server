@@ -4,6 +4,6 @@ run()
     return 0
 }
 
-echo this is begin
+echo this is before the run function
 run
-echo end
+echo end start_server script
