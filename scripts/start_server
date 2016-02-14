@@ -1,9 +1,10 @@
 run()
 {
-    nohup sudo python ../app/runserver.py &
+    nohup sudo python /webapps/hungry-interceptor/app/runserver.py &
     return 0
 }
 
+pwd
 echo this is before the run function
 run
 echo end start_server script
