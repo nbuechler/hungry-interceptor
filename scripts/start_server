@@ -1,6 +1,6 @@
 run()
 {
-    nohup python ../app/runserver.py &
+    nohup sudo python ../app/runserver.py &
     return 0
 }
 
