@@ -5,6 +5,12 @@ This app is going to be a gate keeper for the rest of the engines, vroom, vroom,
 
 Well yes.
 
+##Overview
+The app is in a state of flux as new features get added. There is a future plan to add another application that acts as a natrual language processing engine. Using NLTK, among other libraries, this other app would call some of the apis. (Not sure which databases it would edit
+
+
+##Description
+
 Its primary function is getting data from its counterpart in the front end side of the app. Or sending data it to its counterpart via its mechanisms and apis.
 
 #Steps
