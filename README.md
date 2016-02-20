@@ -13,6 +13,14 @@ The app is in a state of flux as new features get added. There is a future plan 
 
 Its primary function is getting data from its counterpart in the front end side of the app. Or sending data it to its counterpart via its mechanisms and apis.
 
+##Mission
+
+Not sure what to call this:
+...
+I want to be able to push a button, and the metaphorical path lights up and shows me exactly how others have  accomplished similar objectives to my goal. In the case of multiple members of a culture, everyone gets to learn from everyone's experiences, and everyone's paths overlap in a truly collaborative manner.
+...
+
+
 #Steps
 .. first, install virtualenv if not done so already -- https://virtualenv.pypa.io/en/latest/installation.html
 
