@@ -49,7 +49,7 @@ def intercepts_drop_constraint():
 
 
 '''
-This method creates a single activity node
+This method CREATES a single activity node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_create_single_activity/<activity>', methods=['POST'])
 def intercepts_create_single_activity(activity=None):
@@ -58,7 +58,7 @@ def intercepts_create_single_activity(activity=None):
     return 'success'
 
 '''
-This method updates a single activity node
+This method UPDATES a single activity node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_update_single_activity/<activity>', methods=['PUT'])
 def intercepts_update_single_activity(activity=None):
@@ -67,7 +67,16 @@ def intercepts_update_single_activity(activity=None):
     return 'success'
 
 '''
-This method creates a single experience node
+This method DESTROYS a single activity node from neo4j
+'''
+@intercepts.route('/mongo2neo/intercepts_destroy_single_activity/<activity>', methods=['DELETE'])
+def intercepts_destroy_single_activity(activity=None):
+    print '====update single activity node===='
+    print activity
+    return 'success'
+
+'''
+This method CREATES a single experience node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_create_single_experience/<experience>', methods=['POST'])
 def intercepts_create_single_experience(experience=None):
@@ -76,7 +85,7 @@ def intercepts_create_single_experience(experience=None):
     return 'success'
 
 '''
-This method updates a single experience node
+This method UPDATES a single experience node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_update_single_experience/<experience>', methods=['PUT'])
 def intercepts_update_single_experience(experience=None):
@@ -85,7 +94,16 @@ def intercepts_update_single_experience(experience=None):
     return 'success'
 
 '''
-This method creates a single log node
+This method DESTROYS a single experience node from neo4j
+'''
+@intercepts.route('/mongo2neo/intercepts_destroy_single_experience/<experience>', methods=['DELETE'])
+def intercepts_destroy_single_experience(experience=None):
+    print '====update single experience node===='
+    print experience
+    return 'success'
+
+'''
+This method CREATES a single log node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_create_single_log/<log>', methods=['POST'])
 def intercepts_create_single_log(log=None):
@@ -94,10 +112,19 @@ def intercepts_create_single_log(log=None):
     return 'success'
 
 '''
-This method updates a single log node
+This method UPDATES a single log node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_update_single_log/<log>', methods=['PUT'])
 def intercepts_update_single_log(log=None):
+    print '====update single log node===='
+    print log
+    return 'success'
+
+'''
+This method DESTROYS a single log node from neo4j
+'''
+@intercepts.route('/mongo2neo/intercepts_destroy_single_log/<log>', methods=['DELETE'])
+def intercepts_destroy_single_log(log=None):
     print '====update single log node===='
     print log
     return 'success'
@@ -106,28 +133,6 @@ def intercepts_update_single_log(log=None):
 '''
 This method only deletes all the records.
 It relies on there being a mongo database. **VERY IMPORTANT**
-'''
-
-@intercepts.route('/mongo2neo/intercepts_delete_records')
-def intercepts_delete_records():
-
-    # Clear the database
-    secure_graph1.delete_all()
-
-    return 'success'
-
-'''
-This method deletes all the records then adds all relationships and nodes.
-It relies on there being a mongo database. **VERY IMPORTANT**
-
-Here are useful queries to find all the records for a user for a given node attr:
-
---Find all the nodes that are words with a name of name 'spoken' by a user with an email address of email--
-MATCH (n:User {email: "<email>"})-[r:SPOKE]-(a:Word {name: "<name>"}) return a
-
---Find all the distinct nodes that are 'spoken' by a user--
-MATCH (n:User)-[r:SPOKE]-(a) return DISTINCT a
-
 '''
 
 @intercepts.route('/mongo2neo/intercepts_create_records')
@@ -388,6 +393,28 @@ def intercepts_create_records():
 
 
     return 'success'
+
+@intercepts.route('/mongo2neo/intercepts_delete_records')
+def intercepts_delete_records():
+
+    # Clear the database
+    secure_graph1.delete_all()
+
+    return 'success'
+
+'''
+This method deletes all the records then adds all relationships and nodes.
+It relies on there being a mongo database. **VERY IMPORTANT**
+
+Here are useful queries to find all the records for a user for a given node attr:
+
+--Find all the nodes that are words with a name of name 'spoken' by a user with an email address of email--
+MATCH (n:User {email: "<email>"})-[r:SPOKE]-(a:Word {name: "<name>"}) return a
+
+--Find all the distinct nodes that are 'spoken' by a user--
+MATCH (n:User)-[r:SPOKE]-(a) return DISTINCT a
+
+'''
 
 # Move an event - as a year, month, or day - and some relationship to the neo4j database
 '''
