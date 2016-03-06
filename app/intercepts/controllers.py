@@ -79,6 +79,15 @@ MATCH (n:User {email: "<email>"})-[r:SPOKE]-(a:Word {name: "<name>"}) return a
 MATCH (n:User)-[r:SPOKE]-(a) return DISTINCT a
 
 '''
+
+@intercepts.route('/mongo2neo/intercepts_delete_records')
+def intercepts_delete_records():
+
+    # Clear the database
+    secure_graph1.delete_all()
+
+    return 'success'
+
 @intercepts.route('/mongo2neo/intercepts_create_records')
 def intercepts_create_records():
 
