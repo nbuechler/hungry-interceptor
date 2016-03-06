@@ -71,7 +71,7 @@ This method DESTROYS a single activity node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_destroy_single_activity/<activity>', methods=['DELETE'])
 def intercepts_destroy_single_activity(activity=None):
-    print '====update single activity node===='
+    print '====destroy single activity node===='
     print activity
     return 'success'
 
@@ -98,7 +98,7 @@ This method DESTROYS a single experience node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_destroy_single_experience/<experience>', methods=['DELETE'])
 def intercepts_destroy_single_experience(experience=None):
-    print '====update single experience node===='
+    print '====destroy single experience node===='
     print experience
     return 'success'
 
@@ -125,7 +125,7 @@ This method DESTROYS a single log node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_destroy_single_log/<log>', methods=['DELETE'])
 def intercepts_destroy_single_log(log=None):
-    print '====update single log node===='
+    print '====destroy single log node===='
     print log
     return 'success'
 
