@@ -49,7 +49,43 @@ def intercepts_drop_constraint():
 
 
 '''
-This method creats a single log node
+This method creates a single activity node
+'''
+@intercepts.route('/mongo2neo/intercepts_create_single_activity/<activity>')
+def intercepts_create_single_activity(activity=None):
+    print '====create single activity node===='
+    print activity
+    return 'success'
+
+'''
+This method updates a single activity node
+'''
+@intercepts.route('/mongo2neo/intercepts_update_single_activity/<activity>')
+def intercepts_update_single_activity(activity=None):
+    print '====update single activity node===='
+    print activity
+    return 'success'
+
+'''
+This method creates a single experience node
+'''
+@intercepts.route('/mongo2neo/intercepts_create_single_experience/<experience>')
+def intercepts_create_single_experience(experience=None):
+    print '====create single experience node===='
+    print experience
+    return 'success'
+
+'''
+This method updates a single experience node
+'''
+@intercepts.route('/mongo2neo/intercepts_update_single_experience/<experience>')
+def intercepts_update_single_experience(experience=None):
+    print '====update single experience node===='
+    print experience
+    return 'success'
+
+'''
+This method creates a single log node
 '''
 @intercepts.route('/mongo2neo/intercepts_create_single_log/<log>')
 def intercepts_create_single_log(log=None):
