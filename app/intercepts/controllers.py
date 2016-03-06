@@ -60,7 +60,7 @@ def intercepts_create_single_activity(activity=None):
 '''
 This method updates a single activity node
 '''
-@intercepts.route('/mongo2neo/intercepts_update_single_activity/<activity>', methods=['POST'])
+@intercepts.route('/mongo2neo/intercepts_update_single_activity/<activity>', methods=['PUT'])
 def intercepts_update_single_activity(activity=None):
     print '====update single activity node===='
     print activity
@@ -78,7 +78,7 @@ def intercepts_create_single_experience(experience=None):
 '''
 This method updates a single experience node
 '''
-@intercepts.route('/mongo2neo/intercepts_update_single_experience/<experience>', methods=['POST'])
+@intercepts.route('/mongo2neo/intercepts_update_single_experience/<experience>', methods=['PUT'])
 def intercepts_update_single_experience(experience=None):
     print '====update single experience node===='
     print experience
@@ -96,7 +96,7 @@ def intercepts_create_single_log(log=None):
 '''
 This method updates a single log node
 '''
-@intercepts.route('/mongo2neo/intercepts_update_single_log/<log>', methods=['POST'])
+@intercepts.route('/mongo2neo/intercepts_update_single_log/<log>', methods=['PUT'])
 def intercepts_update_single_log(log=None):
     print '====update single log node===='
     print log
