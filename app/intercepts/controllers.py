@@ -49,9 +49,45 @@ def intercepts_drop_constraint():
 
 
 '''
-This method creats a single log node
+This method creates a single activity node
 '''
-@intercepts.route('/mongo2neo/intercepts_create_single_log/<log>')
+@intercepts.route('/mongo2neo/intercepts_create_single_activity/<activity>', methods=['POST'])
+def intercepts_create_single_activity(activity=None):
+    print '====create single activity node===='
+    print activity
+    return 'success'
+
+'''
+This method updates a single activity node
+'''
+@intercepts.route('/mongo2neo/intercepts_update_single_activity/<activity>', methods=['POST'])
+def intercepts_update_single_activity(activity=None):
+    print '====update single activity node===='
+    print activity
+    return 'success'
+
+'''
+This method creates a single experience node
+'''
+@intercepts.route('/mongo2neo/intercepts_create_single_experience/<experience>', methods=['POST'])
+def intercepts_create_single_experience(experience=None):
+    print '====create single experience node===='
+    print experience
+    return 'success'
+
+'''
+This method updates a single experience node
+'''
+@intercepts.route('/mongo2neo/intercepts_update_single_experience/<experience>', methods=['POST'])
+def intercepts_update_single_experience(experience=None):
+    print '====update single experience node===='
+    print experience
+    return 'success'
+
+'''
+This method creates a single log node
+'''
+@intercepts.route('/mongo2neo/intercepts_create_single_log/<log>', methods=['POST'])
 def intercepts_create_single_log(log=None):
     print '====create single log node===='
     print log
@@ -60,10 +96,24 @@ def intercepts_create_single_log(log=None):
 '''
 This method updates a single log node
 '''
-@intercepts.route('/mongo2neo/intercepts_update_single_log/<log>')
+@intercepts.route('/mongo2neo/intercepts_update_single_log/<log>', methods=['POST'])
 def intercepts_update_single_log(log=None):
     print '====update single log node===='
     print log
+    return 'success'
+
+
+'''
+This method only deletes all the records.
+It relies on there being a mongo database. **VERY IMPORTANT**
+'''
+
+@intercepts.route('/mongo2neo/intercepts_delete_records')
+def intercepts_delete_records():
+
+    # Clear the database
+    secure_graph1.delete_all()
+
     return 'success'
 
 '''
@@ -79,6 +129,7 @@ MATCH (n:User {email: "<email>"})-[r:SPOKE]-(a:Word {name: "<name>"}) return a
 MATCH (n:User)-[r:SPOKE]-(a) return DISTINCT a
 
 '''
+
 @intercepts.route('/mongo2neo/intercepts_create_records')
 def intercepts_create_records():
 
