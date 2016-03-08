@@ -55,6 +55,51 @@ This method CREATES a single activity node from neo4j
 def intercepts_create_single_activity(activity=None):
     print '====create single activity node===='
     print activity
+    print '========'
+
+    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity)}) #find all activities
+    json_activity = json.dumps(activity_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_activity, we'll call it activity_dict
+    activity_dict = json.loads(json_activity)
+    print activity_dict
+
+    print '---===--=-=-=-'
+    user_id = activity_dict.get('user').get('$oid')
+
+    user_cursor = mongo3.db.users.find({"_id": ObjectId(user_id)}) #find all activities
+    json_user = json.dumps(user_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_user, we'll call it user_dict
+    user_dict = json.loads(json_user)
+    print user_dict
+
+    print 'here'
+    # for activity in activity_cursor:
+        # print activity
+        # json_activity = json.dumps(activity, default=json_util.default)
+        # # Create a new python dictionary from the json_activity, we'll call it json_dict
+        # json_dict = json.loads(json_activity)
+        #
+        # # Create a bunch of activity nodes
+        # new_activity_node = Node("Activity",
+        #     name=json_dict.get('name'),
+        #     activity_id=json_dict.get('_id').get('$oid'),
+        #     privacy=json_dict.get('privacy'),
+        #     word_length=json_dict.get('descriptionArrayLength'),
+        #     nodeType='activity',
+        #     )
+        #
+        # for word in json_dict.get('descriptionArray'):
+        #     new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
+        #     activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
+        #     secure_graph1.create(activity_has_word)
+        #     user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        #     secure_graph1.create(user_spoke_word)
+        #
+        # user_did_activity = Relationship(new_user_node, "DID", new_activity_node)
+        # secure_graph1.create(user_did_activity)
+
     return 'success'
 
 '''
@@ -64,6 +109,14 @@ This method UPDATES a single activity node from neo4j
 def intercepts_update_single_activity(activity=None):
     print '====update single activity node===='
     print activity
+
+    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity)}) #find all activities
+    json_activity = json.dumps(activity_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_activity, we'll call it json_dict
+    json_dict = json.loads(json_activity)
+    print json_dict
+
     return 'success'
 
 '''
