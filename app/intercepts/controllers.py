@@ -50,9 +50,16 @@ def intercepts_drop_constraint():
 
 '''
 This method CREATES a single activity node from neo4j
+
+To find a user node:
+MATCH (u:User {user_id: "56db97954eca34d01404888a"}) RETURN u
+
 '''
 @intercepts.route('/mongo2neo/intercepts_create_single_activity/<activity>', methods=['POST'])
 def intercepts_create_single_activity(activity=None):
+
+    cypher = secure_graph1.cypher
+
     print '====create single activity node===='
     print activity
     print '========'
@@ -84,6 +91,9 @@ def intercepts_create_single_activity(activity=None):
     # Create a new python dictionary from the json_user, we'll call it json_dict
     json_dict = user_dict
 
+    usernode = cypher.execute("MATCH (user:User {user_id: '" + user_id + "'}) RETURN user")
+    print usernode
+
     # Create a bunch of user nodes
     new_user_node = Node("User",
         email=json_dict.get('email'),
@@ -106,7 +116,7 @@ def intercepts_create_single_activity(activity=None):
         word_length=json_dict.get('descriptionArrayLength'),
         nodeType='activity',
         )
-    
+
     for word in json_dict.get('descriptionArray'):
         new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
         activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
