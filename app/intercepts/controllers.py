@@ -79,6 +79,7 @@ def intercepts_create_single_activity(activity=None):
 
     # Create a new python dictionary from the json_user, we'll call it user_dict
     user_dict = json.loads(json_user)
+
     print user_dict
 
     print 'here'
@@ -92,7 +93,17 @@ def intercepts_create_single_activity(activity=None):
     json_dict = user_dict
 
     usernode = cypher.execute("MATCH (user:User {user_id: '" + user_id + "'}) RETURN user")
-    print usernode
+
+
+
+
+
+
+
+
+    # TODO if usernode exists then dont make a new node, use that one, otherwise create new_user_node!!
+    print '=========START HERE============='
+    print len(usernode)
 
     # Create a bunch of user nodes
     new_user_node = Node("User",
@@ -100,6 +111,13 @@ def intercepts_create_single_activity(activity=None):
         user_id=json_dict.get('_id').get('$oid'),
         nodeType='user',
         )
+
+
+
+
+
+
+
 
     ###
     # TODO: Create an external method called create activity node.
