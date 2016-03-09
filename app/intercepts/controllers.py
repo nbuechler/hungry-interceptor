@@ -71,7 +71,7 @@ def intercepts_create_single_activity(activity=None):
     activity_dict = json.loads(json_activity)
     print activity_dict
 
-    print '---===--=-=-=-'
+    print '---===----=-=-=-'
     user_id = activity_dict.get('user').get('$oid')
 
     user_cursor = mongo3.db.users.find({"_id": ObjectId(user_id)}) #find all activities
