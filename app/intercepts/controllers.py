@@ -81,43 +81,30 @@ def intercepts_create_single_activity(activity=None):
     user_dict = json.loads(json_user)
 
     print user_dict
-
     print 'here'
 
     ###
     # TODO: Create an external method called create activity node.
-    # Business logic for ACTIVITIY_NODE starts here, uses data from above.
+    # Business logic for USER_NODE starts here, uses data from above.
     ###
 
-    # Create a new python dictionary from the json_user, we'll call it json_dict
-    json_dict = user_dict
+    # Assumes either a record list of 1 or no records at all!
+    user_node_list = cypher.execute("MATCH (user:User {user_id: '" + user_id + "'}) RETURN user")
 
-    usernode = cypher.execute("MATCH (user:User {user_id: '" + user_id + "'}) RETURN user")
+    if len(user_node_list) == 0:
+        # Create a new python dictionary from the json_user, we'll call it json_dict
+        json_dict = user_dict
 
-
-
-
-
-
-
-
-    # TODO if usernode exists then dont make a new node, use that one, otherwise create new_user_node!!
-    print '=========START HERE============='
-    print len(usernode)
-
-    # Create a bunch of user nodes
-    new_user_node = Node("User",
-        email=json_dict.get('email'),
-        user_id=json_dict.get('_id').get('$oid'),
-        nodeType='user',
-        )
-
-
-
-
-
-
-
+        # Create a user node
+        user_node = Node("User",
+            email=json_dict.get('email'),
+            user_id=json_dict.get('_id').get('$oid'),
+            nodeType='user',
+            )
+    else:
+        # Don't create a new user node it already exists
+        print user_node_list[0][0]
+        user_node = user_node_list[0][0]
 
     ###
     # TODO: Create an external method called create activity node.
@@ -139,10 +126,10 @@ def intercepts_create_single_activity(activity=None):
         new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
         activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
         secure_graph1.create(activity_has_word)
-        user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        user_spoke_word = Relationship(user_node, "SPOKE", new_word_node)
         secure_graph1.create(user_spoke_word)
 
-    user_did_activity = Relationship(new_user_node, "DID", new_activity_node)
+    user_did_activity = Relationship(user_node, "DID", new_activity_node)
     secure_graph1.create(user_did_activity)
 
     return 'success'
