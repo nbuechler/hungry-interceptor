@@ -81,7 +81,6 @@ def intercepts_create_single_activity(activity=None):
     user_dict = json.loads(json_user)
 
     print user_dict
-    print 'here'
 
     ###
     # TODO: Create an external method called create activity node.
