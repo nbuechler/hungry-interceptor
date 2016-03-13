@@ -19,6 +19,18 @@ import datetime
 
 intercepts = Blueprint('intercepts', __name__)
 
+'''
+Helper functions - Create new User/Activity Relationship
+
+Takes a user node and activity node as paramaters
+'''
+def cnr_user_did_activity(user_node=None, new_activity_node=None):
+
+    user_did_activity = Relationship(user_node, "DID", new_activity_node)
+    secure_graph1.create(user_did_activity)
+
+    return 0
+
 @intercepts.route('/')
 def tester():
     print(2+2)
@@ -128,9 +140,8 @@ def intercepts_create_single_activity(activity=None):
         user_spoke_word = Relationship(user_node, "SPOKE", new_word_node)
         secure_graph1.create(user_spoke_word)
 
-    user_did_activity = Relationship(user_node, "DID", new_activity_node)
-    secure_graph1.create(user_did_activity)
-
+    cnr_user_did_activity(user_node=user_node, new_activity_node=new_activity_node)
+    
     return 'success'
 
 '''
