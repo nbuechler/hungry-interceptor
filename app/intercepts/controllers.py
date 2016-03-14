@@ -512,10 +512,10 @@ MATCH (n:User)-[r:SPOKE]-(a) return DISTINCT a
 The whole point of running this step is to store this information as a data warehouse
 
 To find all the distinct dates (event):
-    MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user
+    MATCH (u)-[r:LOGGED]->(n:Log) RETURN DISTINCT n.year, n.month, n.day, u.email
 
 To find all the sums we care about for a given date (event):
-    MATCH (n:Log) where n.year = 2016 and n.month = 1 and n.day = 6
+    MATCH (u)-[r:LOGGED]->(n:Log) where n.year = 2016 and n.month = 1 and n.day = 6
     RETURN sum(n.physicArrayLength), sum(n.academicArrayLength), sum(n.emotionArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength)
 
 To find all the nodes we care about for a given date (event):
@@ -538,9 +538,9 @@ def intercepts_create_event_supplement():
     cypher = secure_graph1.cypher
 
     # All distinct events for each give user
-    for event_record in cypher.execute("MATCH (n:Log)  RETURN DISTINCT n.year, n.month, n.day, n.user"):
-        sums = cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " +
-                              "RETURN sum(n.physicArrayLength), sum(n.emotionArrayLength), sum(n.academicArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), n.user, count(n)")[0]
+    for event_record in cypher.execute("MATCH (u)-[r:LOGGED]->(n:Log) RETURN DISTINCT n.year, n.month, n.day, u.user_id"):
+        sums = cypher.execute("MATCH (u)-[r:LOGGED]->(n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and u.user_id = '" + event_record[3] + "' " +
+                              "RETURN sum(n.physicArrayLength), sum(n.emotionArrayLength), sum(n.academicArrayLength), sum(n.communeArrayLength), sum(n.etherArrayLength), u.user_id, count(n)")[0]
 
 
         # Find the position of the max values in the list
@@ -568,7 +568,7 @@ def intercepts_create_event_supplement():
             logCount = sums[6],
             )
 
-        for log_record in cypher.execute("MATCH (n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and n.user = '" + event_record[3] + "' " + " " +
+        for log_record in cypher.execute("MATCH (u)-[r:LOGGED]->(n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and u.user_id = '" + event_record[3] + "' " + " " +
                                          "RETURN n"):
             for log_node in log_record:
                 event_includes_log = Relationship(new_event_node, "INCLUDES", log_node)
