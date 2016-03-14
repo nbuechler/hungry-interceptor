@@ -363,51 +363,42 @@ def intercepts_create_records():
         for activity in activity_cursor:
             json_activity = json.dumps(activity, default=json_util.default)
 
-            # Create a new python dictionary from the json_activity, we'll call it json_dict
+            # Create a new python dictionary from the json_activity, we'll call it activity_dict
             activity_dict = json.loads(json_activity)
 
             # Output is a new_activity_node
-            new_activity_node = cnr_user_did_activity(new_user_node=new_user_node, activity_dict=activity_dict)
+            new_activity_node = cnr_user_did_activity(
+                new_user_node=new_user_node,
+                activity_dict=activity_dict
+                )
 
             ####
             activity = activity_dict.get('_id').get('$oid')
             experience_cursor = mongo3.db.experiences.find({"firstActivity": ObjectId(activity)}) #find all experiences for an activity
             ####
-            # For every activity create a node
+            # For every experience create a node
             ####
             for experience in experience_cursor:
                 json_experience = json.dumps(experience, default=json_util.default)
 
-                # Create a new python dictionary from the json_experience, we'll call it json_dict
-                json_dict = json.loads(json_experience)
+                # Create a new python dictionary from the json_experience, we'll call it experience_dict
+                experience_dict = json.loads(json_experience)
 
-                # Create a bunch of experience nodes
-                new_experience_node = Node("Experience",
-                    name=json_dict.get('name'),
-                    experience_id=json_dict.get('_id').get('$oid'),
-                    privacy=json_dict.get('privacy'),
-                    pronoun=json_dict.get('pronoun'),
-                    word_length=json_dict.get('descriptionArrayLength'),
-                    nodeType='experience',
+                # Output is a new_experience_node
+                new_experience_node = cnr_user_experienced_experience(
+                    new_user_node=new_user_node,
+                    experience_dict=experience_dict
                     )
 
-                for word in json_dict.get('descriptionArray'):
-                    new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-                    experience_has_word = Relationship(new_experience_node, "HAS", new_word_node)
-                    secure_graph1.create(experience_has_word)
-                    user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
-                    secure_graph1.create(user_spoke_word)
-
+                # Create a new relationship for the activity/experience
                 activity_contains_experience = Relationship(new_activity_node, "CONTAINS", new_experience_node)
                 secure_graph1.create(activity_contains_experience)
-                user_experienced_experience = Relationship(new_user_node, "EXPERIENCED", new_experience_node)
-                secure_graph1.create(user_experienced_experience)
 
                 ####
-                experience = json_dict.get('_id').get('$oid')
+                experience = experience_dict.get('_id').get('$oid')
                 log_cursor = mongo3.db.logs.find({"firstExperience": ObjectId(experience)}) #find all logs for an experience
                 ####
-                # For every activity create a node
+                # For every log create a node
                 ####
                 for log in log_cursor:
                     json_log = json.dumps(log, default=json_util.default)
