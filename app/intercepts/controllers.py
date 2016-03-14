@@ -89,7 +89,7 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
     milliDate = log_dict.get('created').get('$date')
     date = datetime.datetime.fromtimestamp(milliDate/1000.0)
 
-    # Create a new experience node
+    # Create a new log node
     new_log_node = Node("Log",
         user=user,
         name=log_dict.get('name'),
@@ -115,15 +115,43 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
         nodeType='log',
         )
 
+    user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
+    secure_graph1.create(user_logged_log)
+
+    return new_log_node
+
+'''
+Helper functions - Create new User/SubLog Relationship
+cnr --> create new relationship
+Takes a user node and sublog node as paramaters
+Returns a new_log_node
+'''
+def cnr_user_described_sublog(new_user_node=None, new_log_node=None, log_dict=None):
+
+    milliDate = log_dict.get('created').get('$date')
+    date = datetime.datetime.fromtimestamp(milliDate/1000.0)
+
+    # Create a new sublog node
+    new_sub_log_node = Node("AcademicLog",
+        parentLogName=log_dict.get('name'),
+        parentLogId=log_dict.get('_id').get('$oid'),
+        privacy=log_dict.get('privacy'),
+        wordLength=log_dict.get('academicArrayLength'),
+        content=log_dict.get('academicContent'),
+        nodeType='sublog',
+        )
+
     for word in log_dict.get('descriptionArray'):
         new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-        experience_has_word = Relationship(new_experience_node, "HAS", new_word_node)
-        secure_graph1.create(experience_has_word)
+        log_has_word = Relationship(new_log_node, "HAS", new_word_node)
+        secure_graph1.create(log_has_word)
+        sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
+        secure_graph1.create(sublog_has_word)
         user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
         secure_graph1.create(user_spoke_word)
 
-    user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
-    secure_graph1.create(user_logged_log)
+    user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
+    secure_graph1.create(user_described_sublog)
 
     return new_log_node
 
