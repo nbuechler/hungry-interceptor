@@ -22,7 +22,7 @@ intercepts = Blueprint('intercepts', __name__)
 '''
 Helper functions - Create new User/Activity Relationship
 cnr --> create new relationship
-Takes a user node and activity node as paramaters
+Takes a user node and activity dict as paramaters
 Returns a new_activity_node
 '''
 def cnr_user_did_activity(new_user_node=None, activity_dict=None):
@@ -51,7 +51,7 @@ def cnr_user_did_activity(new_user_node=None, activity_dict=None):
 '''
 Helper functions - Create new User/Experience Relationship
 cnr --> create new relationship
-Takes a user node and experience node as paramaters
+Takes a user node and experience dict as paramaters
 Returns a new_activity_node
 '''
 def cnr_user_experienced_experience(new_user_node=None, experience_dict=None):
@@ -81,7 +81,7 @@ def cnr_user_experienced_experience(new_user_node=None, experience_dict=None):
 '''
 Helper functions - Create new User/Log Relationship
 cnr --> create new relationship
-Takes a user node and log node as paramaters
+Takes a user node and log dict as paramaters
 Returns a new_log_node
 '''
 def cnr_user_logged_log(new_user_node=None, log_dict=None):
@@ -91,7 +91,6 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
 
     # Create a new log node
     new_log_node = Node("Log",
-        user=user,
         name=log_dict.get('name'),
         log_id=log_dict.get('_id').get('$oid'),
         privacy=log_dict.get('privacy'),
@@ -115,6 +114,8 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
         nodeType='log',
         )
 
+    ## You might be wondering, where are the words for a log... see the 'cnr_user_described_sublog'
+
     user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
     secure_graph1.create(user_logged_log)
 
@@ -123,16 +124,13 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
 '''
 Helper functions - Create new User/SubLog Relationship
 cnr --> create new relationship
-Takes a user node and sublog node as paramaters
+Takes a user node, log node. log dict, sublog_array_name, and node_title as paramaters
 Returns a new_log_node
 '''
-def cnr_user_described_sublog(new_user_node=None, new_log_node=None, log_dict=None):
-
-    milliDate = log_dict.get('created').get('$date')
-    date = datetime.datetime.fromtimestamp(milliDate/1000.0)
+def cnr_user_described_sublog(new_user_node=None, new_log_node=None, log_dict=None, sublog_array_name=None, node_title=None):
 
     # Create a new sublog node
-    new_sub_log_node = Node("AcademicLog",
+    new_sub_log_node = Node(node_title,
         parentLogName=log_dict.get('name'),
         parentLogId=log_dict.get('_id').get('$oid'),
         privacy=log_dict.get('privacy'),
@@ -141,7 +139,7 @@ def cnr_user_described_sublog(new_user_node=None, new_log_node=None, log_dict=No
         nodeType='sublog',
         )
 
-    for word in log_dict.get('descriptionArray'):
+    for word in log_dict.get(sublog_array_name):
         new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
         log_has_word = Relationship(new_log_node, "HAS", new_word_node)
         secure_graph1.create(log_has_word)
@@ -153,7 +151,7 @@ def cnr_user_described_sublog(new_user_node=None, new_log_node=None, log_dict=No
     user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
     secure_graph1.create(user_described_sublog)
 
-    return new_log_node
+    return new_sub_log_node
 
 @intercepts.route('/')
 def tester():
@@ -403,159 +401,78 @@ def intercepts_create_records():
                 for log in log_cursor:
                     json_log = json.dumps(log, default=json_util.default)
 
-                    # Create a new python dictionary from the json_experience, we'll call it json_dict
-                    json_dict = json.loads(json_log)
+                    # Create a new python dictionary from the json_experience, we'll call it log_dict
+                    log_dict = json.loads(json_log)
 
-                    milliDate = json_dict.get('created').get('$date')
-                    date = datetime.datetime.fromtimestamp(milliDate/1000.0)
-
-
-                    # Create a bunch of experience nodes
-                    new_log_node = Node("Log",
-                        user=user,
-                        name=json_dict.get('name'),
-                        log_id=json_dict.get('_id').get('$oid'),
-                        privacy=json_dict.get('privacy'),
-                        physicArrayLength=json_dict.get('physicArrayLength'),
-                        emotionArrayLength=json_dict.get('emotionArrayLength'),
-                        academicArrayLength=json_dict.get('academicArrayLength'),
-                        communeArrayLength=json_dict.get('communeArrayLength'),
-                        etherArrayLength=json_dict.get('etherArrayLength'),
-                        physicContent=json_dict.get('physicContent'),
-                        emotionContent=json_dict.get('emotionContent'),
-                        academicContent=json_dict.get('academicContent'),
-                        communeContent=json_dict.get('communeContent'),
-                        etherContent=json_dict.get('etherContent'),
-                        milliDate=milliDate,
-                        year=date.year,
-                        month=date.month,
-                        day=date.day,
-                        hour=date.hour,
-                        minute=date.minute,
-                        second=date.second,
-                        nodeType='log',
+                    new_log_node = cnr_user_logged_log(
+                        new_user_node=new_user_node,
+                        log_dict=log_dict,
                         )
 
                     ## Only do the iteration step if there is a word to add
-                    if json_dict.get('physicArrayLength') > 0:
-                        new_sub_log_node = Node("PhysicLog",
-                            parentLogName=json_dict.get('name'),
-                            parentLogId=json_dict.get('_id').get('$oid'),
-                            privacy=json_dict.get('privacy'),
-                            wordLength=json_dict.get('physicArrayLength'),
-                            content=json_dict.get('physicContent'),
-                            nodeType='sublog',
+
+                    if log_dict.get('physicArrayLength') > 0:
+                        new_sub_log_node = cnr_user_described_sublog(
+                            new_user_node=new_user_node,
+                            new_log_node=new_log_node,
+                            log_dict=log_dict,
+                            sublog_array_name='physicArray',
+                            node_title='PhysicLog',
                             )
                         log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
-                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
-                        secure_graph1.create(user_described_sublog)
-
-                        for word in json_dict.get('physicArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-                            log_has_word = Relationship(new_log_node, "HAS", new_word_node)
-                            secure_graph1.create(log_has_word)
-                            sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
-                            secure_graph1.create(sublog_has_word)
-                            user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
-                            secure_graph1.create(user_spoke_word)
-
 
                     ## Only do the iteration step if there is a word to add
-                    if json_dict.get('emotionArrayLength') > 0:
-                        new_sub_log_node = Node("EmotionLog",
-                            parentLogName=json_dict.get('name'),
-                            parentLogId=json_dict.get('_id').get('$oid'),
-                            privacy=json_dict.get('privacy'),
-                            wordLength=json_dict.get('emotionArrayLength'),
-                            content=json_dict.get('emotionContent'),
-                            nodeType='sublog',
+
+                    if log_dict.get('emotionArrayLength') > 0:
+                        new_sub_log_node = cnr_user_described_sublog(
+                            new_user_node=new_user_node,
+                            new_log_node=new_log_node,
+                            log_dict=log_dict,
+                            sublog_array_name='emotionArray',
+                            node_title='EmotionLog',
                             )
                         log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
-                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
-                        secure_graph1.create(user_described_sublog)
-
-                        for word in json_dict.get('emotionArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-                            log_has_word = Relationship(new_log_node, "HAS", new_word_node)
-                            secure_graph1.create(log_has_word)
-                            sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
-                            secure_graph1.create(sublog_has_word)
-                            user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
-                            secure_graph1.create(user_spoke_word)
 
                     ## Only do the iteration step if there is a word to add
-                    if json_dict.get('academicArrayLength') > 0:
-                        new_sub_log_node = Node("AcademicLog",
-                            parentLogName=json_dict.get('name'),
-                            parentLogId=json_dict.get('_id').get('$oid'),
-                            privacy=json_dict.get('privacy'),
-                            wordLength=json_dict.get('academicArrayLength'),
-                            content=json_dict.get('academicContent'),
-                            nodeType='sublog',
+
+                    if log_dict.get('academicArrayLength') > 0:
+                        new_sub_log_node = cnr_user_described_sublog(
+                            new_user_node=new_user_node,
+                            new_log_node=new_log_node,
+                            log_dict=log_dict,
+                            sublog_array_name='academicArray',
+                            node_title='AcademicLog',
                             )
                         log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
-                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
-                        secure_graph1.create(user_described_sublog)
-
-                        for word in json_dict.get('academicArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-                            log_has_word = Relationship(new_log_node, "HAS", new_word_node)
-                            secure_graph1.create(log_has_word)
-                            sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
-                            secure_graph1.create(sublog_has_word)
-                            user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
-                            secure_graph1.create(user_spoke_word)
 
                     ## Only do the iteration step if there is a word to add
-                    if json_dict.get('communeArrayLength') > 0:
-                        new_sub_log_node = Node("CommuneLog",
-                            parentLogName=json_dict.get('name'),
-                            parentLogId=json_dict.get('_id').get('$oid'),
-                            privacy=json_dict.get('privacy'),
-                            wordLength=json_dict.get('communeArrayLength'),
-                            content=json_dict.get('communeContent'),
-                            nodeType='sublog',
+
+                    if log_dict.get('communeArrayLength') > 0:
+                        new_sub_log_node = cnr_user_described_sublog(
+                            new_user_node=new_user_node,
+                            new_log_node=new_log_node,
+                            log_dict=log_dict,
+                            sublog_array_name='communeArray',
+                            node_title='CommuneLog',
                             )
                         log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
-                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
-                        secure_graph1.create(user_described_sublog)
-
-                        for word in json_dict.get('communeArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-                            log_has_word = Relationship(new_log_node, "HAS", new_word_node)
-                            secure_graph1.create(log_has_word)
-                            sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
-                            secure_graph1.create(sublog_has_word)
-                            user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
-                            secure_graph1.create(user_spoke_word)
 
                     ## Only do the iteration step if there is a word to add
-                    if json_dict.get('etherArrayLength') > 0:
-                        new_sub_log_node = Node("EtherLog",
-                            parentLogName=json_dict.get('name'),
-                            parentLogId=json_dict.get('_id').get('$oid'),
-                            privacy=json_dict.get('privacy'),
-                            wordLength=json_dict.get('etherArrayLength'),
-                            content=json_dict.get('etherContent'),
-                            nodeType='sublog',
+
+                    if log_dict.get('etherArrayLength') > 0:
+                        new_sub_log_node = cnr_user_described_sublog(
+                            new_user_node=new_user_node,
+                            new_log_node=new_log_node,
+                            log_dict=log_dict,
+                            sublog_array_name='etherArray',
+                            node_title='EtherLog',
                             )
                         log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
                         secure_graph1.create(log_contains_sub)
-                        user_described_sublog = Relationship(new_user_node, "DESCRIBED", new_sub_log_node)
-                        secure_graph1.create(user_described_sublog)
-
-                        for word in json_dict.get('etherArray'):
-                            new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-                            log_has_word = Relationship(new_log_node, "HAS", new_word_node)
-                            secure_graph1.create(log_has_word)
-                            sublog_has_word = Relationship(new_sub_log_node, "HAS", new_word_node)
-                            secure_graph1.create(sublog_has_word)
-                            user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
-                            secure_graph1.create(user_spoke_word)
 
                     experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
                     secure_graph1.create(experience_contains_log)
