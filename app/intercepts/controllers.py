@@ -22,14 +22,34 @@ intercepts = Blueprint('intercepts', __name__)
 '''
 Helper functions - Create new User/Activity Relationship
 
-Takes a user node and activity node as paramaters
-'''
-def cnr_user_did_activity(user_node=None, new_activity_node=None):
+cnr --> create new relationship
 
-    user_did_activity = Relationship(user_node, "DID", new_activity_node)
+Takes a user node and activity node as paramaters
+
+Returns a new_activity_node
+'''
+def cnr_user_did_activity(new_user_node=None, activity_dict=None):
+
+    # Create a new activity nodes
+    new_activity_node = Node("Activity",
+        name=activity_dict.get('name'),
+        activity_id=activity_dict.get('_id').get('$oid'),
+        privacy=activity_dict.get('privacy'),
+        word_length=activity_dict.get('descriptionArrayLength'),
+        nodeType='activity',
+        )
+
+    for word in activity_dict.get('descriptionArray'):
+        new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
+        activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
+        secure_graph1.create(activity_has_word)
+        user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        secure_graph1.create(user_spoke_word)
+
+    user_did_activity = Relationship(new_user_node, "DID", new_activity_node)
     secure_graph1.create(user_did_activity)
 
-    return 0
+    return new_activity_node
 
 @intercepts.route('/')
 def tester():
@@ -103,13 +123,10 @@ def intercepts_create_single_activity(activity=None):
     user_node_list = cypher.execute("MATCH (user:User {user_id: '" + user_id + "'}) RETURN user")
 
     if len(user_node_list) == 0:
-        # Create a new python dictionary from the json_user, we'll call it json_dict
-        json_dict = user_dict
-
         # Create a user node
         user_node = Node("User",
-            email=json_dict.get('email'),
-            user_id=json_dict.get('_id').get('$oid'),
+            email=user_dict.get('email'),
+            user_id=user_dict.get('_id').get('$oid'),
             nodeType='user',
             )
     else:
@@ -118,30 +135,11 @@ def intercepts_create_single_activity(activity=None):
         user_node = user_node_list[0][0]
 
     ###
-    # TODO: Create an external method called create activity node.
     # Business logic for ACTIVITIY_NODE starts here, uses data from above.
     ###
 
-    json_dict = activity_dict
+    cnr_user_did_activity(new_user_node=user_node, activity_dict=activity_dict)
 
-    # Create a bunch of activity nodes
-    new_activity_node = Node("Activity",
-        name=json_dict.get('name'),
-        activity_id=json_dict.get('_id').get('$oid'),
-        privacy=json_dict.get('privacy'),
-        word_length=json_dict.get('descriptionArrayLength'),
-        nodeType='activity',
-        )
-
-    for word in json_dict.get('descriptionArray'):
-        new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-        activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
-        secure_graph1.create(activity_has_word)
-        user_spoke_word = Relationship(user_node, "SPOKE", new_word_node)
-        secure_graph1.create(user_spoke_word)
-
-    cnr_user_did_activity(user_node=user_node, new_activity_node=new_activity_node)
-    
     return 'success'
 
 '''
@@ -243,18 +241,17 @@ def intercepts_create_records():
     for user in user_cursor:
         json_user = json.dumps(user, default=json_util.default)
 
-        # Create a new python dictionary from the json_user, we'll call it json_dict
-        json_dict = json.loads(json_user)
+        user_dict = json.loads(json_user)
 
         # Create a bunch of user nodes
         new_user_node = Node("User",
-            email=json_dict.get('email'),
-            user_id=json_dict.get('_id').get('$oid'),
+            email=user_dict.get('email'),
+            user_id=user_dict.get('_id').get('$oid'),
             nodeType='user',
             )
 
         ####
-        user = json_dict.get('_id').get('$oid')
+        user = user_dict.get('_id').get('$oid')
         activity_cursor = mongo3.db.activities.find({"user": ObjectId(user)}) #find all activities for a user
         ####
         # For every activity create a node
@@ -263,29 +260,13 @@ def intercepts_create_records():
             json_activity = json.dumps(activity, default=json_util.default)
 
             # Create a new python dictionary from the json_activity, we'll call it json_dict
-            json_dict = json.loads(json_activity)
+            activity_dict = json.loads(json_activity)
 
-            # Create a bunch of activity nodes
-            new_activity_node = Node("Activity",
-                name=json_dict.get('name'),
-                activity_id=json_dict.get('_id').get('$oid'),
-                privacy=json_dict.get('privacy'),
-                word_length=json_dict.get('descriptionArrayLength'),
-                nodeType='activity',
-                )
-
-            for word in json_dict.get('descriptionArray'):
-                new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
-                activity_has_word = Relationship(new_activity_node, "HAS", new_word_node)
-                secure_graph1.create(activity_has_word)
-                user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
-                secure_graph1.create(user_spoke_word)
-
-            user_did_activity = Relationship(new_user_node, "DID", new_activity_node)
-            secure_graph1.create(user_did_activity)
+            # Output is a new_activity_node
+            new_activity_node = cnr_user_did_activity(new_user_node=new_user_node, activity_dict=activity_dict)
 
             ####
-            activity = json_dict.get('_id').get('$oid')
+            activity = activity_dict.get('_id').get('$oid')
             experience_cursor = mongo3.db.experiences.find({"firstActivity": ObjectId(activity)}) #find all experiences for an activity
             ####
             # For every activity create a node
