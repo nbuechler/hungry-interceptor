@@ -21,16 +21,13 @@ intercepts = Blueprint('intercepts', __name__)
 
 '''
 Helper functions - Create new User/Activity Relationship
-
 cnr --> create new relationship
-
 Takes a user node and activity node as paramaters
-
 Returns a new_activity_node
 '''
 def cnr_user_did_activity(new_user_node=None, activity_dict=None):
 
-    # Create a new activity nodes
+    # Create a new activity node
     new_activity_node = Node("Activity",
         name=activity_dict.get('name'),
         activity_id=activity_dict.get('_id').get('$oid'),
@@ -50,6 +47,85 @@ def cnr_user_did_activity(new_user_node=None, activity_dict=None):
     secure_graph1.create(user_did_activity)
 
     return new_activity_node
+
+'''
+Helper functions - Create new User/Experience Relationship
+cnr --> create new relationship
+Takes a user node and experience node as paramaters
+Returns a new_activity_node
+'''
+def cnr_user_experienced_experience(new_user_node=None, experience_dict=None):
+
+    # Create a new experience node
+    new_experience_node = Node("Experience",
+        name=experience_dict.get('name'),
+        experience_id=experience_dict.get('_id').get('$oid'),
+        privacy=experience_dict.get('privacy'),
+        pronoun=experience_dict.get('pronoun'),
+        word_length=experience_dict.get('descriptionArrayLength'),
+        nodeType='experience',
+        )
+
+    for word in experience_dict.get('descriptionArray'):
+        new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
+        experience_has_word = Relationship(new_experience_node, "HAS", new_word_node)
+        secure_graph1.create(experience_has_word)
+        user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        secure_graph1.create(user_spoke_word)
+
+    user_experienced_experience = Relationship(new_user_node, "EXPERIENCED", new_experience_node)
+    secure_graph1.create(user_experienced_experience)
+
+    return new_experience_node
+
+'''
+Helper functions - Create new User/Log Relationship
+cnr --> create new relationship
+Takes a user node and log node as paramaters
+Returns a new_log_node
+'''
+def cnr_user_logged_log(new_user_node=None, log_dict=None):
+
+    milliDate = log_dict.get('created').get('$date')
+    date = datetime.datetime.fromtimestamp(milliDate/1000.0)
+
+    # Create a new experience node
+    new_log_node = Node("Log",
+        user=user,
+        name=log_dict.get('name'),
+        log_id=log_dict.get('_id').get('$oid'),
+        privacy=log_dict.get('privacy'),
+        physicArrayLength=log_dict.get('physicArrayLength'),
+        emotionArrayLength=log_dict.get('emotionArrayLength'),
+        academicArrayLength=log_dict.get('academicArrayLength'),
+        communeArrayLength=log_dict.get('communeArrayLength'),
+        etherArrayLength=log_dict.get('etherArrayLength'),
+        physicContent=log_dict.get('physicContent'),
+        emotionContent=log_dict.get('emotionContent'),
+        academicContent=log_dict.get('academicContent'),
+        communeContent=log_dict.get('communeContent'),
+        etherContent=log_dict.get('etherContent'),
+        milliDate=milliDate,
+        year=date.year,
+        month=date.month,
+        day=date.day,
+        hour=date.hour,
+        minute=date.minute,
+        second=date.second,
+        nodeType='log',
+        )
+
+    for word in log_dict.get('descriptionArray'):
+        new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
+        experience_has_word = Relationship(new_experience_node, "HAS", new_word_node)
+        secure_graph1.create(experience_has_word)
+        user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        secure_graph1.create(user_spoke_word)
+
+    user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
+    secure_graph1.create(user_logged_log)
+
+    return new_log_node
 
 @intercepts.route('/')
 def tester():
