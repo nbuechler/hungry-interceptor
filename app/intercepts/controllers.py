@@ -481,8 +481,6 @@ def intercepts_create_records():
 
                     experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
                     secure_graph1.create(experience_contains_log)
-                    user_logged_log = Relationship(new_user_node, "LOGGED", new_log_node)
-                    secure_graph1.create(user_logged_log)
 
 
     return 'success'
