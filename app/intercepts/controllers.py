@@ -20,6 +20,38 @@ import datetime
 intercepts = Blueprint('intercepts', __name__)
 
 '''
+Helper functions - Get a new user node
+Takes a user_id as a paramater
+Returns a user_node (either a new one or a one that already exists)
+'''
+def get_user_node(user_id=None):
+
+    cypher = secure_graph1.cypher
+
+    user_cursor = mongo3.db.users.find({"_id": ObjectId(user_id)}) #find all activities
+    json_user = json.dumps(user_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_user, we'll call it user_dict
+    user_dict = json.loads(json_user)
+
+    # Assumes either a record list of 1 or no records at all!
+    user_node_list = cypher.execute("MATCH (user:User {user_id: '" + user_id + "'}) RETURN user")
+
+    user_node=None
+    if len(user_node_list) == 0:
+        # Create a user node
+        user_node = Node("User",
+            email=user_dict.get('email'),
+            user_id=user_dict.get('_id').get('$oid'),
+            nodeType='user',
+            )
+    else:
+        # Don't create a new user node it already exists
+        user_node = user_node_list[0][0]
+
+    return user_node
+
+'''
 Helper functions - Create new User/Activity Relationship
 cnr --> create new relationship
 Takes a user node and activity dict as paramaters
@@ -194,47 +226,20 @@ def intercepts_create_single_activity(activity=None):
 
     cypher = secure_graph1.cypher
 
-    print '====create single activity node===='
-    print activity
-    print '========'
-
-    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity)}) #find all activities
+    # Find all activities, but really just one in this case
+    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity)})
     json_activity = json.dumps(activity_cursor[0], default=json_util.default)
 
     # Create a new python dictionary from the json_activity, we'll call it activity_dict
     activity_dict = json.loads(json_activity)
     print activity_dict
 
-    print '---===----=-=-=-'
-    user_id = activity_dict.get('user').get('$oid')
-
-    user_cursor = mongo3.db.users.find({"_id": ObjectId(user_id)}) #find all activities
-    json_user = json.dumps(user_cursor[0], default=json_util.default)
-
-    # Create a new python dictionary from the json_user, we'll call it user_dict
-    user_dict = json.loads(json_user)
-
-    print user_dict
-
     ###
-    # TODO: Create an external method called create activity node.
     # Business logic for USER_NODE starts here, uses data from above.
     ###
+    user_id = activity_dict.get('user').get('$oid')
 
-    # Assumes either a record list of 1 or no records at all!
-    user_node_list = cypher.execute("MATCH (user:User {user_id: '" + user_id + "'}) RETURN user")
-
-    if len(user_node_list) == 0:
-        # Create a user node
-        user_node = Node("User",
-            email=user_dict.get('email'),
-            user_id=user_dict.get('_id').get('$oid'),
-            nodeType='user',
-            )
-    else:
-        # Don't create a new user node it already exists
-        print user_node_list[0][0]
-        user_node = user_node_list[0][0]
+    user_node = get_user_node(user_id=user_id)
 
     ###
     # Business logic for ACTIVITIY_NODE starts here, uses data from above.
