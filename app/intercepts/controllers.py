@@ -331,7 +331,29 @@ This method CREATES a single log node from neo4j
 @intercepts.route('/mongo2neo/intercepts_create_single_log/<log>', methods=['POST'])
 def intercepts_create_single_log(log=None):
     print '====create single log node===='
-    print log
+
+    cypher = secure_graph1.cypher
+
+    # Find all activities, but really just one in this case
+    log_cursor = mongo3.db.logs.find({"_id": ObjectId(log)})
+    json_log = json.dumps(log_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_log, we'll call it log_dict
+    log_dict = json.loads(json_log)
+    print log_dict
+
+    ###
+    # Business logic for USER_NODE starts here, uses data from above.
+    ###
+    user_id = log_dict.get('user').get('$oid')
+
+    user_node = get_user_node(user_id=user_id)
+
+    ###
+    # Business logic for LOG_NODE starts here, uses data from above.
+    ###
+    new_log_node = cnr_user_logged_log(new_user_node=user_node, log_dict=log_dict)
+
     return 'success'
 
 '''
