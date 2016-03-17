@@ -52,6 +52,29 @@ def get_user_node(user_id=None):
     return user_node
 
 '''
+Helper functions - Get an existing experience node
+Takes an experience_id as a paramater
+Returns a experience_node (either a new one or a one that already exists)
+'''
+def get_experience_node(experience_id=None):
+
+    cypher = secure_graph1.cypher
+
+    experience_cursor = mongo3.db.experiences.find({"_id": ObjectId(experience_id)}) #find all activities
+    json_experience = json.dumps(experience_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_experience, we'll call it experience_dict
+    experience_dict = json.loads(json_experience)
+
+    # Assumes either a record list of 1 or no records at all!
+    experience_node_list = cypher.execute("MATCH (experience:Experience {experience_id: '" + experience_id + "'}) RETURN experience")
+
+    # Define the experience node to return
+    experience_node = experience_node_list[0][0]
+
+    return experience_node
+
+'''
 Helper functions - Create new User/Activity Relationship
 cnr --> create new relationship
 Takes a user node and activity dict as paramaters
@@ -360,14 +383,18 @@ def intercepts_create_single_log(log=None):
 
     # Create a new python dictionary from the json_log, we'll call it log_dict
     log_dict = json.loads(json_log)
-    print log_dict
 
     ###
     # Business logic for USER_NODE starts here, uses data from above.
     ###
     user_id = log_dict.get('user').get('$oid')
-
     user_node = get_user_node(user_id=user_id)
+
+    ###
+    # Business logic for getting EXPERIENCE_NODE starts here, uses data from above.
+    ###
+    experience_id = log_dict.get('firstExperience').get('$oid')
+    experience_node = get_experience_node(experience_id=experience_id)
 
     ###
     # Business logic for LOG_NODE starts here, uses data from above.
@@ -392,9 +419,8 @@ def intercepts_create_single_log(log=None):
             node_title=sublog_name.title() + 'Log',
             )
 
-    # TODO: Create the experience log relationship
-    # experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
-    # secure_graph1.create(experience_contains_log)
+    experience_contains_log = Relationship(experience_node, "CONTAINS", new_log_node)
+    secure_graph1.create(experience_contains_log)
 
     return 'success'
 
