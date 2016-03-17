@@ -52,6 +52,29 @@ def get_user_node(user_id=None):
     return user_node
 
 '''
+Helper functions - Get an existing activity node
+Takes an activity_id as a paramater
+Returns a activity_node (either a new one or a one that already exists)
+'''
+def get_activity_node(activity_id=None):
+
+    cypher = secure_graph1.cypher
+
+    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity_id)}) #find all activities
+    json_activity = json.dumps(activity_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_activity, we'll call it activity_dict
+    activity_dict = json.loads(json_activity)
+
+    # Assumes either a record list of 1 or no records at all!
+    activity_node_list = cypher.execute("MATCH (activity:Activity {activity_id: '" + activity_id + "'}) RETURN activity")
+
+    # Define the activity node to return
+    activity_node = activity_node_list[0][0]
+
+    return activity_node
+
+'''
 Helper functions - Get an existing experience node
 Takes an experience_id as a paramater
 Returns a experience_node (either a new one or a one that already exists)
@@ -339,14 +362,22 @@ def intercepts_create_single_experience(experience=None):
     # Business logic for USER_NODE starts here, uses data from above.
     ###
     user_id = experience_dict.get('user').get('$oid')
-
     user_node = get_user_node(user_id=user_id)
+
+    ###
+    # Business logic for getting ACTIVITY_NODE starts here, uses data from above.
+    ###
+    activity_id = experience_dict.get('firstActivity').get('$oid')
+    activity_node = get_activity_node(activity_id=activity_id)
 
     ###
     # Business logic for EXPERIENCE_NODE starts here, uses data from above.
     ###
+    new_experience_node = cnr_user_experienced_experience(new_user_node=user_node, experience_dict=experience_dict)
 
-    cnr_user_experienced_experience(new_user_node=user_node, experience_dict=experience_dict)
+    # Create a new relationship for the activity/experience
+    activity_contains_experience = Relationship(activity_node, "CONTAINS", new_experience_node)
+    secure_graph1.create(activity_contains_experience)
 
     return 'success'
 
@@ -419,6 +450,7 @@ def intercepts_create_single_log(log=None):
             node_title=sublog_name.title() + 'Log',
             )
 
+    # Create a new relationship for the experience/log
     experience_contains_log = Relationship(experience_node, "CONTAINS", new_log_node)
     secure_graph1.create(experience_contains_log)
 
