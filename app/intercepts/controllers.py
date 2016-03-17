@@ -52,6 +52,52 @@ def get_user_node(user_id=None):
     return user_node
 
 '''
+Helper functions - Get an existing activity node
+Takes an activity_id as a paramater
+Returns a activity_node (either a new one or a one that already exists)
+'''
+def get_activity_node(activity_id=None):
+
+    cypher = secure_graph1.cypher
+
+    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity_id)}) #find all activities
+    json_activity = json.dumps(activity_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_activity, we'll call it activity_dict
+    activity_dict = json.loads(json_activity)
+
+    # Assumes either a record list of 1 or no records at all!
+    activity_node_list = cypher.execute("MATCH (activity:Activity {activity_id: '" + activity_id + "'}) RETURN activity")
+
+    # Define the activity node to return
+    activity_node = activity_node_list[0][0]
+
+    return activity_node
+
+'''
+Helper functions - Get an existing experience node
+Takes an experience_id as a paramater
+Returns a experience_node (either a new one or a one that already exists)
+'''
+def get_experience_node(experience_id=None):
+
+    cypher = secure_graph1.cypher
+
+    experience_cursor = mongo3.db.experiences.find({"_id": ObjectId(experience_id)}) #find all activities
+    json_experience = json.dumps(experience_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_experience, we'll call it experience_dict
+    experience_dict = json.loads(json_experience)
+
+    # Assumes either a record list of 1 or no records at all!
+    experience_node_list = cypher.execute("MATCH (experience:Experience {experience_id: '" + experience_id + "'}) RETURN experience")
+
+    # Define the experience node to return
+    experience_node = experience_node_list[0][0]
+
+    return experience_node
+
+'''
 Helper functions - Create new User/Activity Relationship
 cnr --> create new relationship
 Takes a user node and activity dict as paramaters
@@ -154,6 +200,26 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
     return new_log_node
 
 '''
+Helper functions - Create new Log/SubLog Relationship
+cnr --> create new relationship
+Takes a user node, log node. log dict, sublog_array_name, and node_title as paramaters
+Returns a new_log_node
+'''
+def cnr_log_contains_sub(new_user_node=None, new_log_node=None, log_dict=None, sublog_array_name=None, node_title=None):
+
+    ## Only do the iteration step if there is a word to add
+    if log_dict.get(sublog_array_name + 'ArrayLength') > 0:
+        new_sub_log_node = cnr_user_described_sublog(
+            new_user_node=new_user_node,
+            new_log_node=new_log_node,
+            log_dict=log_dict,
+            sublog_array_name=sublog_array_name,
+            node_title=node_title,
+            )
+        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
+        secure_graph1.create(log_contains_sub)
+
+'''
 Helper functions - Create new User/SubLog Relationship
 cnr --> create new relationship
 Takes a user node, log node. log dict, sublog_array_name, and node_title as paramaters
@@ -166,12 +232,12 @@ def cnr_user_described_sublog(new_user_node=None, new_log_node=None, log_dict=No
         parentLogName=log_dict.get('name'),
         parentLogId=log_dict.get('_id').get('$oid'),
         privacy=log_dict.get('privacy'),
-        wordLength=log_dict.get('academicArrayLength'),
-        content=log_dict.get('academicContent'),
+        wordLength=log_dict.get(sublog_array_name + 'ArrayLength'),
+        content=log_dict.get(sublog_array_name + 'Content'),
         nodeType='sublog',
         )
 
-    for word in log_dict.get(sublog_array_name):
+    for word in log_dict.get(sublog_array_name + 'Array'):
         new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
         log_has_word = Relationship(new_log_node, "HAS", new_word_node)
         secure_graph1.create(log_has_word)
@@ -296,14 +362,22 @@ def intercepts_create_single_experience(experience=None):
     # Business logic for USER_NODE starts here, uses data from above.
     ###
     user_id = experience_dict.get('user').get('$oid')
-
     user_node = get_user_node(user_id=user_id)
+
+    ###
+    # Business logic for getting ACTIVITY_NODE starts here, uses data from above.
+    ###
+    activity_id = experience_dict.get('firstActivity').get('$oid')
+    activity_node = get_activity_node(activity_id=activity_id)
 
     ###
     # Business logic for EXPERIENCE_NODE starts here, uses data from above.
     ###
+    new_experience_node = cnr_user_experienced_experience(new_user_node=user_node, experience_dict=experience_dict)
 
-    cnr_user_experienced_experience(new_user_node=user_node, experience_dict=experience_dict)
+    # Create a new relationship for the activity/experience
+    activity_contains_experience = Relationship(activity_node, "CONTAINS", new_experience_node)
+    secure_graph1.create(activity_contains_experience)
 
     return 'success'
 
@@ -340,21 +414,48 @@ def intercepts_create_single_log(log=None):
 
     # Create a new python dictionary from the json_log, we'll call it log_dict
     log_dict = json.loads(json_log)
-    print log_dict
 
     ###
     # Business logic for USER_NODE starts here, uses data from above.
     ###
     user_id = log_dict.get('user').get('$oid')
-
     user_node = get_user_node(user_id=user_id)
+
+    ###
+    # Business logic for getting EXPERIENCE_NODE starts here, uses data from above.
+    ###
+    experience_id = log_dict.get('firstExperience').get('$oid')
+    experience_node = get_experience_node(experience_id=experience_id)
 
     ###
     # Business logic for LOG_NODE starts here, uses data from above.
     ###
     new_log_node = cnr_user_logged_log(new_user_node=user_node, log_dict=log_dict)
 
+    ###
+    # Business logic for SUBLOG_NODE starts here, uses data from above.
+    ###
+
+    # List of all dictionary types
+    sublog_list = ['physic', 'emotion', 'academic', 'commune', 'ether']
+
+    for sublog_name in sublog_list:
+        # This method also creates a new sublog, and builds a relationship
+        # to the user (and adds the word nodes)!
+        cnr_log_contains_sub(
+            new_user_node=user_node,
+            new_log_node=new_log_node,
+            log_dict=log_dict,
+            sublog_array_name=sublog_name,
+            node_title=sublog_name.title() + 'Log',
+            )
+
+    # Create a new relationship for the experience/log
+    experience_contains_log = Relationship(experience_node, "CONTAINS", new_log_node)
+    secure_graph1.create(experience_contains_log)
+
     return 'success'
+
 
 '''
 This method UPDATES a single log node from neo4j
@@ -459,70 +560,19 @@ def intercepts_create_records():
                         log_dict=log_dict,
                         )
 
-                    ## Only do the iteration step if there is a word to add
+                    # List of all dictionary types
+                    sublog_list = ['physic', 'emotion', 'academic', 'commune', 'ether']
 
-                    if log_dict.get('physicArrayLength') > 0:
-                        new_sub_log_node = cnr_user_described_sublog(
+                    for sublog_name in sublog_list:
+                        # This method also creates a new sublog, and builds a relationship
+                        # to the user (and adds the word nodes)!
+                        cnr_log_contains_sub(
                             new_user_node=new_user_node,
                             new_log_node=new_log_node,
                             log_dict=log_dict,
-                            sublog_array_name='physicArray',
-                            node_title='PhysicLog',
+                            sublog_array_name=sublog_name,
+                            node_title=sublog_name.title() + 'Log',
                             )
-                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
-                        secure_graph1.create(log_contains_sub)
-
-                    ## Only do the iteration step if there is a word to add
-
-                    if log_dict.get('emotionArrayLength') > 0:
-                        new_sub_log_node = cnr_user_described_sublog(
-                            new_user_node=new_user_node,
-                            new_log_node=new_log_node,
-                            log_dict=log_dict,
-                            sublog_array_name='emotionArray',
-                            node_title='EmotionLog',
-                            )
-                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
-                        secure_graph1.create(log_contains_sub)
-
-                    ## Only do the iteration step if there is a word to add
-
-                    if log_dict.get('academicArrayLength') > 0:
-                        new_sub_log_node = cnr_user_described_sublog(
-                            new_user_node=new_user_node,
-                            new_log_node=new_log_node,
-                            log_dict=log_dict,
-                            sublog_array_name='academicArray',
-                            node_title='AcademicLog',
-                            )
-                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
-                        secure_graph1.create(log_contains_sub)
-
-                    ## Only do the iteration step if there is a word to add
-
-                    if log_dict.get('communeArrayLength') > 0:
-                        new_sub_log_node = cnr_user_described_sublog(
-                            new_user_node=new_user_node,
-                            new_log_node=new_log_node,
-                            log_dict=log_dict,
-                            sublog_array_name='communeArray',
-                            node_title='CommuneLog',
-                            )
-                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
-                        secure_graph1.create(log_contains_sub)
-
-                    ## Only do the iteration step if there is a word to add
-
-                    if log_dict.get('etherArrayLength') > 0:
-                        new_sub_log_node = cnr_user_described_sublog(
-                            new_user_node=new_user_node,
-                            new_log_node=new_log_node,
-                            log_dict=log_dict,
-                            sublog_array_name='etherArray',
-                            node_title='EtherLog',
-                            )
-                        log_contains_sub = Relationship(new_log_node, "SUB_CONTAINS", new_sub_log_node)
-                        secure_graph1.create(log_contains_sub)
 
                     experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
                     secure_graph1.create(experience_contains_log)
@@ -582,6 +632,8 @@ def intercepts_create_event_supplement():
     # logCount, highestValue, totals for each category, winningCategoryName
     cypher = secure_graph1.cypher
 
+    # TODO: Make this method execute differently if there is a user_id
+    # For example, if a user_id, make it so that user has updated event nodes
     # All distinct events for each give user
     for event_record in cypher.execute("MATCH (u)-[r:LOGGED]->(n:Log) RETURN DISTINCT n.year, n.month, n.day, u.user_id"):
         sums = cypher.execute("MATCH (u)-[r:LOGGED]->(n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and u.user_id = '" + event_record[3] + "' " +
