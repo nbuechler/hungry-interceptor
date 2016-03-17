@@ -632,6 +632,8 @@ def intercepts_create_event_supplement():
     # logCount, highestValue, totals for each category, winningCategoryName
     cypher = secure_graph1.cypher
 
+    # TODO: Make this method execute differently if there is a user_id
+    # For example, if a user_id, make it so that user has updated event nodes
     # All distinct events for each give user
     for event_record in cypher.execute("MATCH (u)-[r:LOGGED]->(n:Log) RETURN DISTINCT n.year, n.month, n.day, u.user_id"):
         sums = cypher.execute("MATCH (u)-[r:LOGGED]->(n:Log) where n.year = " + str(event_record[0]) + " and n.month = " + str(event_record[1]) + " and n.day = " + str(event_record[2]) + " and u.user_id = '" + event_record[3] + "' " +
