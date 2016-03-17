@@ -374,7 +374,30 @@ def intercepts_create_single_log(log=None):
     ###
     new_log_node = cnr_user_logged_log(new_user_node=user_node, log_dict=log_dict)
 
+    ###
+    # Business logic for SUBLOG_NODE starts here, uses data from above.
+    ###
+
+    # List of all dictionary types
+    sublog_list = ['physic', 'emotion', 'academic', 'commune', 'ether']
+
+    for sublog_name in sublog_list:
+        # This method also creates a new sublog, and builds a relationship
+        # to the user (and adds the word nodes)!
+        cnr_log_contains_sub(
+            new_user_node=user_node,
+            new_log_node=new_log_node,
+            log_dict=log_dict,
+            sublog_array_name=sublog_name,
+            node_title=sublog_name.title() + 'Log',
+            )
+
+    # TODO: Create the experience log relationship
+    # experience_contains_log = Relationship(new_experience_node, "CONTAINS", new_log_node)
+    # secure_graph1.create(experience_contains_log)
+
     return 'success'
+
 
 '''
 This method UPDATES a single log node from neo4j
