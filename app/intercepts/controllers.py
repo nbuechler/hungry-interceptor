@@ -323,12 +323,25 @@ def intercepts_update_single_activity(activity=None):
     print '====update single activity node===='
     print activity
 
-    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity)}) #find all activities
+    cypher = secure_graph1.cypher
+
+    # Find all activities, but really just one in this case
+    activity_cursor = mongo3.db.activities.find({"_id": ObjectId(activity)})
     json_activity = json.dumps(activity_cursor[0], default=json_util.default)
 
-    # Create a new python dictionary from the json_activity, we'll call it json_dict
-    json_dict = json.loads(json_activity)
-    print json_dict
+    # Create a new python dictionary from the json_activity, we'll call it activity_dict
+    activity_dict = json.loads(json_activity)
+    print activity_dict
+
+    ###
+    # Business logic for USER_NODE starts here, uses data from above.
+    ###
+    user_id = activity_dict.get('user').get('$oid')
+
+    user_node = get_user_node(user_id=user_id)
+
+
+    # TODO: Get the activity node, and update it and its words!!
 
     return 'success'
 
@@ -386,8 +399,29 @@ This method UPDATES a single experience node from neo4j
 '''
 @intercepts.route('/mongo2neo/intercepts_update_single_experience/<experience>', methods=['PUT'])
 def intercepts_update_single_experience(experience=None):
+
     print '====update single experience node===='
-    print experience
+
+    cypher = secure_graph1.cypher
+
+    # Find all activities, but really just one in this case
+    experience_cursor = mongo3.db.experiences.find({"_id": ObjectId(experience)})
+    json_experience = json.dumps(experience_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_experience, we'll call it experience_dict
+    experience_dict = json.loads(json_experience)
+    print experience_dict
+
+    ###
+    # Business logic for USER_NODE starts here, uses data from above.
+    ###
+    user_id = experience_dict.get('user').get('$oid')
+
+    user_node = get_user_node(user_id=user_id)
+
+
+    # TODO: Get the experience node, and update it and its words!!
+
     return 'success'
 
 '''
@@ -463,7 +497,27 @@ This method UPDATES a single log node from neo4j
 @intercepts.route('/mongo2neo/intercepts_update_single_log/<log>', methods=['PUT'])
 def intercepts_update_single_log(log=None):
     print '====update single log node===='
-    print log
+
+    cypher = secure_graph1.cypher
+
+    # Find all activities, but really just one in this case
+    log_cursor = mongo3.db.logs.find({"_id": ObjectId(log)})
+    json_log = json.dumps(log_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_log, we'll call it log_dict
+    log_dict = json.loads(json_log)
+    print log_dict
+
+    ###
+    # Business logic for USER_NODE starts here, uses data from above.
+    ###
+    user_id = log_dict.get('user').get('$oid')
+
+    user_node = get_user_node(user_id=user_id)
+
+
+    # TODO: Get the log node, and update it and its words!!
+
     return 'success'
 
 '''
