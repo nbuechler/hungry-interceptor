@@ -352,6 +352,9 @@ This method DESTROYS a single activity node from neo4j
 def intercepts_destroy_single_activity(activity=None):
     print '====destroy single activity node===='
     print activity
+
+    # TODO: Figure how to implement this delete correctly
+    
     return 'success'
 
 '''
@@ -431,6 +434,9 @@ This method DESTROYS a single experience node from neo4j
 def intercepts_destroy_single_experience(experience=None):
     print '====destroy single experience node===='
     print experience
+
+    # TODO: Figure how to implement this delete correctly
+
     return 'success'
 
 '''
@@ -527,6 +533,9 @@ This method DESTROYS a single log node from neo4j
 def intercepts_destroy_single_log(log=None):
     print '====destroy single log node===='
     print log
+
+    # TODO: Figure how to implement this delete correctly
+
     return 'success'
 
 
