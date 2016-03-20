@@ -127,6 +127,51 @@ def cnr_user_did_activity(new_user_node=None, activity_dict=None):
     return new_activity_node
 
 '''
+Helper functions - update Activity, and deletes and recreates words/relationships
+cnr --> update activty node
+Takes a user node and activity dict as paramaters
+Returns a new_activity_node
+'''
+def update_activity_node(new_user_node=None, activity_dict=None):
+
+    '''
+    To get the activity and change the node
+    MATCH (n { activity_id: '56edf2da6b43ff691627efd8' }) SET n.name = 'Sleeping' RETURN n
+
+    To get the activty and all of its word nodes
+    MATCH (n { activity_id: '56edf2da6b43ff691627efd8' })-[r:HAS]-(w) RETURN n,w
+
+    To delete the word nodes of an activty
+    MATCH (n { activity_id: '56edf2da6b43ff691627efd8' })-[r:HAS]-(w) DETACH DELETE w
+    '''
+
+    cypher = secure_graph1.cypher
+
+    _match = 'MATCH (n { activity_id: "' + activity_dict.get('_id').get('$oid') + '" })'
+    _set = ' SET n.name="' + activity_dict.get('name') + '"'
+    _set += ' SET n.privacy="' + str(activity_dict.get('privacy')) + '"'
+    _set += ' SET n.word_length="' + str(activity_dict.get('descriptionArrayLength')) + '"'
+    _return = ' RETURN n'
+
+    # This the query that updates the node
+    cypher.execute(_match + _set + _return)
+
+    # Get the updated activity node
+    updated_activity_node = get_activity_node(activity_dict.get('_id').get('$oid'))
+
+    # Detach all the relationships and delete all the words assoicated with the activity
+    cypher.execute('MATCH (n { activity_id: "' + activity_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
+
+    for word in activity_dict.get('descriptionArray'):
+        new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
+        activity_has_word = Relationship(updated_activity_node, "HAS", new_word_node)
+        secure_graph1.create(activity_has_word)
+        user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        secure_graph1.create(user_spoke_word)
+
+    return updated_activity_node
+
+'''
 Helper functions - Create new User/Experience Relationship
 cnr --> create new relationship
 Takes a user node and experience dict as paramaters
@@ -331,17 +376,17 @@ def intercepts_update_single_activity(activity=None):
 
     # Create a new python dictionary from the json_activity, we'll call it activity_dict
     activity_dict = json.loads(json_activity)
-    print activity_dict
 
     ###
     # Business logic for USER_NODE starts here, uses data from above.
     ###
     user_id = activity_dict.get('user').get('$oid')
-
     user_node = get_user_node(user_id=user_id)
 
-
-    # TODO: Get the activity node, and update it and its words!!
+    ###
+    # Business logic for ACTIVITY_NODE starts here, uses data from above.
+    ###
+    update_activity_node(new_user_node=user_node, activity_dict=activity_dict)
 
     return 'success'
 
@@ -354,7 +399,7 @@ def intercepts_destroy_single_activity(activity=None):
     print activity
 
     # TODO: Figure how to implement this delete correctly
-    
+
     return 'success'
 
 '''
