@@ -182,7 +182,7 @@ def update_activity_node(new_user_node=None, activity_dict=None):
     # Get the updated activity node
     updated_activity_node = get_activity_node(activity_dict.get('_id').get('$oid'))
 
-    # Detach all the relationships and delete all the words assoicated with the activity
+    # Detach all the relationships and delete all the words associated with the activity
     cypher.execute('MATCH (n { activity_id: "' + activity_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
 
     for word in activity_dict.get('descriptionArray'):
@@ -239,7 +239,7 @@ def update_experience_node(new_user_node=None, experience_dict=None):
     To get the activty and all of its word nodes
     MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' })-[r:HAS]-(w) RETURN n,w
 
-    To delete the word nodes of an activty
+    To delete the word nodes of an experience
     MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' })-[r:HAS]-(w) DETACH DELETE w
     '''
     cypher = secure_graph1.cypher
@@ -257,7 +257,7 @@ def update_experience_node(new_user_node=None, experience_dict=None):
     # Get the updated experience node
     updated_experience_node = get_experience_node(experience_dict.get('_id').get('$oid'))
 
-    # Detach all the relationships and delete all the words assoicated with the experience
+    # Detach all the relationships and delete all the words associated with the experience
     cypher.execute('MATCH (n { experience_id: "' + experience_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
 
     for word in experience_dict.get('descriptionArray'):
@@ -327,7 +327,12 @@ def update_log_node(new_user_node=None, log_dict=None):
     To get the activty and all of its word nodes
     MATCH (n { log_id: '56ea1d34d73eaf7d11455fb8' })-[r:HAS]-(w) RETURN n,w
 
-    To delete the word nodes of an activty
+    !!!
+    This time is a little different, because we want to detach/delete the words,
+    and then we also want to detach/delete the sublog
+    !!!
+
+    To delete the word nodes of a sublog for a log
     MATCH (n { log_id: '56ea1d34d73eaf7d11455fb8' })-[r:HAS]-(w) DETACH DELETE w
     '''
     cypher = secure_graph1.cypher
@@ -350,8 +355,14 @@ def update_log_node(new_user_node=None, log_dict=None):
     # This the query that updates the node
     cypher.execute(_match + _set + _return)
 
-    # Get the updated experience node
+    # Get the updated log node
     updated_log_node = get_log_node(log_dict.get('_id').get('$oid'))
+
+    # Detach all the relationships and delete all the words associated with the log
+    cypher.execute('MATCH (n { log_id: "' + log_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
+
+    # Detach all the relationships and delete all the sublogs associated with the log
+    cypher.execute('MATCH (n { log_id: "' + log_dict.get('_id').get('$oid') + '" })-[r:SUB_CONTAINS]-(sl) DETACH DELETE sl')
 
     ###
     # You might be wondering, where are the words are updated for a log...
@@ -683,16 +694,12 @@ def intercepts_update_single_log(log=None):
 
     user_node = get_user_node(user_id=user_id)
 
-
-##################
     # TODO: Get the log node, and update it and its words!!
 
     ###
     # Business logic for LOG_NODE starts here, uses data from above.
     ###
-    update_log_node(new_user_node=user_node, log_dict=log_dict)
-
-    # WAS == > new_log_node = cnr_user_logged_log(new_user_node=user_node, log_dict=log_dict)
+    log_node = update_log_node(new_user_node=user_node, log_dict=log_dict)
 
     ###
     # Business logic for SUBLOG_NODE starts here, uses data from above.
@@ -701,16 +708,16 @@ def intercepts_update_single_log(log=None):
     # List of all dictionary types
     sublog_list = ['physic', 'emotion', 'academic', 'commune', 'ether']
 
-    # for sublog_name in sublog_list:
-    #     # This method also creates a new sublog, and builds a relationship
-    #     # to the user (and adds the word nodes)!
-    #     cnr_log_contains_sub(
-    #         new_user_node=user_node,
-    #         new_log_node=new_log_node,
-    #         log_dict=log_dict,
-    #         sublog_array_name=sublog_name,
-    #         node_title=sublog_name.title() + 'Log',
-    #         )
+    for sublog_name in sublog_list:
+        # This method also creates a new sublog, and builds a relationship
+        # to the user (and adds the word nodes)!
+        cnr_log_contains_sub(
+            new_user_node=user_node,
+            new_log_node=log_node,
+            log_dict=log_dict,
+            sublog_array_name=sublog_name,
+            node_title=sublog_name.title() + 'Log',
+            )
 
     return 'success'
 
