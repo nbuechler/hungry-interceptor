@@ -202,6 +202,51 @@ def cnr_user_experienced_experience(new_user_node=None, experience_dict=None):
     return new_experience_node
 
 '''
+Helper functions - update Experience, and deletes and recreates words/relationships
+cnr --> update activty node
+Takes a user node and experience dict as paramaters
+Returns a new_experience_node
+'''
+def update_experience_node(new_user_node=None, experience_dict=None):
+
+    '''
+    To get the experience and change the node
+    MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' }) SET n.name = 'Sleeping' RETURN n
+
+    To get the activty and all of its word nodes
+    MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' })-[r:HAS]-(w) RETURN n,w
+
+    To delete the word nodes of an activty
+    MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' })-[r:HAS]-(w) DETACH DELETE w
+    '''
+    cypher = secure_graph1.cypher
+
+    _match = 'MATCH (n { experience_id: "' + experience_dict.get('_id').get('$oid') + '" })'
+    _set = ' SET n.name="' + experience_dict.get('name') + '"'
+    _set += ' SET n.privacy="' + str(experience_dict.get('privacy')) + '"'
+    _set += ' SET n.pronoun="' + experience_dict.get('pronoun') + '"'
+    _set += ' SET n.word_length="' + str(experience_dict.get('descriptionArrayLength')) + '"'
+    _return = ' RETURN n'
+
+    # This the query that updates the node
+    cypher.execute(_match + _set + _return)
+
+    # Get the updated experience node
+    updated_experience_node = get_experience_node(experience_dict.get('_id').get('$oid'))
+
+    # Detach all the relationships and delete all the words assoicated with the experience
+    cypher.execute('MATCH (n { experience_id: "' + experience_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
+
+    for word in experience_dict.get('descriptionArray'):
+        new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
+        experience_has_word = Relationship(updated_experience_node, "HAS", new_word_node)
+        secure_graph1.create(experience_has_word)
+        user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        secure_graph1.create(user_spoke_word)
+
+    return updated_experience_node
+
+'''
 Helper functions - Create new User/Log Relationship
 cnr --> create new relationship
 Takes a user node and log dict as paramaters
@@ -464,11 +509,12 @@ def intercepts_update_single_experience(experience=None):
     # Business logic for USER_NODE starts here, uses data from above.
     ###
     user_id = experience_dict.get('user').get('$oid')
-
     user_node = get_user_node(user_id=user_id)
 
-
-    # TODO: Get the experience node, and update it and its words!!
+    ###
+    # Business logic for EXPERIENCE_NODE starts here, uses data from above.
+    ###
+    update_experience_node(new_user_node=user_node, experience_dict=experience_dict)
 
     return 'success'
 
