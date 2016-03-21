@@ -98,6 +98,29 @@ def get_experience_node(experience_id=None):
     return experience_node
 
 '''
+Helper functions - Get an existing log node
+Takes an log_id as a paramater
+Returns a log_node (either a new one or a one that already exists)
+'''
+def get_log_node(log_id=None):
+
+    cypher = secure_graph1.cypher
+
+    log_cursor = mongo3.db.logs.find({"_id": ObjectId(log_id)}) #find all activities
+    json_log = json.dumps(log_cursor[0], default=json_util.default)
+
+    # Create a new python dictionary from the json_log, we'll call it log_dict
+    log_dict = json.loads(json_log)
+
+    # Assumes either a record list of 1 or no records at all!
+    log_node_list = cypher.execute("MATCH (log:Log {log_id: '" + log_id + "'}) RETURN log")
+
+    # Define the log node to return
+    log_node = log_node_list[0][0]
+
+    return log_node
+
+'''
 Helper functions - Create new User/Activity Relationship
 cnr --> create new relationship
 Takes a user node and activity dict as paramaters
@@ -128,7 +151,7 @@ def cnr_user_did_activity(new_user_node=None, activity_dict=None):
 
 '''
 Helper functions - update Activity, and deletes and recreates words/relationships
-cnr --> update activty node
+update activty node
 Takes a user node and activity dict as paramaters
 Returns a new_activity_node
 '''
@@ -159,7 +182,7 @@ def update_activity_node(new_user_node=None, activity_dict=None):
     # Get the updated activity node
     updated_activity_node = get_activity_node(activity_dict.get('_id').get('$oid'))
 
-    # Detach all the relationships and delete all the words assoicated with the activity
+    # Detach all the relationships and delete all the words associated with the activity
     cypher.execute('MATCH (n { activity_id: "' + activity_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
 
     for word in activity_dict.get('descriptionArray'):
@@ -200,6 +223,51 @@ def cnr_user_experienced_experience(new_user_node=None, experience_dict=None):
     secure_graph1.create(user_experienced_experience)
 
     return new_experience_node
+
+'''
+Helper functions - update Experience, and deletes and recreates words/relationships
+update experience node
+Takes a user node and experience dict as paramaters
+Returns a new_experience_node
+'''
+def update_experience_node(new_user_node=None, experience_dict=None):
+
+    '''
+    To get the experience and change the node
+    MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' }) SET n.name = 'Sleeping' RETURN n
+
+    To get the activty and all of its word nodes
+    MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' })-[r:HAS]-(w) RETURN n,w
+
+    To delete the word nodes of an experience
+    MATCH (n { experience_id: '56ea1cf43a34fc7711ae330e' })-[r:HAS]-(w) DETACH DELETE w
+    '''
+    cypher = secure_graph1.cypher
+
+    _match = 'MATCH (n { experience_id: "' + experience_dict.get('_id').get('$oid') + '" })'
+    _set = ' SET n.name="' + experience_dict.get('name') + '"'
+    _set += ' SET n.privacy="' + str(experience_dict.get('privacy')) + '"'
+    _set += ' SET n.pronoun="' + experience_dict.get('pronoun') + '"'
+    _set += ' SET n.word_length="' + str(experience_dict.get('descriptionArrayLength')) + '"'
+    _return = ' RETURN n'
+
+    # This the query that updates the node
+    cypher.execute(_match + _set + _return)
+
+    # Get the updated experience node
+    updated_experience_node = get_experience_node(experience_dict.get('_id').get('$oid'))
+
+    # Detach all the relationships and delete all the words associated with the experience
+    cypher.execute('MATCH (n { experience_id: "' + experience_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
+
+    for word in experience_dict.get('descriptionArray'):
+        new_word_node = Node("Word", name=word, characters=len(word), nodeType='word',)
+        experience_has_word = Relationship(updated_experience_node, "HAS", new_word_node)
+        secure_graph1.create(experience_has_word)
+        user_spoke_word = Relationship(new_user_node, "SPOKE", new_word_node)
+        secure_graph1.create(user_spoke_word)
+
+    return updated_experience_node
 
 '''
 Helper functions - Create new User/Log Relationship
@@ -243,6 +311,65 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
     secure_graph1.create(user_logged_log)
 
     return new_log_node
+
+'''
+Helper functions - update Log
+update log node
+Takes a user node and log dict as paramaters
+Returns a new_log_node
+'''
+def update_log_node(new_user_node=None, log_dict=None):
+
+    '''
+    To get the log and change the node
+    MATCH (n { log_id: '56ea1d34d73eaf7d11455fb8' }) SET n.name = 'Sleeping' RETURN n
+
+    To get the activty and all of its word nodes
+    MATCH (n { log_id: '56ea1d34d73eaf7d11455fb8' })-[r:HAS]-(w) RETURN n,w
+
+    !!!
+    This time is a little different, because we want to detach/delete the words,
+    and then we also want to detach/delete the sublog
+    !!!
+
+    To delete the word nodes of a sublog for a log
+    MATCH (n { log_id: '56ea1d34d73eaf7d11455fb8' })-[r:HAS]-(w) DETACH DELETE w
+    '''
+    cypher = secure_graph1.cypher
+
+    _match = 'MATCH (n { log_id: "' + log_dict.get('_id').get('$oid') + '" })'
+    _set = ' SET n.name="' + log_dict.get('name') + '"'
+    _set += ' SET n.privacy="' + str(log_dict.get('privacy')) + '"'
+    _set += ' SET n.physicArrayLength="' + str(log_dict.get('physicArrayLength')) + '"'
+    _set += ' SET n.emotionArrayLength="' + str(log_dict.get('emotionArrayLength')) + '"'
+    _set += ' SET n.academicArrayLength="' + str(log_dict.get('academicArrayLength')) + '"'
+    _set += ' SET n.communeArrayLength="' + str(log_dict.get('communeArrayLength')) + '"'
+    _set += ' SET n.etherArrayLength="' + str(log_dict.get('etherArrayLength')) + '"'
+    _set += ' SET n.physicContent="' + str(log_dict.get('physicContent')) + '"'
+    _set += ' SET n.emotionContent="' + str(log_dict.get('emotionContent')) + '"'
+    _set += ' SET n.academicContent="' + str(log_dict.get('academicContent')) + '"'
+    _set += ' SET n.communeContent="' + str(log_dict.get('communeContent')) + '"'
+    _set += ' SET n.etherContent="' + str(log_dict.get('etherContent')) + '"'
+    _return = ' RETURN n'
+
+    # This the query that updates the node
+    cypher.execute(_match + _set + _return)
+
+    # Get the updated log node
+    updated_log_node = get_log_node(log_dict.get('_id').get('$oid'))
+
+    # Detach all the relationships and delete all the words associated with the log
+    cypher.execute('MATCH (n { log_id: "' + log_dict.get('_id').get('$oid') + '" })-[r:HAS]-(w) DETACH DELETE w')
+
+    # Detach all the relationships and delete all the sublogs associated with the log
+    cypher.execute('MATCH (n { log_id: "' + log_dict.get('_id').get('$oid') + '" })-[r:SUB_CONTAINS]-(sl) DETACH DELETE sl')
+
+    ###
+    # You might be wondering, where are the words are updated for a log...
+    # ... they get deleted above and recreated... see the 'cnr_user_described_sublog'
+    ###
+
+    return updated_log_node
 
 '''
 Helper functions - Create new Log/SubLog Relationship
@@ -464,11 +591,12 @@ def intercepts_update_single_experience(experience=None):
     # Business logic for USER_NODE starts here, uses data from above.
     ###
     user_id = experience_dict.get('user').get('$oid')
-
     user_node = get_user_node(user_id=user_id)
 
-
-    # TODO: Get the experience node, and update it and its words!!
+    ###
+    # Business logic for EXPERIENCE_NODE starts here, uses data from above.
+    ###
+    update_experience_node(new_user_node=user_node, experience_dict=experience_dict)
 
     return 'success'
 
@@ -566,8 +694,30 @@ def intercepts_update_single_log(log=None):
 
     user_node = get_user_node(user_id=user_id)
 
-
     # TODO: Get the log node, and update it and its words!!
+
+    ###
+    # Business logic for LOG_NODE starts here, uses data from above.
+    ###
+    log_node = update_log_node(new_user_node=user_node, log_dict=log_dict)
+
+    ###
+    # Business logic for SUBLOG_NODE starts here, uses data from above.
+    ###
+
+    # List of all dictionary types
+    sublog_list = ['physic', 'emotion', 'academic', 'commune', 'ether']
+
+    for sublog_name in sublog_list:
+        # This method also creates a new sublog, and builds a relationship
+        # to the user (and adds the word nodes)!
+        cnr_log_contains_sub(
+            new_user_node=user_node,
+            new_log_node=log_node,
+            log_dict=log_dict,
+            sublog_array_name=sublog_name,
+            node_title=sublog_name.title() + 'Log',
+            )
 
     return 'success'
 
