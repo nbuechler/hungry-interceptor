@@ -563,7 +563,9 @@ def intercepts_create_single_experience(experience=None):
     # Business logic for getting ACTIVITY_NODE starts here, uses data from above.
     ###
     activity_id = experience_dict.get('firstActivity').get('$oid')
-    activity_node = get_activity_node(activity_id=activity_id)
+    activity_node_one = get_activity_node(activity_id=activity_id)
+    activity_id = experience_dict.get('secondActivity').get('$oid')
+    activity_node_two = get_activity_node(activity_id=activity_id)
 
     ###
     # Business logic for EXPERIENCE_NODE starts here, uses data from above.
@@ -571,7 +573,9 @@ def intercepts_create_single_experience(experience=None):
     new_experience_node = cnr_user_experienced_experience(new_user_node=user_node, experience_dict=experience_dict)
 
     # Create a new relationship for the activity/experience
-    activity_contains_experience = Relationship(activity_node, "CONTAINS", new_experience_node)
+    activity_contains_experience = Relationship(activity_node_one, "CONTAINS", new_experience_node)
+    secure_graph1.create(activity_contains_experience)
+    activity_contains_experience = Relationship(activity_node_two, "CONTAINS", new_experience_node)
     secure_graph1.create(activity_contains_experience)
 
     return 'success'
@@ -604,6 +608,9 @@ def intercepts_update_single_experience(experience=None):
     # Business logic for EXPERIENCE_NODE starts here, uses data from above.
     ###
     update_experience_node(new_user_node=user_node, experience_dict=experience_dict)
+
+    # TODO: update this: where the experience node changes its containing activity
+
 
     return 'success'
 
