@@ -133,6 +133,7 @@ def cnr_user_did_activity(new_user_node=None, activity_dict=None):
         name=activity_dict.get('name'),
         activity_id=activity_dict.get('_id').get('$oid'),
         privacy=activity_dict.get('privacy'),
+        archived=activity_dict.get('archived'),
         word_length=activity_dict.get('descriptionArrayLength'),
         nodeType='activity',
         )
@@ -173,6 +174,7 @@ def update_activity_node(new_user_node=None, activity_dict=None):
     _match = 'MATCH (n { activity_id: "' + activity_dict.get('_id').get('$oid') + '" })'
     _set = ' SET n.name="' + activity_dict.get('name') + '"'
     _set += ' SET n.privacy="' + str(activity_dict.get('privacy')) + '"'
+    _set += ' SET n.archived="' + str(activity_dict.get('archived')) + '"'
     _set += ' SET n.word_length="' + str(activity_dict.get('descriptionArrayLength')) + '"'
     _return = ' RETURN n'
 
@@ -207,6 +209,7 @@ def cnr_user_experienced_experience(new_user_node=None, experience_dict=None):
         name=experience_dict.get('name'),
         experience_id=experience_dict.get('_id').get('$oid'),
         privacy=experience_dict.get('privacy'),
+        archived=experience_dict.get('archived'),
         pronoun=experience_dict.get('pronoun'),
         word_length=experience_dict.get('descriptionArrayLength'),
         nodeType='experience',
@@ -247,6 +250,7 @@ def update_experience_node(new_user_node=None, experience_dict=None):
     _match = 'MATCH (n { experience_id: "' + experience_dict.get('_id').get('$oid') + '" })'
     _set = ' SET n.name="' + experience_dict.get('name') + '"'
     _set += ' SET n.privacy="' + str(experience_dict.get('privacy')) + '"'
+    _set += ' SET n.archived="' + str(experience_dict.get('archived')) + '"'
     _set += ' SET n.pronoun="' + experience_dict.get('pronoun') + '"'
     _set += ' SET n.word_length="' + str(experience_dict.get('descriptionArrayLength')) + '"'
     _return = ' RETURN n'
@@ -285,6 +289,7 @@ def cnr_user_logged_log(new_user_node=None, log_dict=None):
         name=log_dict.get('name'),
         log_id=log_dict.get('_id').get('$oid'),
         privacy=log_dict.get('privacy'),
+        archived=log_dict.get('archived'),
         physicArrayLength=log_dict.get('physicArrayLength'),
         emotionArrayLength=log_dict.get('emotionArrayLength'),
         academicArrayLength=log_dict.get('academicArrayLength'),
@@ -340,6 +345,7 @@ def update_log_node(new_user_node=None, log_dict=None):
     _match = 'MATCH (n { log_id: "' + log_dict.get('_id').get('$oid') + '" })'
     _set = ' SET n.name="' + log_dict.get('name') + '"'
     _set += ' SET n.privacy="' + str(log_dict.get('privacy')) + '"'
+    _set += ' SET n.archived="' + str(log_dict.get('archived')) + '"'
     _set += ' SET n.physicArrayLength="' + str(log_dict.get('physicArrayLength')) + '"'
     _set += ' SET n.emotionArrayLength="' + str(log_dict.get('emotionArrayLength')) + '"'
     _set += ' SET n.academicArrayLength="' + str(log_dict.get('academicArrayLength')) + '"'
@@ -404,6 +410,7 @@ def cnr_user_described_sublog(new_user_node=None, new_log_node=None, log_dict=No
         parentLogName=log_dict.get('name'),
         parentLogId=log_dict.get('_id').get('$oid'),
         privacy=log_dict.get('privacy'),
+        archived=log_dict.get('archived'),
         wordLength=log_dict.get(sublog_array_name + 'ArrayLength'),
         content=log_dict.get(sublog_array_name + 'Content'),
         nodeType='sublog',
