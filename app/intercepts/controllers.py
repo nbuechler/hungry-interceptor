@@ -522,6 +522,8 @@ def intercepts_update_single_activity(activity=None):
     ###
     update_activity_node(new_user_node=user_node, activity_dict=activity_dict)
 
+    # TODO: update this: where the experience node changes its containing activity
+
     return 'success'
 
 '''
@@ -714,6 +716,8 @@ def intercepts_update_single_log(log=None):
     # Business logic for LOG_NODE starts here, uses data from above.
     ###
     log_node = update_log_node(new_user_node=user_node, log_dict=log_dict)
+
+    # TODO: update this: where the experience node changes its containing activity
 
     ###
     # Business logic for SUBLOG_NODE starts here, uses data from above.
