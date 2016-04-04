@@ -717,7 +717,7 @@ def intercepts_update_single_log(log=None):
     ###
     log_node = update_log_node(new_user_node=user_node, log_dict=log_dict)
 
-    # TODO: update this: where the experience node changes its containing activity
+    # TODO: update this: where the log node changes its containing experience
 
     ###
     # Business logic for SUBLOG_NODE starts here, uses data from above.
