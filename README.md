@@ -1,59 +1,104 @@
 # hungry-interceptor
-Intercepts data, does something with it, stores it
-Storing happens in a neo4j database.
-This app is going to be a gate keeper for the rest of the engines, vroom, vroom, go??
+This project intercepts/manipulates/requests/handles data. Then, it does one of many things:
+* Formats the data
+* Stores the data in a neo4j database.
+* Stores the data in a mongo database.
+* Stores the data in a different datastore entirely.
+* Kicks off an ETL process (planned Mid Oct 2016)
+* Etc.
 
-Well yes.
+This app is planned to be a gate keeper or router-like microservice for the rest of the engines, such as a machine learning engine (Non-existent in 2016), NLP engine ('speedy-affect-scorer' in 2016), ETL engine ('energetic-etl') or another engine.
 
-Its primary function is getting data from its counterpart in the front end side of the app. Or sending data it to its counterpart via its mechanisms and apis.
+# Overview
+Its primary function is getting data from its counterpart in the front end side of the _Logro_ application (currently callled 'fixed-gateway' in 2016). Its other important function is sending data to its counterpart engines listed above via its mechanisms and API.
 
-#Steps
-.. first, install virtualenv if not done so already -- https://virtualenv.pypa.io/en/latest/installation.html
+# History
+The project originally was designed to also do ETL functions which are now part of 'energetic-etl' (GPLv3) where the intercepts directory contained some of the logic this project used as boilerplate. See the other project called: energetic-etl
 
-.. then, run this command:  $ virtualenv venv
+Find the project here: https://github.com/nbuechler/hungry-interceptor
 
-.. next, activate virtualenv with this command (make sure you get the'.'):  $ . venv/bin/activate
+# Getting Started
+* First, install virtualenv if not done so already -- https://virtualenv.pypa.io/en/latest/installation.html(https://virtualenv.pypa.io/en/latest/installation.html)
+* Then, run this command:
+<pre>
+  <code>
+    $ virtualenv venv
+  </code>
+</pre>
+* Next, activate the virtual environment (make sure you get the'.'):
+<pre>
+  <code>
+    $ . venv/bin/activate
+  </code>
+</pre>
+* Last, install the requirements with pip:
+<pre>
+  <code>
+    $ pip install -r requirements.txt
+  </code>
+</pre>
 
-.. we are using 'Flask-PyMongo' - so next, run this command: $ pip install Flask-PyMongo
+# Most exciting future plans
+If I begin working with a friend of mine (likely 2016), it would be useful to intercept the data and send it to a machine learning model to notice trends in affect. This machine learning model would be in a separate project.
 
-.. read about it here:
+# Start databases - if they are not already running
+_From a terminal, start mongo:_
+<pre>
+  <code>
+    mongod
+  </code>
+</pre>
 
-https://flask-pymongo.readthedocs.org/en/latest/
+_From a terminal start Neo4j:_
+<pre>
+  <code>
+    sudo /etc/init.d/neo4j-service start
+  </code>
+</pre>
 
-"Flask-PyMongo depends, and will install for you, recent versions of Flask (0.8 or later) and PyMongo (2.4 or later). Flask-PyMongo is compatible with and tested on Python 2.6, 2.7, and 3.3."
+# Run the application
+<pre>
+  <code>
+    python app/runserver.py 5000
+  </code>
+</pre>
 
-..
+This contains a port - 5000 - for running local, otherwise it will try to run on the default port - 80 - and that's taken. If you run it on a server instance, such as one on AWS without the port specified, it should running open to the world. That is the usual configuration for deploying code and making it 'live' to the world. But, make sure you are prudent in running the code in the way you want it to run.
 
-#Start databases
-Start mongo:: mongod
-Start Neo4j:: sudo /etc/init.d/neo4j-service start
+# Scripts folder
+The scripts folder is for automation. If using AWS, here's a problem I encountered in the middle of Feb, 2016:
+_DO NOT UPGRADE PIP_ from 6.1.1 on a standard AWS EC2 instance, or it will bite you. I don't really know why so this might have changed when you are reading this.
 
+# Requirements
 
-#Run the application
-python app/runserver.py
+* Flask==0.10.1
+* Flask-Cors==2.1.0
+* Flask-PyMongo==0.3.1
+* Flask-WTF==0.11
+* itsdangerous==0.24
+* Jinja2==2.8
+* MarkupSafe==0.23
+* py2neo==2.0.8
+* pymongo==2.8.1
+* six==1.10.0
+* Werkzeug==0.11.3
+* wheel==0.24.0
+* WTForms==2.0.2
 
+# Things to do
+* Refactor: Remove old code from 'hungry-interceptor' when this is complete!
 
-#Future plans
+# CORS and dealing with it
+Make sure to pay attention to how CORS right now accepts everything.
 
-After learning about basic neural network models and frameworks, it would be neat to see how this project might interact with frameworks like these: Blocks, Lasagne, Keras, and/or Theano... but there is a lot of room for growth and developing what we all might do with the data. We probably need A LOT more.
+See more here: https://flask-cors.readthedocs.org/en/latest/
 
-Tensorflow just came out a few weeks ago from early December 2015.
+<pre>
+  <code>
+    from flask.ext.cors import CORS
+    cors = CORS(app, resources={r"/\*": {"origins": "\*"}}) #CORS :WARNING everything!
+  </code>
+</pre>
 
-#Scripts folder
-The scripts folder is for automation
-If using aws, I encountered problems the 2nd week of Feb, 2016. DO NOT, FOR THE SAKE OF SANITY, UPGRADE PIP from 6.1.1 OR AWS EC2 will bite you.
-
-
-#TODO: More details about this here
-
-
-Ongoing Dependency List:  
-pip install flask-wtf
-pip install -U flask-cors
-
--->https://flask-cors.readthedocs.org/en/latest/
-
-#CORS
-from flask.ext.cors import CORS
-
-cors = CORS(app, resources={r"/*": {"origins": "*"}}) #CORS :WARNING everything!
+# LICENSE
+GPLv3
