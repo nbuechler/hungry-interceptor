@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import render_template, redirect, url_for, jsonify
+from flask import render_template, redirect, url_for, jsonify, request
 
 import requests, operator, math, json, csv, os
 
@@ -18,7 +18,7 @@ from bson import json_util
 utc = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 utc_datetime = datetime.utcnow()
 api_ip = '0.0.0.0'
-port = '5000'
+port = '7000'
 
 nlp = Blueprint('nlp', __name__)
 
@@ -44,7 +44,10 @@ def analyze_emotion_set(database=None):
       "lb": 2
     }
 
+    print request.get_json()
+
     data = request_body
-    endpoint = 'http://' + api_ip + ':' + port + '/helpers/analyze_emotion_set/all_emotions/'
+    endpoint = 'http://' + api_ip + ':' + port + '/helpers/analyze_emotion_set/big_6/'
     r = requests.post(endpoint, json=data)
-    return json.loads(r.content)
+    # return jsonify(r.content)
+    return jsonify(status="success", data=json.loads(r.content))
