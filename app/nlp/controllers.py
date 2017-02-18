@@ -34,19 +34,7 @@ def save_record(database=None):
 @nlp.route('/analyze_emotion_set/big_6/', methods=['POST'])
 def analyze_emotion_set(database=None):
 
-    request_body = {
-      "doc": " Sadness is an emotional pain associated with, or characterized by, feelings of disadvantage, loss, despair, grief, helplessness, disappointment and sorrow. An individual experiencing sadness may become quiet or lethargic, and withdraw themselves from others. An example of severe sadness is depression. Crying is often an indication of sadness",
-      "lang": "english",
-      "natural": "1",
-      "stemmer": "1",
-      "lemma": "1",
-      "ub": 2,
-      "lb": 2
-    }
-
-    print request.get_json()
-
-    data = request_body
+    data = json.loads(request.get_json())
     endpoint = 'http://' + api_ip + ':' + port + '/helpers/analyze_emotion_set/big_6/'
     r = requests.post(endpoint, json=data)
     # return jsonify(r.content)
