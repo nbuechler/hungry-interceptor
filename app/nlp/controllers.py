@@ -31,11 +31,11 @@ def save_record(database=None):
     # TODO: Add logic to save a record
     return "Not Implemented"
 
-@nlp.route('/analyze_emotion_set/big_6/', methods=['POST'])
+@nlp.route('/analyze_emotion_set/', methods=['POST'])
 def analyze_emotion_set(database=None):
 
     data = json.loads(request.get_json())
-    endpoint = 'http://' + api_ip + ':' + port + '/helpers/analyze_emotion_set/big_6/'
+    endpoint = 'http://' + api_ip + ':' + port + '/helpers/analyze_emotion_set/' + data.get('emotion_set') + '/'
     r = requests.post(endpoint, json=data)
     # return jsonify(r.content)
     return jsonify(status="success", data=json.loads(r.content))
