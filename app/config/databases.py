@@ -12,6 +12,10 @@ mongo2 = PyMongo(app, config_prefix='MONGO2')
 app.config['MONGO3_DBNAME'] = 'test'
 mongo3 = PyMongo(app, config_prefix='MONGO3')
 
+# Affective Computing Databases
+app.config['ANALYSIS_DBNAME'] = 'affect-analysis-interceptor'
+affect_analysis = PyMongo(app, config_prefix='ANALYSIS')
+
 #remoteDB1
 mongolab_uri = 'mongodb://evgroio01:admin@ds041238.mongolab.com:41238/heroku_app36697506'
 client = MongoClient(mongolab_uri,
@@ -22,4 +26,4 @@ client = MongoClient(mongolab_uri,
 remoteDB1 = client.get_default_database()
 
 ## connect to default instance of neo4j
-secure_graph1 = Graph("http://neo4j:admin@0.0.0.0:7474/db/data/")  
+secure_graph1 = Graph("http://neo4j:admin@0.0.0.0:7474/db/data/")
