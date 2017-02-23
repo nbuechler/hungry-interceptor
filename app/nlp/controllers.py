@@ -31,7 +31,6 @@ nlp = Blueprint('nlp', __name__)
 def tester():
     return 'nlp!'
 
-@nlp.route('/<database>/save/')
 def save_record(collection_name, data):
 
     try:
@@ -46,7 +45,7 @@ def save_record(collection_name, data):
 
 
 @nlp.route('/analyze_emotion_set/', methods=['POST'])
-def analyze_emotion_set(database=None):
+def analyze_emotion_set():
 
     data = json.loads(request.get_json())
     endpoint = 'http://' + api_ip + ':' + port + '/helpers/analyze_emotion_set/' + data.get('emotion_set') + '/'
@@ -56,3 +55,24 @@ def analyze_emotion_set(database=None):
     save_record('all_records', json.loads(r.content))
     # return content
     return jsonify(status="success", data=json.loads(r.content))
+
+@nlp.route('/analyses/<collection>/<page>/<count_per_page>/', methods=['GET'])
+def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
+
+    print 'here'
+
+    x = (int(page) - 1) * int(count_per_page)
+    y = int(page) * int(count_per_page)
+
+    cursor = affect_analysis.db[collection].find() #find all
+    data = []
+    for i in cursor[x:y]:
+        data.append(i)
+
+    # TODO: Fix the janky dumps loads syntax for the data here
+    return jsonify(
+                status="success",
+                page=page,
+                count_per_page=count_per_page,
+                data=json.loads(json.dumps(data, default=json_util.default)),
+                )
