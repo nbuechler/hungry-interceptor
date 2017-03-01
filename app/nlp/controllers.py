@@ -40,6 +40,8 @@ def save_record(collection_name, data):
 
     collection = affect_analysis.db[collection_name]
     # TODO: Add the user (id/username) who ran this analysis
+    print 'data'
+    print data
     collection.insert(data)
     return "Success"
 
@@ -47,7 +49,7 @@ def save_record(collection_name, data):
 @nlp.route('/analyze_emotion_set/', methods=['POST'])
 def analyze_emotion_set():
 
-    data = json.loads(request.get_json())
+    data = request.get_json()
     endpoint = 'http://' + api_ip + ':' + port + '/helpers/analyze_emotion_set/' + data.get('emotion_set') + '/'
     r = requests.post(endpoint, json=data)
 
@@ -58,8 +60,6 @@ def analyze_emotion_set():
 
 @nlp.route('/analyses/<collection>/<page>/<count_per_page>/', methods=['GET'])
 def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
-
-    print 'here'
 
     x = (int(page) - 1) * int(count_per_page)
     y = int(page) * int(count_per_page)
