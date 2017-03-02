@@ -67,6 +67,14 @@ def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
     cursor = affect_analysis.db[collection].find() #find all
     data = []
     for i in cursor[x:y]:
+        truncated_emotion_set = []
+        for affect in i['emotion_set']:
+            truncated_emotion_set.append({
+                "emotion": affect['emotion'],
+                "normalized_r_score": affect['normalized_r_score'],
+            })
+        # Improve run time by only returning back a subset of the emotion_set scoring
+        i['emotion_set'] = truncated_emotion_set
         data.append(i)
 
     # TODO: Fix the janky dumps loads syntax for the data here
