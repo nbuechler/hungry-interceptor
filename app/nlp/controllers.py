@@ -75,6 +75,9 @@ def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
             })
         # Improve run time by only returning back a subset of the emotion_set scoring
         i['emotion_set'] = truncated_emotion_set
+        # Return back only the first 100 at most characters
+        if len(i['doc']) > 100:
+            i['doc'] = i['doc'][0:200] + '...'
         data.append(i)
 
     # TODO: Fix the janky dumps loads syntax for the data here
