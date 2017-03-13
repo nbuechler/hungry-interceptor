@@ -14,6 +14,7 @@ from config.databases import (mongo1,
                               affect_analysis)
 
 # mongo dependecies
+import pymongo
 from flask.ext.pymongo import ObjectId
 
 # bson
@@ -64,7 +65,7 @@ def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
     x = (int(page) - 1) * int(count_per_page)
     y = int(page) * int(count_per_page)
 
-    cursor = affect_analysis.db[collection].find() #find all
+    cursor = affect_analysis.db[collection].find().sort('_id', pymongo.DESCENDING); #find all
     data = []
     for i in cursor[x:y]:
         truncated_emotion_set = []
@@ -76,8 +77,8 @@ def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
         # Improve run time by only returning back a subset of the emotion_set scoring
         i['emotion_set'] = truncated_emotion_set
         # Return back only the first 100 at most characters
-        if len(i['doc']) > 100:
-            i['doc'] = i['doc'][0:200] + '...'
+        if len(i['doc']) > 400:
+            i['doc'] = i['doc'][0:400] + '...'
         data.append(i)
 
     # TODO: Fix the janky dumps loads syntax for the data here
