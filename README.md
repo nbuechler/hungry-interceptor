@@ -39,7 +39,12 @@ Find the project here: https://github.com/nbuechler/hungry-interceptor
 </pre>
 
 # Most exciting future plans
-If I begin working with a friend of mine (likely 2016), it would be useful to intercept the data and send it to a machine learning model to notice trends in affect. This machine learning model would be in a separate project.
+I've begun working with a friend of mine in early 2016, and have found the usefulness in planning to intercept the data and send it to a machine learning model to produce similar results. This machine learning model is in a separate project and will likely be linked here when the project is in a stable state.
+
+# Technical challenges to overcome
+* Scaling the application to work in a cluster will be challenging due to the single-threaded nature of Flask.
+* Considering a separate microservice specifically for coordinating message queues, akin to something like Celery or RabbitMQ would be useful (but, I'm not sure yet if this is viable or a good idea)
+* It also might be valuable to rework this project to be more of a microservice, instead of a service-oriented project. Thus, looking into microservice architectures to apply to the entire _Logro_ project is a good idea to consider.
 
 # Start databases - if they are not already running
 _From a terminal, start mongo:_
