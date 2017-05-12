@@ -88,3 +88,15 @@ def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
                 count_per_page=count_per_page,
                 data=json.loads(json.dumps(data, default=json_util.default)),
                 )
+
+@nlp.route('/analyses/<collection>/stats/', methods=['GET'])
+def retrieve_all_run_analyses_statistics(collection=None):
+
+    cursor = affect_analysis.db[collection].find().sort('_id', pymongo.DESCENDING); #find all
+    data = {}
+    data['corpus_length'] = cursor.count()
+
+    return jsonify(
+                status="success",
+                data=json.loads(json.dumps(data, default=json_util.default)),
+                )
