@@ -59,6 +59,14 @@ def analyze_emotion_set():
     # return content
     return jsonify(status="success", data=json.loads(r.content))
 
+def get_total_analysis_count(collection):
+
+    cursor = affect_analysis.db[collection].find().sort('_id', pymongo.DESCENDING); #find all
+    data = {}
+    data['corpus_length'] = cursor.count()
+
+    return data
+
 @nlp.route('/analyses/<collection>/<page>/<count_per_page>/', methods=['GET'])
 def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
 
@@ -81,10 +89,13 @@ def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
             i['doc'] = i['doc'][0:400] + '...'
         data.append(i)
 
+    total_analyses = get_total_analysis_count(collection)['corpus_length']
+
     # TODO: Fix the janky dumps loads syntax for the data here
     return jsonify(
                 status="success",
-                page=page,
+                stats='stats',
+                total_analyses=total_analyses,
                 count_per_page=count_per_page,
                 data=json.loads(json.dumps(data, default=json_util.default)),
                 )
@@ -92,9 +103,7 @@ def retrieve_all_run_analyses(collection=None, page=None, count_per_page=None):
 @nlp.route('/analyses/<collection>/stats/', methods=['GET'])
 def retrieve_all_run_analyses_statistics(collection=None):
 
-    cursor = affect_analysis.db[collection].find().sort('_id', pymongo.DESCENDING); #find all
-    data = {}
-    data['corpus_length'] = cursor.count()
+    data = get_total_analysis_count(collection)
 
     return jsonify(
                 status="success",
