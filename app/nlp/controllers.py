@@ -109,3 +109,13 @@ def retrieve_all_run_analyses_statistics(collection=None):
                 status="success",
                 data=json.loads(json.dumps(data, default=json_util.default)),
                 )
+
+@nlp.route('/analyses/<collection>/<analysis_id>/', methods=['GET'])
+def retrieve_single_run_anlysis(collection=None, analysis_id=None):
+
+    result = affect_analysis.db[collection].find_one({"_id": ObjectId(analysis_id)})
+
+    return jsonify(
+                status="success",
+                data=json.loads(json.dumps(result, default=json_util.default)),
+                )
